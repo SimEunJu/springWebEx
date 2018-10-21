@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.ex.mapper.BoardMapper">
+
+<insert id="create">
+	insert into tbl_board (title, content, writer)
+	values (#{title}, #{content}, #{writer})
+</insert>
+
+<select id="read" resultType="kr.co.ex.domain.BoardVO">
+	select * from tbl_board where bno=#{bno}
+</select>
+
+<update id="update">
+	update tbl_board set title=#{title}, content=#{content}, writer=#{writer}
+	where bno=#{bno}
+</update>
+
+<delete id="delete">
+	delete from tbl_board where bno=#{bno}
+</delete>
+
+<select id="listAll" resultType="kr.co.ex.domain.BoardVO">
+	<![CDATA[
+		select * from tbl_board 
+		where bno>0
+		order by bno desc, regdate desc
+	]]>
+</select>
+
+<select id="listPage" resultType="kr.co.ex.domain.BoardVO">
+	<![CDATA[
+		select * from tbl_board where bno>0
+		order by bno desc, regdate desc
+		limit #{pageStart}, #{perPageNum}
+	]]>	
+</select>
+
+<select id="totalCount" resultType="int">
+	<![CDATA[
+		select count(bno) from tbl_board where bno>0;
+	]]>
+	
+</select>
+
+<sql id="search">
+	<if test="searchType != null">
+		<choose>
+			<when test="searchType == 't'.toString()">
+				and title like concat('%',#{keyword}, '%')
+			</when>
+			<when test="searchType == 'c'.toString()">
+				and content like concat('%', #{keyword},'%')
+			</when>
+			<when test="searchType == 'w'.toString()">
+				and writer like concat('%', #{keyword},'%')
+			</when>
+			<when test="searchType == 'tc'.toString()">
+				and (title like concat('%', #{keyword},'%')
+				or content like concat('%', #{keyword},'%'))
+			</when>
+			<when test="searchType == 'cw'.toString()">
+				and (content like concat('%', #{keyword},'%')
+				or writer like concat('%', #{keyword},'%'))
+			</when>
+			<when test="searchType == 'tcw'.toString()">
+				and (title like concat('%', #{keyword},'%')
+				or content like concat('%', #{keyword},'%')
+				or writer like concat('%', #{keyword},'%'))
+			</when>
+		</choose>
+	</if>
+</sql>
+
+<select id="listSearch" resultType="kr.co.ex.domain.BoardVO">
+	<![CDATA[
+		select * from tbl_board 
+		where bno > 0 
+	]]>
+	<include refid="search"></include>
+	<![CDATA[
+ 		order by bno desc, regdate desc
+ 		limit #{pageStart}, #{perPageNum}
+	]]>
+</select>	
+
+<select id="searchCount" resultType="int">
+	<![CDATA[
+		select count(bno) from tbl_board where bno>0
+	]]>
+	<include refid="search"></include>
+</select>
+
+<insert id="addAttach">
+	insert into tbl_attach(bno, fullname) values(LAST_INSERT_ID(), #{fullName})
+</insert>
+
+<select id="getAttach" resultType="string">
+	select fullname from tbl_attach where bno=#{bno} order by regdate
+</select>
+
+<delete id="deleteAttach">
+	delete from tbl_attach where fullname=#{fullName}
+</delete>
+
+<delete id="deleteAllAttach">
+	delete from tbl_attach where bno=#{bno}
+</delete>
+
+<update id="replaceAttach">
+	insert into tbl_attach(fullname, bno) values(#{fullname}, #{bno})
+</update>
+
+<select id="readReplyCnt" resultType="int">
+	select count(rno) from tbl_reply where bno=#{bno}
+</select>
+
+<update id="updateViewCnt">
+	update tbl_board set viewCnt = viewCnt+1 where bno=#{bno}
+</update>
+
+</mapper>
