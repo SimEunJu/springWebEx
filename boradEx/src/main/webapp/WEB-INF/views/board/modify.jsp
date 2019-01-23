@@ -1,15 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>BoradEx</title>
-</head>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
-
-<body>
 
 <%@ include file="../include/header.jsp" %>
 
@@ -43,18 +35,21 @@
 		<ul class="mailbox-attachments clearfix uploadedList">
 		
 		</ul>
-		<button type="submit" class="btn btn-primary">Save</button>
-		<button type="submit" class="btn btn-warning">Cancel</button>
+		<button type="submit" role="modify" class="btn btn-primary">Save</button>
+		<button type="submit" role="delete" class="btn btn-warning">Remove</button>
+		<button type="submit" role="list" class="btn btn-info">List</button>
 	</div>
 </form>
 </div>
 
 <%@ include file="../include/footer.jsp" %>
+
 <%@ include file="../include/upload.jsp" %>
 
 <script type="text/javascript" src="/resources/js/upload.js"></script>
 
 <script type="text/javascript">
+
 	$("document").ready(function(){
 		
 	var bno = $("input[name='bno']").val();
@@ -68,17 +63,28 @@
 			});
 		});
 		
-		var formObj = $("form[role='role']");
+		var formObj = $("form[role='form']");
 		
-		$(".btn-primary").on("click", function(){
-			formObj.attr("action","/board/modify")
+		$("button[type='submit']").on("click", function(e){
+			
+			e.preventDefault();
+			
+			var role = $(this).attr("role");
+			
+			if(role === "delete"){
+				formObj.attr("action", "/board/delete");
+			
+			}else if(role === "modify"){
+				formObj.attr("action", "/board/modify");
+			
+			}else{
+				window.location.href = "/board/list"+"${pageMaker.makeQuery(pagekMaker.cri.getPage)}"
+				+"&searchType=" + "${cri.searchType}"
+				+"&keyword=" + encodeURIComponent("${cri.keyword}");
+				return;
+			}
+			
 			formObj.submit();
-		});
-		
-		$(".btn-warning").on("click", function(){
-			window.location.href = "/board/list"+"${pageMaker.makeQuery(pagekMaker.cri.getPage)}"
-			+"&searchType=" + "${cri.searchType}"
-			+"&keyword=" + encodeURIComponent("${cri.keyword}")
 		});
 	});
 	

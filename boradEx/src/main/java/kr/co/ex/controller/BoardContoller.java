@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.ex.domain.BoardVO;
+import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
@@ -37,11 +38,26 @@ public class BoardContoller {
 	public String list(@ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			PageMaker pageMaker = new PageMaker();
-			pageMaker.setCri(cri);
-			pageMaker.setTotalCount(serv.searchCount(cri));
-			model.addAttribute("pageMaker", pageMaker);
 			
-			model.addAttribute("list", serv.listSearch(cri));
+			int totalCount = 0;
+			List<BoardVO> boardList = null;
+			
+			String keyword = cri.getKeyword();
+			if(keyword == null || keyword.trim().length() == 0){
+				totalCount = serv.getTotalCount();
+				boardList = serv.listCriteria(cri);
+				pageMaker.setCri((Criteria)cri);
+			}
+			else{
+				totalCount = serv.getSearchCount(cri);
+				boardList = serv.listSearch(cri);
+				pageMaker.setCri(cri);
+			}
+			
+			pageMaker.setTotalCount(totalCount);
+			model.addAttribute("pageMaker", pageMaker);
+			model.addAttribute("boardList", boardList);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,7 +74,6 @@ public class BoardContoller {
 		try {
 			logger.info(board.toString());
 			serv.register(board);
-			
 			attrs.addFlashAttribute("msg", "success");
 		} catch (Exception e) {
 			e.printStackTrace();

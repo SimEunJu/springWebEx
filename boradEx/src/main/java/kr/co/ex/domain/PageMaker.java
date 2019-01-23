@@ -17,15 +17,8 @@ public class PageMaker {
 	private int displayPageNum = 10;
 	
 	// 1. set criteria
-	public void setCri(Criteria cri){
-		if(cri instanceof SearchCriteria){
-			SearchCriteria sCri = (SearchCriteria) cri;
-			String keyword = sCri.getKeyword();
-			if(keyword != null) sCri.setKeyword(keyword.trim()); 
-			this.cri = sCri;
-		}else{
-			this.cri = cri;
-		}
+	public void setCri(Criteria cri){                  
+		this.cri = cri;
 	}
 	// 2. set total count
 	public void setTotalCount(int totalCount){
@@ -33,7 +26,7 @@ public class PageMaker {
 		calcData();
 	}
 	// 3. calculate other variables
-	public void calcData(){
+	private void calcData(){
 		endPage = (int)(Math.ceil(cri.getPage()/(double)displayPageNum)*displayPageNum);
 		startPage = endPage - displayPageNum + 1;
 		int tempEndPage = (int)Math.ceil(totalCount/(double)cri.getPerPageNum());

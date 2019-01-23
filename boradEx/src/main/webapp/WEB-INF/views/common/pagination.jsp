@@ -14,7 +14,7 @@
 			</c:forEach>
 			
 			<c:if test="${pageMaker.next }">
-				<li><a href="/board/list${pageMaker.makeSearch(pageMaker.startPage-1) }">&raquo;</a></li>
+				<li><a href="/board/list${pageMaker.makeSearch(pageMaker.startPage+1) }">&raquo;</a></li>
 			</c:if>
 		</ul>
 	</div>

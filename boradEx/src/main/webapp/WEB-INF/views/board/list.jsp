@@ -3,21 +3,13 @@
  <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
  <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
  
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>BoardEx</title>
-</head>
-<script type="text/javascript">
-	var result = "${msg}";
-	if(msg === "success") alert("처리가 정상적으로 완료되었습니다.");
-</script>
-<body>
-<form role="form">
+<%@include file="../include/header.jsp" %>
+
+<form method="get" id="pageInfo">
 	<input type="hidden" name="page" value="${pageMaker.cri.page }">
 	<input type="hidden" name="perPageNum" value="${pageMaker.cri.perPageNum }">
 </form>
+
 <div class="box-body">
 	<%@ include file="../include/header.jsp" %>
 	<table class="table table-bordered">
@@ -57,17 +49,22 @@
 		</ul>
 	</div>
 </div>
+
 <%@ include file="../include/footer.jsp" %>
 
 <script type="text/javascript">
 	$("document").ready(function(){
-		var formObj = $("form[role='form']");
 		
-		$(".pagination li a").on("click", function(){
+		var result = "${msg}";
+		if(msg === "success") alert("처리가 정상적으로 완료되었습니다.");
+		
+		var formObj = $("#pageInfo");
+		
+		$(".pagination li a").on("click", function(e){
+			e.preventDefault();
 			var targetPage = $(this).attr("data-href");
 			formObj.find("[name='page']").val(targetPage);
 			formObj.attr("action", "/board/list");
-			formObj.attr("method", "get");
 			formObj.submit();
 		});
 		
@@ -75,7 +72,6 @@
 			e.preventDefault();
 			var targetBno = $(this).attr("href");
 			formObj.attr("action", "/board/list/"+targetBno);
-			formObj.attr("method", "get");
 			formObj.submit();
 		});
 	})

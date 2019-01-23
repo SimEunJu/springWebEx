@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +16,7 @@ import kr.co.ex.domain.SearchCriteria;
 public class BoardDAOImpl implements BoardDAO {
 
 	@Autowired
-	private SqlSession sess;
+	private SqlSessionTemplate sess;
 	private static final String namespace = "kr.co.ex.mapper.BoardMapper";
 	
 	@Override

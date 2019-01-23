@@ -47,32 +47,23 @@
 </select>
 
 <sql id="search">
-	<if test="searchType != null">
-		<choose>
-			<when test="searchType == 't'.toString()">
-				and title like concat('%',#{keyword}, '%')
-			</when>
-			<when test="searchType == 'c'.toString()">
-				and content like concat('%', #{keyword},'%')
-			</when>
-			<when test="searchType == 'w'.toString()">
-				and writer like concat('%', #{keyword},'%')
-			</when>
-			<when test="searchType == 'tc'.toString()">
-				and (title like concat('%', #{keyword},'%')
-				or content like concat('%', #{keyword},'%'))
-			</when>
-			<when test="searchType == 'cw'.toString()">
-				and (content like concat('%', #{keyword},'%')
-				or writer like concat('%', #{keyword},'%'))
-			</when>
-			<when test="searchType == 'tcw'.toString()">
-				and (title like concat('%', #{keyword},'%')
-				or content like concat('%', #{keyword},'%')
-				or writer like concat('%', #{keyword},'%'))
-			</when>
-		</choose>
-	</if>
+	<trim prefix=" and (" suffix=") " prefixOverrides="or">
+		<foreach item="type" collection="typeArr">
+			<trim prefix="or">
+				<choose>
+					<when test="searchType == 't'.toString()">
+						title like '%'||#{keyword}||'%'
+					</when>
+					<when test="searchType == 'c'.toString()">
+						content like '%'||{keyword}||'%'
+					</when>
+					<when test="searchType == 'w'.toString()">
+						writer like '%'||#{keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+	</trim>
 </sql>
 
 <select id="listSearch" resultType="kr.co.ex.domain.BoardVO">

@@ -1,16 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>BoardEx</title>
-</head>
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
-
-<body>
 
 <%@ include file="../include/header.jsp" %>
 
@@ -42,12 +33,13 @@
 	</form>
 </div>
 
-<%@ include file="../include/footer.jsp" %>
 <%@ include file="../include/upload.jsp" %>
+
+<%@ include file="../include/footer.jsp" %>
 
 <script type="text/javascript" src="/resources/js/upload.js"></script>
 	
-<script>
+<script type="text/javascript">
 
 $("#registerForm").on("submit", function(e){
 	e.preventDefault();

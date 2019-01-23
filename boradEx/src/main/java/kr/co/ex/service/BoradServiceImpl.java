@@ -9,41 +9,41 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.SearchCriteria;
-import kr.co.ex.persistence.BoardDAO;
+import kr.co.ex.mapper.BoardMapper;
 
 @Service
 public class BoradServiceImpl implements BoardService {
 
 	@Autowired
-	private BoardDAO dao;
+	private BoardMapper mapper;
 	
 	@Override
 	@Transactional
 	public void register(BoardVO board) throws Exception {
-		dao.create(board);
+		mapper.create(board);
 		String[] files = board.getFiles();
 		if(files != null){
 			for(String file : files){
-				dao.addAttach(file);
+				mapper.addAttach(file);
 			}
 		}
 	}
 	
 	@Override
 	public BoardVO read(Integer bno) throws Exception {
-		return dao.read(bno);
+		return mapper.read(bno);
 	}
 
 	@Override
 	@Transactional
 	public void modify(BoardVO board) throws Exception {
-		dao.update(board);
+		mapper.update(board);
 		Integer bno = board.getBno();
-		dao.deleteAllAttach(bno);
+		mapper.deleteAllAttach(bno);
 		String[] files = board.getFiles();
 		if(files != null){
 			for(String file: files){
-				dao.replaceAttach(file, bno);
+				mapper.replaceAttach(file, bno);
 			}
 		}
 		
@@ -52,53 +52,53 @@ public class BoradServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public void remove(Integer bno) throws Exception {
-		dao.deleteAllAttach(bno);
-		dao.delete(bno);
+		mapper.deleteAllAttach(bno);
+		mapper.delete(bno);
 	}
 
 	@Override
 	public List<BoardVO> listAll() throws Exception {
-		return dao.listAll();
+		return mapper.listAll();
 	}
 
 	@Override
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception {
-		return dao.listCriteria(cri);
+		return mapper.listCriteria(cri);
 	}
 
 	@Override
 	public int getTotalCount() throws Exception {
-		return dao.totalCount();
+		return mapper.totalCount();
 	}
 
 	@Override
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception {
-		return dao.listSearch(cri);
+		return mapper.listSearch(cri);
 	}
 
 	@Override
-	public int searchCount(SearchCriteria cri) throws Exception {
-		return dao.searchCount(cri);
+	public int getSearchCount(SearchCriteria cri) throws Exception {
+		return mapper.searchCount(cri);
 	}
 
 	@Override
 	public List<String> getAttach(Integer bno) throws Exception {
-		return dao.getAttach(bno);
+		return mapper.getAttach(bno);
 	}
 
 	@Override
 	public void removeAttach(String fullName) throws Exception {
-		dao.deleteAttach(fullName);
+		mapper.deleteAttach(fullName);
 	}
 
 	@Override
 	public int getReplyCnt(int bno) throws Exception {
-		return dao.readReplyCnt(bno);
+		return mapper.readReplyCnt(bno);
 	}
 
 	@Override
 	public void updateViewCnt(int bno) throws Exception {
-		dao.updateViewCnt(bno);
+		mapper.updateViewCnt(bno);
 	}
 	
 }

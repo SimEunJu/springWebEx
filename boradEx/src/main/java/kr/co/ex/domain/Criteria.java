@@ -1,5 +1,8 @@
 package kr.co.ex.domain;
 
+import lombok.Getter;
+
+@Getter
 public class Criteria {
 	private int page;
 	// number of article in a page;
@@ -9,16 +12,9 @@ public class Criteria {
 		this.page = 1;
 		this.perPageNum = 10;
 	}
-	
-	public int getPage() {
-		return page;
-	}
 	public void setPage(int page) {
 		if(page <= 0) page = 1;
 		else this.page = page;
-	}
-	public int getPerPageNum() {
-		return perPageNum;
 	}
 	public void setPerPageNum(int perPageNum) {
 		if(perPageNum <= 0 || perPageNum >= 100) this.perPageNum = 10;
@@ -27,7 +23,6 @@ public class Criteria {
 	public int getPageStart(){
 		return (this.page - 1)*this.perPageNum;
 	}
-
 	@Override
 	public String toString() {
 		return "Criteria [page=" + page + ", perPageNum=" + perPageNum + "]";

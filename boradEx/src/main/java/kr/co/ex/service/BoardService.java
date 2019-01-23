@@ -18,7 +18,7 @@ public interface BoardService {
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
-	public int searchCount(SearchCriteria cri) throws Exception;
+	public int getSearchCount(SearchCriteria cri) throws Exception;
 	public int getTotalCount() throws Exception;
 	public List<String> getAttach(Integer bno) throws Exception;
 	public void removeAttach(String fullName) throws Exception;

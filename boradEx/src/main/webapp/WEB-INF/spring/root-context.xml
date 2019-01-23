@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
@@ -17,10 +18,10 @@
 	<context:property-placeholder location="classpath:/db.propertise" /> 
 
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-		<property name="driverClassName" value="${driverClassName}"></property>
-		<property name="jdbcUrl" value="${jdbcUrl}"></property>
-		<property name="username" value="boardex"></property>
-		<property name="password" value="${password}"></property>
+		<property name="driverClassName" value="${hikariConfig.driverClassName}"></property>
+		<property name="jdbcUrl" value="${hikariConfig.jdbcUrl}"></property>
+		<property name="username" value="${hikariConfig.password}"></property>
+		<property name="password" value="${hikariConfig.password}"></property>
 	</bean>
 	
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
@@ -34,8 +35,8 @@
 		<property name="mapperLocations" value="classpath:/mappers/**/*Mapper.xml"></property>
 	</bean>
 	
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
-		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+  		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -44,5 +45,6 @@
 	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 	
-	<context:component-scan base-package="kr.co.ex.persistence, kr.co.ex.service, kr.co.ex.aop kr.co.ex.mapper" />
+	<context:component-scan base-package="kr.co.ex.persistence, kr.co.ex.service, kr.co.ex.aop" />
+	<mybatis:scan base-package="kr.co.ex.mapper" /> 
 </beans>

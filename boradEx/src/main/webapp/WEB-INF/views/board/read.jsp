@@ -1,48 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>BoardEX</title>
-</head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
-<body>
-
-<style>
-	.popup{ position: absolute;}
-	.back { background-color: gray; opacity: 0.5; width: 100%; height: 300%;
-		overflow:hidden; z-index: 1101;}
-	.front{	z-index: 1100; opacity: 1; border: 1px; margin: auto;}
-	.show{ position:absolute; max-width: 1200px; max-height: 800px; overflow: auto;}
-</style>
 
 <%@ include file="../include/header.jsp" %>
 
-<div id="modifyModal" class="modal modal-primary fade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title"></h4>
-			</div>
-			<div class="modal-body">
-				<p><input type="text" id="modifiedReply" class="form-control"></p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-info" id="replyModBtn">Modify</button>
-				<button type="button" class="btn btn-danger" id="replyDelBtn">Delete</button>
-				<button type="button" class="btn btn-default" id="replyCloBtn" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="pop back" style="display: none;"></div>
-<div id="popup_front" class="popup front" style="display:none;">
-	<img id="popup_img">
-</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
 	
 <form role="form" method="post">
 	<input type="hidden" name="bno" value="${boardVO.bno }">
@@ -51,6 +13,27 @@
 	<input type="hidden" name="searchType" value="${cri.searchType }">
 	<input type="hidden" name="keyword" value="${cri.keyword }">
 </form>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+               	처리가 완료되었습니다.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <div class="box-body">
 	<div class="form-group">
@@ -84,7 +67,7 @@
 	
 <%@ include file="../reply/registerReply.jsp" %>
 
-<%@include  file="../reply/replyList.jsp" %>
+<%@ include  file="../reply/replyList.jsp" %>
 
 <%@ include file="../include/footer.jsp" %>
 </div>
@@ -118,10 +101,11 @@
 </script>
 
 <script type="text/javascript" src="/resources/js/upload.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		
-		var bno = ${boardVO.bno};
+		var bno = '${boardVO.bno}';
 		var pageOffset = 1;
 		
 		var fileTemplate = Handlebars.compile($("#fileTemplate").html());
@@ -282,8 +266,8 @@
 		});
 		
 		$("#boardRemBtn").on("click",function(){
-			// $("#replycntSmall").html().replace(/^[0-9]/g,"");
-			var replycnt = $("#replycntSmall").html();
+			
+			var replycnt = $("#replycntSmall").html().replace(/^[0-9]/g,"");
 			if(parseInt(replycnt) > 0){
 				alert("댓글이 있는 게시물은 삭제할 수 없습니다.");
 				return;
@@ -308,5 +292,3 @@
 		});
 	});
 </script>
-</body>
-</html>
