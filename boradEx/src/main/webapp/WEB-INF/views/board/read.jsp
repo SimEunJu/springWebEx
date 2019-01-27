@@ -3,8 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%@ include file="../include/header.jsp" %>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
 	
 <form role="form" method="post">
 	<input type="hidden" name="bno" value="${boardVO.bno }">
@@ -22,11 +20,20 @@
                 <h4 class="modal-title" id="myModalLabel">Modal title</h4>
             </div>
             <div class="modal-body">
-               	처리가 완료되었습니다.
+               <div class="form-group">
+               		<label>Reply</label>
+               		<input class="form-control" name="reply" value="New Reply">
+               		<label>Replyer</label>
+               		<input class="form-control" name="replyer" value="New Reply">
+               		<label>Reply Date</label>
+               		<input class="form-control" name="replyDate" value="New Reply">
+               </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+            	<button type="button" id="modal-mod" class="btn btn-warning">Modify</button>
+            	<button type="button" id="modal-rem" class="btn btn-danger">Remove</button>
+                <button type="button" id="modal-reg" class="btn btn-primary">Register</button>
+                <button type="button" id="modal-close"  class="btn btn-default">Close</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -72,43 +79,128 @@
 <%@ include file="../include/footer.jsp" %>
 </div>
 
-<script id="replyTemplate" type="template/handlebars">
-	{{#each .}}
-	<li class="replyLi" data-rno={{rno}}>
-		<i class="fa fa-comments bg-blud"></i>
-		<div class="timeline-item">
-			<span class="time"><i class="fa fa-clock-o"></i>{{pretifyDate regdate}}</span>
-			<h3 class="timeline-header"><strong>{{rno}}</strong>--{{replyer}}</h3>
-			<div class="timeline-body">{{replytext}}</div>
-			
-			{{#eqReplyer replyer}}
-			<div class="timeline-footer">
-				<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modifyModal">Modify</a>
-			</div>
-			{{/eqReplyer}}
-		</div>
-	</li>
-	{{/each}}
-</script>
-
-<script id="fileTemplate" type="template/handlebars">
-<li data-src="{{fullName}}">
-	<span class="mailbox-attachment-icon has-img"><img src="{{imgsrc}}" alt="attachment"></span>
-	<div class="mailbox-attachment-info">
-		<a href="{{getLink}}" class="mailbox-attachment-name">{{fileName}}</a>
-	</div>
-</li>	
-</script>
-
-<script type="text/javascript" src="/resources/js/upload.js"></script>
+<script type="text/javascript" src="/resources/js/reply.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function(){
 		
-		var bno = '${boardVO.bno}';
-		var pageOffset = 1;
+		var bno = "${boardVO.bno}";
 		
-		var fileTemplate = Handlebars.compile($("#fileTemplate").html());
+		var pageNum = 1;
+		var replyFooter = $(".panel-footer");
+		function showReplyPagination(){
+			var str = "<ul class='pagination pull-right'>";
+			if("${pm.prev}"){ 
+				str += "<li class='page-item'><a class='page-link' href='"+"${pm.startPage-1}"+"'>Prev</a></li>";
+			}
+			for(let i=paserInt("${startPage}"); i<parseInt("${endPage}"; i++){
+				var active = pageNum == i ? "active" : "";
+				str += "<li class='page-item "+active"'><a class='page-link' href='"+i+"</a></li>";
+			}
+			if("${pm.next}"){ 
+				str += "<li class='page-item'><a class='page-link' href='"+"${pm.endPage+1}"+"'>Prev</a></li>";
+			}
+			str += "</ul></div>";
+			replyFooter.html(str);
+		}
+		
+		var replyUl = $(".chat");
+		showList(1);
+		function showList(page){
+			replyService.getList({bno: bno, page: page||1}, function(res){
+
+				var {replyCnt, replies} = res;			
+				var str = "";
+				if(replies === null || replies.length === 0){
+					replyUl.html = "";
+					return;
+				}
+				for(let i=0, len=replies.length||0; i<len; i++){
+					str += `<li class="left clearfix" data-rno="${replies[i].rno}">
+						<div>
+						<div class="header">
+							<strong class="primary-font">${replies[i].replyer}</strong>
+							<small class="pull-right text-muted">${replyServie.displayTime(replies[i].replyDate)}</small>
+						</div>
+						<p>${replies[i].reply}</p>
+					</div>
+				</li>`;
+				}
+				replyUl.html(str);
+				showReplyPagination();
+			})
+		}
+		
+		var modal = $(".modal");
+		var modalReply = modal.find("input[name='reply']");
+		var modalReplyer = modal.find("input[name='replyer']");
+		var modalReplyDate = modal.find("input[name='replyDate']");
+		
+		var modalMod = modal.find("#modal-mod");
+		var modalRem = modal.find("#modal-rem");
+		var modalReg = modal.find("#modal-reg");
+		
+		$('#addReplyBtn').on("click", function(){
+			modal.find("input").val("");
+			modalReplyDate.closest("div").hide();
+			modal.find("button[id!='modal-close']").hide();
+			modalReg.show();
+			modal.modal("show");
+		});
+		
+		modalReg.on("click", function(){
+			var reply = {
+				reply: modalReply.val(),
+				replyer: modalReplyer.val(),
+				bno: bno
+			};
+			replyService.add(reply, function(res){
+				modal.find("input").val();
+				modal.modal("hide");
+				showList(1);
+			});
+		});
+		
+		modalMod.on("click", function(){
+			var reply = {
+				rno: modal.data('rno'),
+				reply: modalReply.val()
+			};
+			replyService.update(reply, function(res){
+				modal.modal("hide");
+				showList(pageNum);
+			});
+		});
+		
+		modalRem.on("click", function(){
+			replyService.remove(modal.data("rno"), function(res){
+				modal.modal("hide");
+				showList(pageNum);
+			});
+		});
+		
+		replyUl.on("click", "li", function(e){
+			var rno = $(this).data("rno");
+			replyService.get(rno, function(res){
+				modalReply.val(res.reply);
+				modalReplyer.val(res.replyer);
+				modalReplyDate.val(replyService.displayTime(res.replyDate)).attr("readonly", true);
+				modal.data("rno", res.rno);
+				
+				modal.find("button[id!='modal-close']").hide();
+				modalMod.show();
+				modalRem.show();
+				
+				modal.modal("show");
+			});
+		});
+		
+		replyFooter.on("click", "li a", function(e){
+			e.preventDefault();
+			var targetPage = $(this).attr("href");
+			pageNum = targetPAge;
+			showList(pageNum);
+		});
 		
 		$.getJSON("/board/getAttach/"+bno, function(list){
 			$(list).each(function(){
@@ -116,20 +208,6 @@
 				var html = fileTemplate(fileInfo);
 				$(".uploadedList").append(html);
 			});
-		});
-		
-		Handlebars.registerHelper("eqReplyer", function(replyer, block){
-			var acc = "";
-			if(replyer === "${login.uid}") acc += block.fn();
-			return acc;
-		});
-		
-		Handlebars.registerHelper("pretifyDate", function(timeVal){
-			var dateObj = new Date(timeVal);
-			var year = dateObj.getFullYear();
-			var month = dateObj.getMonth()+1;
-			var date = dateObj.getDate();
-			return year+"/"+month+"/"+date;
 		});
 		
 		$(".uploadedList").on("click", ".mailbox-attachment-info a" ,function(){
@@ -142,121 +220,7 @@
 				imgTag.addClass("show");
 			}
 		});
-		
-		$("#popup_img").on("click", function(){
-			$(".popup").hide("slow");
-		});
-		
-		function printData(reply, target, template){
-			var template = Handlebars.compile(template.html());
-			var ret = template(reply);
-			$(".replyLi").remove();
-			target.after(ret);
-		}
-		
-		function printPaging(page, target){
-			var str = "";
-			if(page.prev){
-				str += "<li><a href='"+(page.startPage-1)+"'> << </a></li>";
-			}
-			for(var i=page.startPage; i<=page.endPage; i++){
-				str += "<li><a href='"+i+"'>"+i+"</a></li>";
-			}
-			if(page.next){
-				str += "<li><a href='"+(page.startEnd+1)+"'> << </a></li>";
-			}
-			target.html(str);
-		}
-		
-		function getPage(uri){
-			$.getJSON(uri, function(data){
-				printData(data.replies, $(".time-label"), $("#replyTemplate"));
-				printPaging(data.paging, $("#pagination"));
-				$("#modifyModal").modal("hide");	
-			});
-		}
-		
-		$("#repliesDiv").on("click", function(e){
-			if($(".timeline li").size() > 1) return;
-			getPage("/replies/"+bno+"/1");
-		});
-		
-		$("#pagination").on("click","li a", function(e){
-			e.preventDefault();
-			var page = $(this).attr("href");
-			pageOffset = page;
-			getPage("/replies/"+bno+"/"+pageOffset);
-		});
-		
-		$("#replyAddBtn").on("click", function(e){
-			e.preventDefault();
-			$.ajax({
-				type: "post",
-				url: "/replies",
-				headers: {
-					"Content-Type": "application/json",
-					"X-HTTP-Method-Override": "POST"
-				},
-				dataType: "text",
-				data: JSON.stringify({
-					bno: bno,
-					replyer: $("#newReplyer").val(),
-					replytext: $('#newReplyText').val()
-				}),
-				success: function(data){
-					if(data === 'success') alert("success");
-					pageOffset = 1;
-					getPage("/replies/"+bno+"/1");
-					$("#newReplyer").val("");
-					$('#newReplyText').val("");
-					var cnt = $("#replycntSmall").html();
-					$("#replycntSmall").html(parseInt(cnt)+1);
-				}
-			});	
-		});
-		
-		$(".timeline").on("click",".replyLi", function(){
-			$(".modal-title").text($(this).attr("data-rno"));
-			$("#modifiedReply").val($(this).find(".timeline-body").text());
-		})
-		
-		$("#replyModBtn").on("click", function(e){
-			var rno = $(".modal-title").text();
-			$.ajax({
-				type: "put",
-				url: "/replies/"+rno,
-				headers: {
-					"Content-Type": "application/json",
-					"X-HTTP-Method-Override": "PUT"
-				},
-				dataType: "text",
-				data: JSON.stringify({
-					replytext: $("#modifiedReply").val()
-				}),
-				success: function(data){
-					if(data === 'success') alert("success");
-					getPage("/replies/"+bno+"/"+pageOffset);
-				}
-			});	
-		});
-		
-		$("#replyDelBtn").on("click", function(){
-			var rno = $(".modal-title").text();
-			$.ajax({
-				type: "delete",
-				url: "/replies/"+rno,
-				headers: {
-					"Content-Type": "application/json",
-					"X-HTTP-Method-Override": "DELETE"
-				},
-				dataType: "text",
-				success: function(data){
-					if(data === 'success') alert("success");
-					getPage("/replies/"+bno+"/"+pageOffset);
-				}
-			});	
-		});
-		
+	
 		var formObj = $("form[role='form']");
 		
 		$("#boardModBtn").on("click",function(){

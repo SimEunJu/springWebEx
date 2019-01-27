@@ -114,31 +114,23 @@ public class BoardContoller {
 	public String modify(@RequestParam Integer bno, BoardVO vo, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			serv.modify(vo);
-			attrs.addAttribute("page", cri.getPage());
-			attrs.addAttribute("perPageNum", cri.getPerPageNum());
-			attrs.addAttribute("keyword", cri.getKeyword());
-			attrs.addAttribute("searchType", cri.getSearchType());
 			attrs.addFlashAttribute("msg", "success");
 		} catch (Exception e) {
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
 		}
-		return "redirect:/board/list";
+		return "redirect:/board/list"+cri.makeSearch();
 	}
 	
 	@PostMapping("/delete")
 	public String delete(@RequestParam Integer bno, SearchCriteria cri, RedirectAttributes attrs){
 		try{
 			serv.remove(bno);
-			attrs.addAttribute("page", cri.getPage());
-			attrs.addAttribute("perPageNum", cri.getPerPageNum());
-			attrs.addAttribute("keyword", cri.getKeyword());
-			attrs.addAttribute("searchType", cri.getSearchType());
 			attrs.addFlashAttribute("msg", "success");
 		} catch(Exception e){
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
 		}
-		return "redirect:/board/list";
+		return "redirect:/board/list"+cri.makeSearch();
 	}
 }

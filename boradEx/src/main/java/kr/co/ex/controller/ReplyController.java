@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,18 +20,20 @@ import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.service.ReplyService;
+import lombok.extern.log4j.Log4j;
 
 @RestController
+@Log4j
 @RequestMapping("/replies")
 public class ReplyController {
 
 	@Autowired
 	ReplyService serv;
 	
-	@PostMapping("")
+	@PostMapping(consumes="application/json", produces={MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> register(@RequestBody ReplyVO vo){
 		try {
-			System.out.println(vo.toString());
+			log.info(vo.toString());
 			serv.addReply(vo);
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
@@ -39,9 +42,11 @@ public class ReplyController {
 		}
 	}
 	
-	@GetMapping("/{bno}/{page}")
-	public ResponseEntity<Map<String, Object>> list(@PathVariable Integer bno, 
+	@GetMapping(value = "/{bno}/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<Map<String, Object>> list(
+			@PathVariable Integer bno, 
 			@PathVariable Integer page){
+		
 		try {
 			Criteria cri = new Criteria();
 			cri.setPage(page);
@@ -51,7 +56,7 @@ public class ReplyController {
 			pm.setTotalCount(serv.getTotalCount(bno));
 			
 			Map<String, Object> map = new HashMap<>();
-			map.put("paging", pm);
+			map.put("pageMaker", pm);
 			map.put("replies", serv.listCriteriaReply(bno, cri));
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (Exception e) {
@@ -60,7 +65,7 @@ public class ReplyController {
 		}
 	}
 	
-	@PutMapping("/{rno}")
+	@PutMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> update(@PathVariable Integer rno, @RequestBody ReplyVO vo){
 		try {
 			serv.modifyReply(vo);
@@ -71,7 +76,7 @@ public class ReplyController {
 		}
 	}
 	
-	@DeleteMapping("/{rno}")
+	@DeleteMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> remove(@PathVariable Integer rno, ReplyVO vo){
 		try {
 			serv.removeReply(rno);

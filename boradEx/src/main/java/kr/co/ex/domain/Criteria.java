@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class Criteria {
-	private int page;
+	protected int page;
 	// number of article in a page;
-	private int perPageNum;
+	protected int perPageNum;
 	
 	public Criteria() {
 		this.page = 1;

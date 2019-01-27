@@ -1,13 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<ul class="timeline">
-	<li class="time-label" id="repliesDiv">
-		<span class="bg-green">Replies List[<span id="replycntSmall">${replyCnt}</span>]</span>
-	</li>
-</ul>
-
-<div class="text-center">
-	<ul id="pagination" class="pagination pagination-sm no-margin">
-	</ul>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<i class="fa fa-comments fa-fw"></i>Reply
+				<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+			</div>
+			
+			<div class="panel-body">
+				<ul class="chat">
+					
+				</ul>
+			</div>
+			
+			<div class="panel-footer">
+			
+			</div>
+		</div>
+	</div>
 </div>

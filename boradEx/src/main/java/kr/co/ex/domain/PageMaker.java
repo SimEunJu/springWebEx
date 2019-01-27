@@ -1,11 +1,5 @@
 package kr.co.ex.domain;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
 public class PageMaker {
 	private int totalCount;
 	private int startPage;
@@ -35,33 +29,7 @@ public class PageMaker {
 		prev = startPage == 1 ? false : true;
 		next = endPage*cri.getPerPageNum() >= totalCount ? false : true;
 	}
-	public String makeQuery(int page){
-		UriComponents uri = UriComponentsBuilder.newInstance()
-				// page is variable
-				.queryParam("page", page)
-				// num of per page article is fixed
-				.queryParam("perPageNum", cri.getPerPageNum())
-				.build();
-		return uri.toUriString();
-	}
-	public String makeSearch(int page){
-		UriComponents uri = UriComponentsBuilder.newInstance()
-				.queryParam("page", page)
-				.queryParam("perPageNum", cri.getPerPageNum())
-				.queryParam("searchType", ((SearchCriteria)cri).getSearchType())
-				.queryParam("keyword", encoding(((SearchCriteria)cri).getKeyword()))
-				.build();
-		return uri.toUriString();
-	}
-	private String encoding(String keyword){
-		if(keyword==null || keyword.trim().length()==0) return "";
-		try{
-			keyword = keyword.trim();
-			return URLEncoder.encode(keyword, "UTF-8");
-		}catch(UnsupportedEncodingException e){
-			return "";
-		}
-	}
+	
 	public int getTotalCount() {
 		return totalCount;
 	}
