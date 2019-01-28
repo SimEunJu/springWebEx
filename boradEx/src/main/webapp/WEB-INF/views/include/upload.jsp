@@ -1,68 +1,92 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<style>
- .fileDrop {
- 	width: 80%;
- 	height: 200px;
- 	border: 1px solid blue;
- 	background-color: lightslategrey;
- 	margin: auto;
- }
-</style>
-
-<script id="template" type="template/handlebars">
-<li>
-	<span class="mailbox-attachment-icon has-img"><img src="{{imgsrc}}" alt="attachment"></span>
-	<div class="mailbox-attachment-info">
-		<a href="{{getLink}}" class="mailbox-attachment-name">{{fileName}}</a>
-		<a href="{{fullName}}" class="btn btn-default btn-xs pull-right delbtn">
-			<i class="fa fa-fw fa-remove"></i>
-		</a>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">File Attach</div>
+			
+			<div class="panel-body">
+				<div class="form-group upload-div">
+					<input type="file" name="upload-file" multiple>
+				</div>
+				
+				<div class="upload-result">
+					<ul>
+					
+					</ul>
+				</div>
+			</div>
+		</div>
 	</div>
-</li>
-</script>
+</div>
 
 <script>
 
-var template = Handlebars.compile($("#template").html());
+var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+var maxSize = 5242880;
 
-$(".fileDrop").on("dragenter dragstart dragend dragleave dragover drag drop", function(e){
-	e.preventDefault();
-});
+function checkExtension(fileName, fileSize){
+	if(fileSize >= maxSize){
+		alert("사이즈 초과");
+		return false;
+	}
+	if(regex.test(fileName)){
+		alert("지원하지 않는 확장자입니다.");
+		return false;
+	}
+	return true;
+}
 
-$(".fileDrop").on("drop", function(e){
-	var files = e.originalEvent.dataTransfer.files;
-	var file = files[0];
-	console.log(file);
-	var form = new FormData();
-	form.append("file",file);
+$("input[type='file']").change(function(e){
+	var formData = new FormData();
+	var inputFile = $("input[name='upload-file']");
+	var files = inputFile[0].files;
+	for(var i=0; i<files.length; i++){
+		if(!checkExtension(files[i].name, files[i].size)) return false;
+		formData.append("uploadFile", files[i]);
+	}
 	$.ajax({
 		url: "/uploadAjax",
 		data: form,
-		dataType: "text",
+		dataType: "json",
 		processData: false,
 		contentType: false,
 		type: "post",
 		success: function(data){
-			var fileInfo = getFileInfo(data);
-			var html = template(fileInfo);
-			$(".uploadedList").append(html);
+			showUploadResult(data);
 		}
 	});
 });
 
-$(".uploadedList").on("click", ".delbtn", function(e){
-	e.preventDefault();
-	var parE = $(this).parent().parent();
-	var self = $(this);
-	console.log($(self).attr("href"));
+function showUploadResult(res){
+	if(!res || res.length === 0) return;
+	var uploadUl = $(".upload-result ul");
+	var str = "";
+	$(res).each(function(i, obj){
+		if(obj.image){
+			var filePath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
+			str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+			str += "<img src='/displyFile?fileName="+filePath+"'></div></li>";
+		}else{
+			str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+			str += "<img src='/resources/img/attach.png'></div></li>";
+		}
+	});
+	uploadUl.html(str);
+}
+
+$(".uploadResult").on("click", "button", function(e){
+	var file = $(this).data("file");
+	var type = $(this).data("type");
+	var li = $(this).closest("li");
 	$.ajax({
 		url: "/deleteFile",
 		type: "post",
-		data: {file: $(self).attr("href")},
+		dataType: "json",
+		data: {file: file, type: type},
 		success: function(){
-			parE.remove();
+			li.remove();
 		}
 	});
 });

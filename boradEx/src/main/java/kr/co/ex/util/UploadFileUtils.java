@@ -3,65 +3,43 @@ package kr.co.ex.util;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UploadFileUtils {
 	private static Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 	
-	public static String uploadFile(String uploadPath, String originalName, byte[] fileData) throws Exception{
-		UUID uid = UUID.randomUUID();
-		String savedName = uid.toString()+"_"+originalName;
-		String savedPath = calcPath(uploadPath);
-		File target = new File(uploadPath + savedPath + File.separator,savedName);
-		FileCopyUtils.copy(fileData, target);
-		String format = originalName.substring(originalName.indexOf(".")+1);
-		String uploadedFileName;
-		if(MediaUtil.getMediaType(format) != null){
-			uploadedFileName = makeThumbnail(uploadPath, savedPath, savedName);
-		}else{
-			uploadedFileName = makeIcon(uploadPath, savedPath, savedName);
-		}
-		return uploadedFileName;
+	public static String calcFolder(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String str = sdf.format(date);
+		return str.replaceAll("-", File.separator);
 	}
 	
-	private static String makeIcon(String uploadpath, String path, String fileName){
-		return (path + File.separator + fileName).replace(File.separator, "/");
+	public static String makePath(String path){
+		File uploadPath = new File(path, calcFolder());
+		if(!uploadPath.exists()) uploadPath.mkdirs();
+		return uploadPath.toString();
 	}
 	
-	private static String calcPath(String uploadPath){
-		Calendar cal = Calendar.getInstance();
-		String yearPath = File.separator + cal.get(Calendar.YEAR);
-		String monthPath = yearPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.MONTH)+1);
-		String dayPath = monthPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.DATE));
-		makeDir(uploadPath, yearPath, monthPath, dayPath);
-		return dayPath;
+	public static boolean isImage(File file) throws IOException{
+		return Files.probeContentType(file.toPath()).startsWith("image");
 	}
 	
-	private static void makeDir(String uploadPath, String ...paths){
-		if(new File(uploadPath + paths[paths.length-1]).exists()) return;
-		
-		for(String path : paths){
-			File dirPath = new File(uploadPath + path);
-			if(! dirPath.exists()) dirPath.mkdir();
-		}
-	}
-	
-	private static String makeThumbnail(String uploadpath, String path, String fileName) throws IOException{
-		BufferedImage sourceImg = ImageIO.read(new File(uploadpath+path,fileName));
+	public static void makeThumbnail(String path, String fileName) throws IOException{
+		BufferedImage sourceImg = ImageIO.read(new File(path, fileName));
 		BufferedImage destImg = Scalr.resize(sourceImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 100);
-		String thumbnailName = uploadpath + path + File.separator +"s_" + fileName;
-		File thumbnail = new File(thumbnailName);
+		String thumbnailName = "s_" + fileName;
+		File thumbnail = new File(path, thumbnailName);
 		String format = fileName.substring(fileName.lastIndexOf(".")+1);
 		ImageIO.write(destImg, format.toUpperCase(), thumbnail);
-		return thumbnailName.substring(uploadpath.length()).replace(File.separatorChar, '/');
 	}
 }

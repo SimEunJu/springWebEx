@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
@@ -94,9 +96,9 @@ public class BoardContoller {
 		return "/board/read";
 	}
 	
-	@GetMapping("/getAttach/{bno}")
+	@GetMapping(value="/getAttach/{bno}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public List<String> getAttach(@PathVariable Integer bno) throws Exception{
+	public List<AttachVO> getAttach(@PathVariable Integer bno) throws Exception{
 		return serv.getAttach(bno);
 	}
 	

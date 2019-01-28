@@ -1,6 +1,7 @@
 package kr.co.ex.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -13,5 +14,6 @@ public class BoardVO {
 	private Date regdate;
 	private Date updatedate;
 	private Integer viewcnt;
-	private String[] files;
+	
+	private List<AttachVO> files;
 }

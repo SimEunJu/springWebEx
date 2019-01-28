@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -20,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.ex.domain.AttachVO;
 import kr.co.ex.service.BoardService;
-import kr.co.ex.util.MediaUtil;
 import kr.co.ex.util.UploadFileUtils;
 
 @Controller
@@ -35,9 +38,32 @@ public class UploadController {
 	
 	@PostMapping(value="/uploadAjax", produces="text/plain; charset=utf-8")
 	@ResponseBody
-	public ResponseEntity<String> uploadFile(MultipartFile file) throws IOException, Exception{
-		String uploadedFileName = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
-		return new ResponseEntity<>(uploadedFileName, HttpStatus.CREATED);
+	public ResponseEntity<String> uploadFile(MultipartFile[] file) throws IOException, Exception{
+		List<AttachVO> attaches = new ArrayList<>();
+		String savePath = UploadFileUtils.makePath(uploadPath);
+		
+		for(MultipartFile f : file){
+			AttachVO attach = new AttachVO();
+			
+			String fileName = f.getOriginalFilename();
+			String saveFileName = fileName.substring(fileName.lastIndexOf("\\")+1);
+			attach.setFileName(fileName);
+			attach.setUploadPath(UploadFileUtils.calcFolder());
+			
+			UUID uuid = UUID.randomUUID();
+			attach.setUuid(uuid.toString());
+			saveFileName = uuid.toString() + "_" + saveFileName;
+			File saveFile = new File(savePath, saveFileName);
+			f.transferTo(saveFile);
+			
+			if(UploadFileUtils.isImage(saveFile)){
+				UploadFileUtils.makeThumbnail(savePath, saveFileName);
+				attach.setFileType(true);
+			}
+			
+			attaches.add(attach);
+		}
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/displayFile")
@@ -49,7 +75,7 @@ public class UploadController {
 			String format = fileName.substring(fileName.indexOf(".")+1);
 			HttpHeaders header = new HttpHeaders();
 			in = new FileInputStream(uploadPath+fileName.replace("/", File.separator));
-			MediaType mediaType = MediaUtil.getMediaType(format);
+		
 			if(mediaType != null){
 				header.setContentType(mediaType);
 			}else{

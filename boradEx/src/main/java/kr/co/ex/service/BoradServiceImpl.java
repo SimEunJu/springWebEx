@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.SearchCriteria;
@@ -21,9 +22,9 @@ public class BoradServiceImpl implements BoardService {
 	@Transactional
 	public void register(BoardVO board) throws Exception {
 		mapper.create(board);
-		String[] files = board.getFiles();
+		List<AttachVO> files = board.getFiles();
 		if(files != null){
-			for(String file : files){
+			for(AttachVO file : files){
 				mapper.addAttach(file);
 			}
 		}
@@ -40,10 +41,10 @@ public class BoradServiceImpl implements BoardService {
 		mapper.update(board);
 		Integer bno = board.getBno();
 		mapper.deleteAllAttach(bno);
-		String[] files = board.getFiles();
+		List<AttachVO> files = board.getFiles();
 		if(files != null){
-			for(String file: files){
-				mapper.replaceAttach(file, bno);
+			for(AttachVO file: files){
+				mapper.replaceAttach(file);
 			}
 		}
 		
@@ -82,7 +83,7 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<String> getAttach(Integer bno) throws Exception {
+	public List<AttachVO> getAttach(Integer bno) throws Exception {
 		return mapper.getAttach(bno);
 	}
 

@@ -86,15 +86,16 @@
 </select>
 
 <insert id="addAttach">
-	insert into tbl_attach(bno, fullname) values(LAST_INSERT_ID(), #{fullName})
+	insert into tbl_attach(bno, file_name, upload_path, uuid, file_type) 
+	values(LAST_INSERT_ID(), #{fileName}, #{uploadPath}, #{uuid}, #{fileType})
 </insert>
 
-<select id="getAttach" resultType="string">
-	select fullname from tbl_attach where bno=#{bno} order by regdate
+<select id="getAttach" resultType="kr.or.ex.domain.AttachVO">
+	select * from tbl_attach where bno=#{bno}
 </select>
 
 <delete id="deleteAttach">
-	delete from tbl_attach where fullname=#{fullName}
+	delete from tbl_attach where uuid=#{uuid}
 </delete>
 
 <delete id="deleteAllAttach">
@@ -102,7 +103,8 @@
 </delete>
 
 <update id="replaceAttach">
-	insert into tbl_attach(fullname, bno) values(#{fullname}, #{bno})
+	insert into tbl_attach(bno, file_name, upload_path, uuid, file_type) 
+	values(LAST_INSERT_ID(), #{fileName}, #{uploadPath}, #{uuid}, #{fileType})
 </update>
 
 <select id="readReplyCnt" resultType="int">

@@ -4,7 +4,7 @@
 
 <%@ include file="../include/header.jsp" %>
 	
-<form role="form" method="post">
+<form role="form" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="bno" value="${boardVO.bno }">
 	<input type="hidden" name="page" value="${cri.page }">
 	<input type="hidden" name="perPageNum" value="${cri.perPageNum }">
@@ -56,9 +56,14 @@
 		<input type="text" readonly="readonly" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control">
 	</div>
 		
-	<ul class="mailbox-attachments clearfix uploadedList">
-		
-	</ul>
+	<div class="uplaodDiv">
+		<input type="file" name="upload-file" multiple>
+		<div class="upload-result">
+			<ul>
+			
+			</ul>
+		</div>
+	</div>
 </div>
 
 <div class="box-body">
@@ -71,6 +76,14 @@
 </div>
 	
 <p></p>
+	
+<div class="big-picture-wrapper">
+	<div class="big-picture">
+	
+	</div>
+</div>
+	
+<%@ include file="../include/upload.jsp" %>
 	
 <%@ include file="../reply/registerReply.jsp" %>
 
@@ -85,6 +98,23 @@
 	$(document).ready(function(){
 		
 		var bno = "${boardVO.bno}";
+		
+		(function(){
+			$.getJSON("/board/getAttach/"+bno, function(res){
+				var str = "";
+				$(res).each(function(i, attach){
+					if(attach.fileType){
+						var filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
+						str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
+						str += "<img src='/displyFile?fileName="+filePath+"'></div></li>";
+					}else{
+						str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+attach.fileName+"</span><br>";
+						str += "<img src='/resources/img/attach.png'></div></li>";
+					}
+				}
+				$(".upload-result ul").html(str);
+			});
+		})();
 		
 		var pageNum = 1;
 		var replyFooter = $(".panel-footer");
@@ -202,23 +232,28 @@
 			showList(pageNum);
 		});
 		
-		$.getJSON("/board/getAttach/"+bno, function(list){
-			$(list).each(function(){
-				var fileInfo = getFileInfo(this);
-				var html = fileTemplate(fileInfo);
-				$(".uploadedList").append(html);
-			});
+		
+		$(".upload-result").on("click", "li", function(){
+			var file = $(this);
+			var path = encodeURIComponent(file.data("path")+"/"+file.data("uuid")+"_"+file.data("filename"));
+			if(file.data("type")){
+				showImage(path.replace(new RegExp(/\\/g), "/"));
+			}else {
+				self.location = "/download?fileName="+path;
+			}
 		});
 		
-		$(".uploadedList").on("click", ".mailbox-attachment-info a" ,function(){
-			var fileLink = $(this).attr("href");
-			if(checkImageType(fileLink)){
-				e.preventDefault();
-				var imgTag = $("#popup_img");
-				imgTag.attr("src", fileLink);
-				$(".popup").show("slow");
-				imgTag.addClass("show");
-			}
+		function showImage(path){
+			$(".big-picture-wrapper").css("display","flex").show();
+			$(".big-picture").html("<img src='display?fileName="+path+"'>").animate({width: "100%", height: "100%"}, 1000);
+		}
+		
+		var pictureWrapper = $(".big-picture-wrapper");
+		pictureWrapper.on("click", function(){
+			$(".big-picture").animate({width: "0", height: "0"}, 1000);
+			setTimeout(function(){
+				pictureWrapper.hide();
+			}, 1000);
 		});
 	
 		var formObj = $("form[role='form']");

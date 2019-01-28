@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
+    pageEncoding="UTF-8"%>    
+
+<link rel="stylesheet" type="text/css" href="/resources/css/upload.css" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
 
 <%@ include file="../include/header.jsp" %>
@@ -20,13 +22,8 @@
 				<label class="exampleInputEmail1">Writer</label>
 				<input type="text" name="writer" placeholder="Enter Writer" class="form-control" value="${login.uid}" readonly>
 			</div>
-			<div class="form-group">
-				<label for="exampleInputEmail1">File Drop Here</label>
-				<div class="fileDrop"></div>
-			</div>
 		</div>
 		<div class="box-footer">
-			<div><hr></div>
 			<ul class="mailbox-attachments clearfix uploadedList"></ul>
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</div>
@@ -41,16 +38,19 @@
 	
 <script type="text/javascript">
 
-$("#registerForm").on("submit", function(e){
+var form = $("#registerForm");
+
+form.on("submit", function(e){
 	e.preventDefault();
-	var self = $(this);
 	var str = "";
-	$(".uploadedList .delbtn").each(function(idx){
-		str += "<input type='hidden' name='files["+idx+"]' value='"+$(this).attr("href")+"'>";
+	$(".upload-result ul li").each(function(i, obj){
+		var fileObj = $(obj);
+		str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+fileObj.data("filename")+"'";
+		str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+fileObj.data("uuid")+"'";
+		str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+fileObj.data("path")+"'";
+		str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+fileObj.data("type")+"'";
 	});
-	self.append(str);
-	console.log(self);
-	self.get(0).submit();
+	form.append(str).submit();
 });
 
 </script>
