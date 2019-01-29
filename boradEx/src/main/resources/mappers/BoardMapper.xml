@@ -47,6 +47,7 @@
 </select>
 
 <sql id="search">
+	<if test="typeArr != null">
 	<trim prefix=" and (" suffix=") " prefixOverrides="or">
 		<foreach item="type" collection="typeArr">
 			<trim prefix="or">
@@ -64,6 +65,7 @@
 			</trim>
 		</foreach>
 	</trim>
+	</if>
 </sql>
 
 <select id="listSearch" resultType="kr.co.ex.domain.BoardVO">
@@ -90,7 +92,7 @@
 	values(LAST_INSERT_ID(), #{fileName}, #{uploadPath}, #{uuid}, #{fileType})
 </insert>
 
-<select id="getAttach" resultType="kr.or.ex.domain.AttachVO">
+<select id="getAttach" resultType="kr.co.ex.domain.AttachVO">
 	select * from tbl_attach where bno=#{bno}
 </select>
 

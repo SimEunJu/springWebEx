@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
+import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.ReplyService;
 import lombok.extern.log4j.Log4j;
 
@@ -48,7 +49,7 @@ public class ReplyController {
 			@PathVariable Integer page){
 		
 		try {
-			Criteria cri = new Criteria();
+			SearchCriteria cri = new SearchCriteria();
 			cri.setPage(page);
 			
 			PageMaker pm = new PageMaker();

@@ -1,6 +1,12 @@
 package kr.co.ex.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +35,12 @@ import kr.co.ex.service.BoardService;
 public class BoardContoller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BoardContoller.class);
+	
 	@Autowired
 	private BoardService serv;
+	
+	@Resource
+	String uploadPath;
 	
 	@GetMapping("/list")
 	// @ModelAttribute working process(my guess) 
@@ -47,8 +57,8 @@ public class BoardContoller {
 			String keyword = cri.getKeyword();
 			if(keyword == null || keyword.trim().length() == 0){
 				totalCount = serv.getTotalCount();
-				boardList = serv.listCriteria(cri);
-				pageMaker.setCri((Criteria)cri);
+				boardList = serv.listSearch(cri);
+				pageMaker.setCri(cri);
 			}
 			else{
 				totalCount = serv.getSearchCount(cri);
@@ -128,11 +138,28 @@ public class BoardContoller {
 	public String delete(@RequestParam Integer bno, SearchCriteria cri, RedirectAttributes attrs){
 		try{
 			serv.remove(bno);
+			deleteFile(serv.getAttach(bno));
 			attrs.addFlashAttribute("msg", "success");
 		} catch(Exception e){
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
 		}
 		return "redirect:/board/list"+cri.makeSearch();
+	}
+	
+	private void deleteFile(List<AttachVO> attaches){
+		if(attaches == null || attaches.size() == 0) return;
+		attaches.forEach(attach -> {
+			try {
+				Path file = Paths.get(uploadPath+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
+				Files.deleteIfExists(file);
+				if(Files.probeContentType(file).startsWith("image")){
+					Path thumbnail = Paths.get(uploadPath+attach.getUploadPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+					Files.deleteIfExists(thumbnail);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 }

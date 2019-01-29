@@ -4,7 +4,7 @@
 
 <%@ include file="../include/header.jsp" %>
 	
-<form role="form" method="post" enctype="multipart/form-data">
+<form role="form" method="post" >
 	<input type="hidden" name="bno" value="${boardVO.bno }">
 	<input type="hidden" name="page" value="${cri.page }">
 	<input type="hidden" name="perPageNum" value="${cri.perPageNum }">
@@ -56,14 +56,14 @@
 		<input type="text" readonly="readonly" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control">
 	</div>
 		
-	<div class="uplaodDiv">
+	<!-- <div class="uplaodDiv">
 		<input type="file" name="upload-file" multiple>
 		<div class="upload-result">
 			<ul>
 			
 			</ul>
 		</div>
-	</div>
+	</div> -->
 </div>
 
 <div class="box-body">
@@ -105,13 +105,13 @@
 				$(res).each(function(i, attach){
 					if(attach.fileType){
 						var filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
-						str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
+						str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
 						str += "<img src='/displyFile?fileName="+filePath+"'></div></li>";
 					}else{
-						str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+attach.fileName+"</span><br>";
+						str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+attach.fileName+"</span><br>";
 						str += "<img src='/resources/img/attach.png'></div></li>";
 					}
-				}
+				});
 				$(".upload-result ul").html(str);
 			});
 		})();
@@ -123,9 +123,11 @@
 			if("${pm.prev}"){ 
 				str += "<li class='page-item'><a class='page-link' href='"+"${pm.startPage-1}"+"'>Prev</a></li>";
 			}
-			for(let i=paserInt("${startPage}"); i<parseInt("${endPage}"; i++){
+			var startPage = parseInt("${startPage}");
+			var endPage = parseInt("${endPage}");
+			for(let i=startPage; i<=endPage; i++){
 				var active = pageNum == i ? "active" : "";
-				str += "<li class='page-item "+active"'><a class='page-link' href='"+i+"</a></li>";
+				str += "<li class='page-item "+active+"'><a class='page-link' href='"+i+"</a></li>";
 			}
 			if("${pm.next}"){ 
 				str += "<li class='page-item'><a class='page-link' href='"+"${pm.endPage+1}"+"'>Prev</a></li>";

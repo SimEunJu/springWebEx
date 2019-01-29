@@ -24,10 +24,6 @@
 		<label class="exampleInputEmail1">Writer</label>
 		<input type="text" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control" value=${login.uid} readonly>
 	</div>
-	<div class="form-group">
-		<label for="exampleInputEmail1">File Drop Here</label>
-		<div class="fileDrop"></div>
-	</div>
 	
 	
 	<div class="box-footer">

@@ -55,7 +55,7 @@
                     	<c:forEach var="board" items="${boardList}">
                     		<tr class="odd gradeX">
                     			<td>${board.bno}</td>
-                    			<td><a href="/board/list/${board.bno}/${pageMaker.makeSearch(pageMaker.cri.page)}">${board.title}</a></td>
+                    			<td><a href="/board/list/${board.bno}/${pageMaker.cri.makeSearch()}">${board.title}</a></td>
                     			<td>${board.writer}</td>
                     			<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${board.regdate}"></fmt:formatDate></td>
                     			<td>${board.viewcnt}</td>
@@ -102,7 +102,7 @@
 				return;
 			}
 			
-			window.location.href = "/board/list"+"${pageMaker.makeQuery(pagekMaker.cri.getPage)}"
+			window.location.href = "/board/list"+"${pageMaker.cri.makeQuery()}"
 									+"&searchType=" + $("select option:selected").val()
 									+"&keyword=" + encodeURIComponent($("input[name='keyword']").val());
 		});

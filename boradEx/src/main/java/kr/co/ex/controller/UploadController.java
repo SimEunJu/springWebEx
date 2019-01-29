@@ -1,17 +1,20 @@
 package kr.co.ex.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,16 +22,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.util.UploadFileUtils;
+import lombok.extern.log4j.Log4j;
 
 @Controller
+@Log4j
 public class UploadController {
+	
+	@Autowired
+	private ApplicationContext appContext;
 	
 	@Autowired
 	BoardService serv;
@@ -38,11 +47,15 @@ public class UploadController {
 	
 	@PostMapping(value="/uploadAjax", produces="text/plain; charset=utf-8")
 	@ResponseBody
-	public ResponseEntity<String> uploadFile(MultipartFile[] file) throws IOException, Exception{
+	public ResponseEntity<String> uploadFile(MultipartFile[] uploadFile, HttpServletRequest req) throws IOException, Exception{
+		 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
+		   MultipartFile multipartFile = multipartRequest.getFile("uploadFile");
+		   log.info(multipartFile.getName());
 		List<AttachVO> attaches = new ArrayList<>();
 		String savePath = UploadFileUtils.makePath(uploadPath);
 		
-		for(MultipartFile f : file){
+		for(MultipartFile f : uploadFile){
+		
 			AttachVO attach = new AttachVO();
 			
 			String fileName = f.getOriginalFilename();
@@ -66,69 +79,48 @@ public class UploadController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/displayFile")
+	@GetMapping(value="/donwload", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
-	public ResponseEntity<byte[]> displayFile(String fileName) throws IOException{
-		InputStream in = null;
-		ResponseEntity<byte[]> res = null;
+	public ResponseEntity<FileSystemResource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) throws IOException{
+		FileSystemResource resource = new FileSystemResource(uploadPath+fileName);
+		if(resource.exists() == false) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		String resourceName = resource.getFilename();
+		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_")+1);
+		HttpHeaders header = new HttpHeaders();
 		try{
-			String format = fileName.substring(fileName.indexOf(".")+1);
-			HttpHeaders header = new HttpHeaders();
-			in = new FileInputStream(uploadPath+fileName.replace("/", File.separator));
-		
-			if(mediaType != null){
-				header.setContentType(mediaType);
+			String downloadName = null;
+			if(userAgent.contains("Trident")){
+				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
+			}else if(userAgent.contains("Edge")){
+				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8");
 			}else{
-				fileName = fileName.substring(fileName.indexOf("_")+1);
-				header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-				header.set("Content-Disposition", "attachment; filename=\""+new String(fileName.getBytes("UTF-8"), "ISO-8859-1")+"\"");
+				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
 			}
-			res = new ResponseEntity<>(IOUtils.toByteArray(in), header, HttpStatus.CREATED);
-		}catch(Exception e){
+			header.add("Content-Disposition", "attachment; filename="+downloadName);
+		}catch(UnsupportedEncodingException e){
 			e.printStackTrace();
-			res = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}finally{
-			in.close();
 		}
-		return res;
+		return new ResponseEntity<>(resource, header, HttpStatus.OK);
+		
 	}
 	
 	@PostMapping("/deleteFile")
 	@ResponseBody
-	public ResponseEntity<Void> deleteOneFile(@RequestParam String file, @RequestParam(defaultValue="false") boolean deep) throws Exception{
-		if(file == null) return new ResponseEntity<>(HttpStatus.OK);
-		
-		String foramt = file.substring(file.indexOf(".")+1);
-		MediaType type = MediaUtil.getMediaType(foramt);
-		if(type != null){
-			String front = file.substring(0, 12);
-			String end = file.substring(14);
-			new File(uploadPath+(front+end).replace("/", File.separator)).delete();
-			if(deep){
-				serv.removeAttach(front+end);
+	public ResponseEntity<String> deleteOneFile(String fileName, String type) throws Exception{
+		File file;
+		try{
+			file = new File(uploadPath, URLDecoder.decode(fileName, "UTF-8"));
+			file.delete();
+			if(type.equals("image")){
+				String originalFile = file.getAbsolutePath().replace("s_", "");
+				file = new File(originalFile);
+				file.delete();
 			}
+		}catch(UnsupportedEncodingException e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		new File(uploadPath+file.replace("/", File.separator)).delete();
-		if(deep){
-			serv.removeAttach(file);
-		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>("deleted", HttpStatus.OK);
 	}
-	
-	@PostMapping("/deleteAllFiles")
-	@ResponseBody
-	public ResponseEntity<Void> deleteFile(@RequestParam("files[]") String[] files){
-		if(files == null || files.length == 0) return new ResponseEntity<>(HttpStatus.OK);
-		for(String file : files){
-			String foramt = file.substring(file.indexOf(".")+1);
-			MediaType type = MediaUtil.getMediaType(foramt);
-			if(type != null){
-				String front = file.substring(0, 12);
-				String end = file.substring(14);
-				new File(uploadPath+(front+end).replace("/", File.separator)).delete();
-			}
-			new File(uploadPath+file.replace("/", File.separator)).delete();
-		}
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
+
 }

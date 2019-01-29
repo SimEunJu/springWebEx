@@ -8,7 +8,7 @@
 			
 			<div class="panel-body">
 				<div class="form-group upload-div">
-					<input type="file" name="upload-file" multiple>
+					<input type="file" name="uploadFile" multiple="multiple">
 				</div>
 				
 				<div class="upload-result">
@@ -40,15 +40,16 @@ function checkExtension(fileName, fileSize){
 
 $("input[type='file']").change(function(e){
 	var formData = new FormData();
-	var inputFile = $("input[name='upload-file']");
+	var inputFile = $("input[name='uploadFile']");
 	var files = inputFile[0].files;
 	for(var i=0; i<files.length; i++){
 		if(!checkExtension(files[i].name, files[i].size)) return false;
 		formData.append("uploadFile", files[i]);
 	}
+	
 	$.ajax({
 		url: "/uploadAjax",
-		data: form,
+		data: formData,
 		dataType: "json",
 		processData: false,
 		contentType: false,
@@ -66,10 +67,10 @@ function showUploadResult(res){
 	$(res).each(function(i, obj){
 		if(obj.image){
 			var filePath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
-			str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+			str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
 			str += "<img src='/displyFile?fileName="+filePath+"'></div></li>";
 		}else{
-			str += "<li data-path='"+obj.uploadPath"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+			str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
 			str += "<img src='/resources/img/attach.png'></div></li>";
 		}
 	});
