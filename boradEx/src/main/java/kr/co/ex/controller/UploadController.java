@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -37,24 +40,35 @@ import lombok.extern.log4j.Log4j;
 public class UploadController {
 	
 	@Autowired
-	private ApplicationContext appContext;
-	
-	@Autowired
 	BoardService serv;
 	
 	@Resource
 	String uploadPath;
 	
-	@PostMapping(value="/uploadAjax", produces="text/plain; charset=utf-8")
+	@GetMapping("/displayFile")
 	@ResponseBody
-	public ResponseEntity<String> uploadFile(MultipartFile[] uploadFile, HttpServletRequest req) throws IOException, Exception{
-		 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
-		   MultipartFile multipartFile = multipartRequest.getFile("uploadFile");
-		   log.info(multipartFile.getName());
+	public ResponseEntity<byte[]> displayFile(String fileName){
+			File file = new File(uploadPath+fileName);
+			ResponseEntity<byte[]> result = null;
+			HttpHeaders header = new HttpHeaders();
+			try {
+				header.add("Content-Type", Files.probeContentType(file.toPath()));
+				result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return result;
+	}
+	
+	@PostMapping(value="/uploadAjax", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<AttachVO>> uploadFile(@RequestParam("uploadFile") MultipartFile[] file) throws IOException, Exception{
+		
 		List<AttachVO> attaches = new ArrayList<>();
 		String savePath = UploadFileUtils.makePath(uploadPath);
 		
-		for(MultipartFile f : uploadFile){
+		for(MultipartFile f : file){
 		
 			AttachVO attach = new AttachVO();
 			
@@ -73,10 +87,10 @@ public class UploadController {
 				UploadFileUtils.makeThumbnail(savePath, saveFileName);
 				attach.setFileType(true);
 			}
-			
 			attaches.add(attach);
+			log.info(attaches.toString());
 		}
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(attaches, HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value="/donwload", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)

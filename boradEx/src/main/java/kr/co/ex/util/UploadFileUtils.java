@@ -33,7 +33,10 @@ public class UploadFileUtils {
 	}
 	
 	public static boolean isImage(File file) throws IOException{
-		return Files.probeContentType(file.toPath()).startsWith("image");
+		String type = Files.probeContentType(file.toPath());
+		log.info(type);
+		if(type != null) return type.startsWith("image");
+		return false;
 	}
 	
 	public static void makeThumbnail(String path, String fileName) throws IOException{

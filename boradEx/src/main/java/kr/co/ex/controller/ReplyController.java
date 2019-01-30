@@ -66,6 +66,17 @@ public class ReplyController {
 		}
 	}
 	
+	@GetMapping("/{rno}")
+	public ResponseEntity<ReplyVO> getReply(@PathVariable int rno){
+		ResponseEntity<ReplyVO> res = null;
+		try {
+			res = new ResponseEntity<>(serv.getReply(rno), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+ 	
 	@PutMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> update(@PathVariable Integer rno, @RequestBody ReplyVO vo){
 		try {

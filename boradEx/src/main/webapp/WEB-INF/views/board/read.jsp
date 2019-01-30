@@ -141,22 +141,16 @@
 		function showList(page){
 			replyService.getList({bno: bno, page: page||1}, function(res){
 
-				var {replyCnt, replies} = res;			
+				var {replies} = res;	
 				var str = "";
 				if(replies === null || replies.length === 0){
 					replyUl.html = "";
 					return;
 				}
 				for(let i=0, len=replies.length||0; i<len; i++){
-					str += `<li class="left clearfix" data-rno="${replies[i].rno}">
-						<div>
-						<div class="header">
-							<strong class="primary-font">${replies[i].replyer}</strong>
-							<small class="pull-right text-muted">${replyServie.displayTime(replies[i].replyDate)}</small>
-						</div>
-						<p>${replies[i].reply}</p>
-					</div>
-				</li>`;
+			
+					str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
+					str += '</div><p>'+replies[i].reply+'</p></div></li>';
 				}
 				replyUl.html(str);
 				showReplyPagination();
@@ -213,6 +207,7 @@
 		
 		replyUl.on("click", "li", function(e){
 			var rno = $(this).data("rno");
+			console.log(rno);
 			replyService.get(rno, function(res){
 				modalReply.val(res.reply);
 				modalReplyer.val(res.replyer);

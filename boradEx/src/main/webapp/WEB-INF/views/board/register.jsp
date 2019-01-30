@@ -20,11 +20,10 @@
 			</div>
 			<div class="form-group">
 				<label class="exampleInputEmail1">Writer</label>
-				<input type="text" name="writer" placeholder="Enter Writer" class="form-control" value="${login.uid}" readonly>
+				<input type="text" name="writer" placeholder="Enter Writer" class="form-control" <%-- value="${login.uid}" readonly --%>>
 			</div>
 		</div>
 		<div class="box-footer">
-			<ul class="mailbox-attachments clearfix uploadedList"></ul>
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</div>
 	</form>
@@ -33,8 +32,6 @@
 <%@ include file="../include/upload.jsp" %>
 
 <%@ include file="../include/footer.jsp" %>
-
-<script type="text/javascript" src="/resources/js/upload.js"></script>
 	
 <script type="text/javascript">
 
@@ -50,6 +47,7 @@ form.on("submit", function(e){
 		str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+fileObj.data("path")+"'";
 		str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+fileObj.data("type")+"'";
 	});
+	
 	form.append(str).submit();
 });
 

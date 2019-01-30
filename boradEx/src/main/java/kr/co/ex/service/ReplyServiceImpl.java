@@ -36,6 +36,11 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
+	public ReplyVO getReply(int rno) throws Exception {
+		return mapper.get(rno);
+	}
+
+	@Override
 	public void modifyReply(ReplyVO vo) throws Exception {
 		mapper.update(vo);
 	}

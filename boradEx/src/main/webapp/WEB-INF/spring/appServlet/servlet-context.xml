@@ -40,7 +40,7 @@
 	<beans:bean id="loginInterceptor" class="kr.co.ex.interceptor.LoginInterceptor"></beans:bean>
 	<beans:bean id="authInterceptor" class="kr.co.ex.interceptor.AuthInterceptor"></beans:bean>
 	
-	<interceptors>
+	<!-- <interceptors>
 		<interceptor>
 			<mapping path="/loginPost"/>
 			<beans:ref bean="loginInterceptor"/>
@@ -53,7 +53,7 @@
 			<beans:ref bean="authInterceptor"/>	
 		</interceptor>
 		
-	</interceptors>
+	</interceptors> -->
 	
 	<!-- <beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean> -->
 	

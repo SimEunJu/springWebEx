@@ -63,30 +63,32 @@ $("input[type='file']").change(function(e){
 function showUploadResult(res){
 	if(!res || res.length === 0) return;
 	var uploadUl = $(".upload-result ul");
-	var str = "";
+	var str = uploadUl.html();
 	$(res).each(function(i, obj){
-		if(obj.image){
+		if(obj.fileType){
 			var filePath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
-			str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
-			str += "<img src='/displyFile?fileName="+filePath+"'></div></li>";
+			str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.fileType+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+			str += "<img src='/displayFile?fileName="+filePath+"'></div></li>";
 		}else{
-			str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+			var filePath = encodeURIComponent(obj.uploadPath+"/"+obj.uuid+"_"+obj.fileName);
+			str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.fileType+"'><div><span>"+obj.fileName+"</span><button type='button' data-file='"+filePath+"' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
 			str += "<img src='/resources/img/attach.png'></div></li>";
 		}
 	});
 	uploadUl.html(str);
 }
 
-$(".uploadResult").on("click", "button", function(e){
-	var file = $(this).data("file");
+$(".upload-result").on("click", "button", function(e){
+	var fileName = $(this).data("file");
 	var type = $(this).data("type");
 	var li = $(this).closest("li");
 	$.ajax({
 		url: "/deleteFile",
 		type: "post",
 		dataType: "json",
-		data: {file: file, type: type},
+		data: {fileName: fileName, type: type},
 		success: function(){
+			console.log(li);
 			li.remove();
 		}
 	});

@@ -23,6 +23,10 @@
   	select count(rno) from tbl_reply where bno=#{bno}
   </select>
   
+  <select id="get" resultType="kr.co.ex.domain.ReplyVO">
+   	select * from tbl_reply where rno=#{rno}
+  </select>
+  
   <update id="update">
   	update tbl_reply set replytext=#{replytext}, updatedate=now()
   	where rno=#{rno}
