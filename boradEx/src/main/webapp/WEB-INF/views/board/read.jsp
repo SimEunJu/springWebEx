@@ -12,36 +12,6 @@
 	<input type="hidden" name="keyword" value="${cri.keyword }">
 </form>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-               <div class="form-group">
-               		<label>Reply</label>
-               		<input class="form-control" name="reply" value="New Reply">
-               		<label>Replyer</label>
-               		<input class="form-control" name="replyer" value="New Reply">
-               		<label>Reply Date</label>
-               		<input class="form-control" name="replyDate" value="New Reply">
-               </div>
-            </div>
-            <div class="modal-footer">
-            	<button type="button" id="modal-mod" class="btn btn-warning">Modify</button>
-            	<button type="button" id="modal-rem" class="btn btn-danger">Remove</button>
-                <button type="button" id="modal-reg" class="btn btn-primary">Register</button>
-                <button type="button" id="modal-close"  class="btn btn-default">Close</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
 <div class="box-body">
 	<div class="form-group">
 		<label for="exampleInputEmail1">Title</label>
@@ -82,6 +52,43 @@
 	
 	</div>
 </div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Add Reply</h4>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+               		<label>Reply</label>
+               		<input class="form-control" name="reply">
+               </div>
+               <div class="form-group">
+               		<label>Replyer</label>
+               		<input class="form-control" name="replyer">
+               </div>
+               <div class="form-group">
+               		<label>Reply Date</label>
+               		<input class="form-control" name="replyDate">
+               </div>
+            </div>
+            <div class="modal-footer">
+            	<button type="button" id="modal-mod" class="btn btn-warning">Modify</button>
+            	<button type="button" id="modal-rem" class="btn btn-danger">Remove</button>
+                <button type="button" id="modal-reg" class="btn btn-primary">Register</button>
+                <!-- <a rel="modal:close" class="close-modal ">   -->     
+               		<button type="button" id="modal-close"  class="btn btn-default">Close</button>
+               	<!-- </a> -->
+                
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 	
 <%@ include file="../include/upload.jsp" %>
 	
@@ -165,14 +172,20 @@
 		var modalMod = modal.find("#modal-mod");
 		var modalRem = modal.find("#modal-rem");
 		var modalReg = modal.find("#modal-reg");
+		var modalClose = modal.find("#modal-close");
 		
 		$('#addReplyBtn').on("click", function(){
 			modal.find("input").val("");
+			modal.removeClass("fade");
 			modalReplyDate.closest("div").hide();
 			modal.find("button[id!='modal-close']").hide();
 			modalReg.show();
 			modal.modal("show");
 		});
+		
+		modalClose.on("click", function(){
+			$.modal.close();
+		})
 		
 		modalReg.on("click", function(){
 			var reply = {
@@ -181,8 +194,8 @@
 				bno: bno
 			};
 			replyService.add(reply, function(res){
-				modal.find("input").val();
-				modal.modal("hide");
+				modal.find("input").val("");
+				$.modal.close();
 				showList(1);
 			});
 		});

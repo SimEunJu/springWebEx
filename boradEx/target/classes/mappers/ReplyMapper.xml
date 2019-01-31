@@ -5,8 +5,8 @@
   
 <mapper namespace="kr.co.ex.mapper.ReplyMapper">
   <insert id="create">
-  	insert into tbl_reply(bno, replytext, replyer)
-  	values (#{bno}, #{replytext}, #{replyer})
+  	insert into tbl_reply(bno, reply, replyer)
+  	values (#{bno}, #{reply}, #{replyer})
   </insert>
   
   <select id="list" resultType="kr.co.ex.domain.ReplyVO">
@@ -28,7 +28,7 @@
   </select>
   
   <update id="update">
-  	update tbl_reply set replytext=#{replytext}, updatedate=now()
+  	update tbl_reply set reply=#{reply}, updatedate=now()
   	where rno=#{rno}
   </update>
   
