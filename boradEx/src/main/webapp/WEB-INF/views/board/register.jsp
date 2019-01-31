@@ -33,24 +33,17 @@
 
 <%@ include file="../include/footer.jsp" %>
 	
+<script src="/resources/js/file.js"></script>
+
 <script type="text/javascript">
 
 var form = $("#registerForm");
 
-form.on("submit", function(e){
+$("button[type='submit']").on("click", function(e){
 	e.preventDefault();
-	var str = "";
-	$(".upload-result ul li").each(function(i, obj){
-		var fileObj = $(obj);
-		str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+fileObj.data("filename")+"'";
-		str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+fileObj.data("uuid")+"'";
-		str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+fileObj.data("path")+"'";
-		str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+fileObj.data("type")+"'";
-	});
-	
+	var str = fileService.getFilesInfo();
 	form.append(str).submit();
 });
-
 </script>
 </body>
 </html>

@@ -25,23 +25,14 @@
 		<label class="exampleInputEmail1">Writer</label>
 		<input type="text" readonly="readonly" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control">
 	</div>
-		
-	<!-- <div class="uplaodDiv">
-		<input type="file" name="upload-file" multiple>
-		<div class="upload-result">
-			<ul>
-			
-			</ul>
-		</div>
-	</div> -->
 </div>
 
 <div class="box-body">
 <div class="box-footer">
-	<c:if test="${login.uid eq boardVO.writer}">
+	<%-- <c:if test="${login.uid eq boardVO.writer}"> --%>
 	<button type="submit" id="boardModBtn" class="btn btn-warning">Modify</button>
 	<button type="submit" id="boardRemBtn" class="btn btn-danger">Remove</button>
-	</c:if>
+	<%-- </c:if> --%>
 	<button type="submit" id="boardAllBtn" class="btn btn-primary">List All</button>
 </div>
 	
@@ -89,17 +80,30 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-	
-<%@ include file="../include/upload.jsp" %>
-	
-<%@ include file="../reply/registerReply.jsp" %>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">File Attach</div>
+			
+			<div class="panel-body">
+				<div class="upload-result">
+					<ul>
+					
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <%@ include  file="../reply/replyList.jsp" %>
 
 <%@ include file="../include/footer.jsp" %>
-</div>
 
 <script type="text/javascript" src="/resources/js/reply.js"></script>
+
+<script type="text/javascript" src="/resources/js/chat.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -112,10 +116,10 @@
 				$(res).each(function(i, attach){
 					if(attach.fileType){
 						var filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
-						str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
-						str += "<img src='/displyFile?fileName="+filePath+"'></div></li>";
+						str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'><div>";
+						str += "<img src='/displayFile?fileName="+filePath+"'></div></li>";
 					}else{
-						str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div><span>"+attach.fileName+"</span><br>";
+						str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'><div><span>"+attach.fileName+"</span><br>";
 						str += "<img src='/resources/img/attach.png'></div></li>";
 					}
 				});
@@ -245,9 +249,10 @@
 		
 		$(".upload-result").on("click", "li", function(){
 			var file = $(this);
-			var path = encodeURIComponent(file.data("path")+"/"+file.data("uuid")+"_"+file.data("filename"));
+			var path = encodeURIComponent(file.data("path")+"\\"+file.data("uuid")+"_"+file.data("filename"));
+			
 			if(file.data("type")){
-				showImage(path.replace(new RegExp(/\\/g), "/"));
+				showImage(path);
 			}else {
 				self.location = "/download?fileName="+path;
 			}
@@ -255,7 +260,7 @@
 		
 		function showImage(path){
 			$(".big-picture-wrapper").css("display","flex").show();
-			$(".big-picture").html("<img src='display?fileName="+path+"'>").animate({width: "100%", height: "100%"}, 1000);
+			$(".big-picture").html("<img src='/displayFile?fileName="+path+"'>").animate({width: "100%", height: "100%"}, 1000);
 		}
 		
 		var pictureWrapper = $(".big-picture-wrapper");
@@ -276,19 +281,19 @@
 		
 		$("#boardRemBtn").on("click",function(){
 			
-			var replycnt = $("#replycntSmall").html().replace(/^[0-9]/g,"");
-			if(parseInt(replycnt) > 0){
+			var replyCnt = $(".chat li").length;
+			console.log(replyCnt);
+			if(replyCnt > 0){
 				alert("댓글이 있는 게시물은 삭제할 수 없습니다.");
 				return;
 			}
 			
-			var arr = [];
-			$(".uploadedList li").each(function(idx){
-				arr.push($(this).attr("data-src"));
-			});
-			if(arr.length > 0){
-				$.post("/deleteAllFiles",{files : arr}, function(){});
+			var files = chatService.getFilesInfo();
+			console.log(files);
+			if(files !== ""){
+				$.post("/deleteAllFiles", {files : files});
 			}
+			
 			formObj.attr("action", "/board/delete");
 			formObj.attr("method", "post");
 			formObj.submit();

@@ -117,10 +117,10 @@ public class UploadController {
 		return new ResponseEntity<>(resource, header, HttpStatus.OK);
 		
 	}
-	
-	@PostMapping("/deleteFile")
+
+	@PostMapping(value="/deleteFile", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> deleteOneFile(String fileName, String type) throws Exception{
+	public ResponseEntity<String[]> deleteOneFile(String fileName, String type) throws Exception{
 		File file;
 		try{
 			file = new File(uploadPath, URLDecoder.decode(fileName, "UTF-8"));
@@ -134,7 +134,7 @@ public class UploadController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("deleted", HttpStatus.OK);
+		return new ResponseEntity<>(new String[] {"deleted"}, HttpStatus.OK);
 	}
 
 }

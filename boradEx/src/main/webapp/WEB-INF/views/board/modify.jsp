@@ -41,46 +41,42 @@
 
 <%@ include file="../include/upload.jsp" %>
 
-<script type="text/javascript" src="/resources/js/upload.js"></script>
-
 <script type="text/javascript">
 
 	$("document").ready(function(){
 		
 	var bno = $("input[name='bno']").val();
 		
-		$.getJSON("/board/getAttach/"+bno, function(list){
-			$(list).each(function(){
-				var fileInfo = getFileInfo(this);
-				var html = template(fileInfo);
-				$(".uploadedList").append(html);
-			});
-		});
-		
-		var formObj = $("form[role='form']");
-		
-		$("button[type='submit']").on("click", function(e){
-			
-			e.preventDefault();
-			
-			var role = $(this).attr("role");
-			
-			if(role === "delete"){
-				formObj.attr("action", "/board/delete");
-			
-			}else if(role === "modify"){
-				formObj.attr("action", "/board/modify");
-			
-			}else{
-				window.location.href = "/board/list"+"${pageMaker.makeSearch(pagekMaker.cri.getPage)}"
-				//+"&searchType=" + "${cri.searchType}"
-				//+"&keyword=" + encodeURIComponent("${cri.keyword}");
-				return;
-			}
-			
-			formObj.submit();
-		});
+	$.getJSON("/board/getAttach/"+bno, function(res){
+		var files = fileService.showFiles(res);
+		$(".upload-result ul").html(files);
 	});
+	
+	var formObj = $("form[role='form']");
+		
+	$("button[type='submit']").on("click", function(e){
+			
+		e.preventDefault();
+			
+		var role = $(this).attr("role");
+			
+		if(role === "delete"){
+			formObj.attr("action", "/board/delete");
+			
+		}else if(role === "modify"){
+			formObj.attr("action", "/board/modify");
+			
+		}else{
+			window.location.href = "/board/list"+"${pageMaker.makeSearch(pagekMaker.cri.getPage)}"
+			//+"&searchType=" + "${cri.searchType}"
+			//+"&keyword=" + encodeURIComponent("${cri.keyword}");
+			return;
+		}
+			
+		formObj.submit();
+	});
+	
+});
 	
 </script>
 </body>

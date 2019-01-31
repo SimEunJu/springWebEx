@@ -14,15 +14,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                <h4 class="modal-title" id="myModalLabel">알림</h4>
             </div>
             <div class="modal-body">
                	처리가 완료되었습니다.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+            	<a rel="modal:close" class="close-modal ">
+                	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            	</a>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -84,7 +84,9 @@
 		var msg = "${msg}";
 		if(msg === "success" && !history.state){
 			$(".modal-body").html("게시글이 등록되었습니다.");
-			$("#myModal").modal("show");
+			let modal = $("#myModal");
+			modal.removeClass("fade");
+			modal.modal("show");
 		}
 		
 		history.replaceState({}, null, null);

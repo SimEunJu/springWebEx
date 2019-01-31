@@ -25,13 +25,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
-import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
+import lombok.extern.log4j.Log4j;
 
 @Controller
 @RequestMapping("/board")
+@Log4j
 public class BoardContoller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BoardContoller.class);
@@ -109,7 +110,9 @@ public class BoardContoller {
 	@GetMapping(value="/getAttach/{bno}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<AttachVO> getAttach(@PathVariable Integer bno) throws Exception{
-		return serv.getAttach(bno);
+		List<AttachVO> attaches = serv.getAttach(bno);
+		log.info(attaches);
+		return attaches;
 	}
 	
 	@GetMapping("/modify")
@@ -125,6 +128,7 @@ public class BoardContoller {
 	@PostMapping("/modify")
 	public String modify(@RequestParam Integer bno, BoardVO vo, SearchCriteria cri, RedirectAttributes attrs){
 		try {
+			log.info(vo.toString());
 			serv.modify(vo);
 			attrs.addFlashAttribute("msg", "success");
 		} catch (Exception e) {
@@ -137,8 +141,8 @@ public class BoardContoller {
 	@PostMapping("/delete")
 	public String delete(@RequestParam Integer bno, SearchCriteria cri, RedirectAttributes attrs){
 		try{
-			serv.remove(bno);
 			deleteFile(serv.getAttach(bno));
+			serv.remove(bno);
 			attrs.addFlashAttribute("msg", "success");
 		} catch(Exception e){
 			e.printStackTrace();
@@ -150,6 +154,7 @@ public class BoardContoller {
 	private void deleteFile(List<AttachVO> attaches){
 		if(attaches == null || attaches.size() == 0) return;
 		attaches.forEach(attach -> {
+			log.info(attach.toString());
 			try {
 				Path file = Paths.get(uploadPath+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
 				Files.deleteIfExists(file);
