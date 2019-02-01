@@ -29,6 +29,11 @@ public class LoginController {
 	@Autowired
 	LoginService serv;
 	
+	@GetMapping("/accessError")
+	public void accessError(){
+		
+	}
+	
 	@GetMapping("/login")
 	public void login(){
 	}
@@ -40,7 +45,7 @@ public class LoginController {
 		else{
 			model.addAttribute("userVO", user);
 			int week = 60*60*24*7;
-			// 1000ÀÏ ±âÁØ
+			// 1000ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			Date sessionlimit = new Date(System.currentTimeMillis()+(1000*week));
 			if(dto.isUseCookie()) serv.keepLogin(sess.getId(), sessionlimit, user.getUid());
 			return "/blank";
