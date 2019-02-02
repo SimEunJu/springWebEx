@@ -1,28 +1,20 @@
 package kr.co.ex.controller;
 
-import java.util.Date;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.util.WebUtils;
 
-import kr.co.ex.domain.UserVO;
 import kr.co.ex.dto.LoginDto;
 import kr.co.ex.service.LoginService;
+import lombok.extern.log4j.Log4j;
 
 @Controller
+@Log4j
 public class LoginController {
 	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
@@ -34,12 +26,29 @@ public class LoginController {
 		
 	}
 
-	/*
-	@GetMapping("/login")
-	public void login(){
-		
+	@GetMapping("/board/login")
+	public String login(){
+		return "login/login";
 	}
 	
+	@GetMapping("/board/logout")
+	public String logout(){
+		return "login/logout";
+	}
+	
+	@GetMapping("/board/signin")
+	public String signin(){
+		return "login/signIn";
+	}
+	
+	@PostMapping("/board/signin")
+	public String signin(LoginDto user){
+		log.info(user);
+		serv.signIn(user);
+		return "redirect:/";
+	}
+	
+	/*
 	@PostMapping("/login")
 	public String login(LoginDto dto, HttpSession sess, Model model) throws Exception{
 		UserVO user = serv.login(dto);

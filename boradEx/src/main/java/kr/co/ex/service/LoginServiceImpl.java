@@ -7,10 +7,19 @@ import org.springframework.stereotype.Service;
 
 import kr.co.ex.domain.UserVO;
 import kr.co.ex.dto.LoginDto;
+import kr.co.ex.mapper.MemberMapper;
 import kr.co.ex.persistence.LoginDao;
 
 @Service
 public class LoginServiceImpl implements LoginService {
+
+	@Autowired
+	MemberMapper mapper;
+	
+	@Override
+	public void signIn(LoginDto dto) {
+		mapper.create(dto);
+	}
 
 	@Autowired
 	LoginDao dao;

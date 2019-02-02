@@ -3,15 +3,16 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.ex.mapper.UserMapper">
+<mapper namespace="kr.co.ex.mapper.MemberMapper">
 	
-	<select id="read">
-		select * from tbl_memeber, tbl_member_auth from #{userid} = tbl_memeber.userid and #{userid} = tbl_member_auth
+	<select id="read" resultType="kr.co.ex.domain.MemberVO">
+		select * from tbl_memeber, tbl_member_auth 
+		where #{userid} = tbl_member.userid
 	</select>
 	
 	<insert id="create">
-		insert into tbl_user(userid, userpw, username) 
-		values(#{userid}, #{userpw}, #{username})	
+		insert into tbl_member(userid, userpw, username) 
+		values(#{username}, #{password}, #{username})	
 	</insert>
 	
 	<update id="updatePoint">
