@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,11 +79,13 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/register")
+	@PreAuthorize("isAuthenticated()")
 	public String regist(){
 		return "/board/register";
 	}
 	
 	@PostMapping("/register")
+	@PreAuthorize("isAuthenticated()")
 	public String regist(BoardVO board, RedirectAttributes attrs){
 		try {
 			logger.info(board.toString());
@@ -116,7 +119,8 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/modify")
-	public String read(@RequestParam Integer bno, @ModelAttribute("cri") SearchCriteria cri, Model model){
+	@PreAuthorize("principal.username == #name")
+	public String read(@RequestParam Integer bno, @RequestParam String name, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			model.addAttribute(serv.read(bno));
 		} catch (Exception e) {
@@ -126,6 +130,7 @@ public class BoardContoller {
 	}
 	
 	@PostMapping("/modify")
+	@PreAuthorize("principal.username == #vo.writer")
 	public String modify(@RequestParam Integer bno, BoardVO vo, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			log.info(vo.toString());
@@ -139,7 +144,8 @@ public class BoardContoller {
 	}
 	
 	@PostMapping("/delete")
-	public String delete(@RequestParam Integer bno, SearchCriteria cri, RedirectAttributes attrs){
+	@PreAuthorize("principal.username == #name")
+	public String delete(@RequestParam Integer bno, @RequestParam String name, SearchCriteria cri, RedirectAttributes attrs){
 		try{
 			deleteFile(serv.getAttach(bno));
 			serv.remove(bno);

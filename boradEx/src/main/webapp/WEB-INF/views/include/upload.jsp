@@ -25,6 +25,9 @@
 
 <script>
 
+var csrfHeader = "${_csrf.headerName}";
+var csrfTokenVal = "${_csrf.token}";
+
 var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 var maxSize = 5242880;
 
@@ -51,6 +54,9 @@ $("input[type='file']").change(function(e){
 	
 	$.ajax({
 		url: "/uploadAjax",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
+		},
 		data: formData,
 		dataType: "json",
 		processData: false,
@@ -71,9 +77,11 @@ $(".upload-result").on("click", "button", function(e){
 	var fileName = $(this).data("file");
 	var type = $(this).data("type");
 	var li = $(this).closest("li");
-	console.log(li);
 	$.ajax({
 		url: "/deleteFile",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
+		},
 		type: "post",
 		dataType: "json",
 		data: {fileName: fileName, type: type},

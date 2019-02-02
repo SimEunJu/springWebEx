@@ -41,10 +41,10 @@
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	
-	<filter-mappring>
+	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-pattern>/*</filter-pattern>
-	</filter-mappring>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 	
 	<!-- Processes application requests -->
 	<servlet>

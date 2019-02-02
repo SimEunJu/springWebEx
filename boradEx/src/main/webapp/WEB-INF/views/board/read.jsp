@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%@ include file="../include/header.jsp" %>
 	
@@ -27,12 +28,15 @@
 	</div>
 </div>
 
-<div class="box-body">
 <div class="box-footer">
-	<%-- <c:if test="${login.uid eq boardVO.writer}"> --%>
-	<button type="submit" id="boardModBtn" class="btn btn-warning">Modify</button>
-	<button type="submit" id="boardRemBtn" class="btn btn-danger">Remove</button>
-	<%-- </c:if> --%>
+	<sec:authentication property="principal" var="loginUser" />
+	
+	<sec:authorize access="isAuthenticated()">
+		<c:if test="${loginUser.username eq boardVO.writer}">
+			<button type="submit" id="boardModBtn" class="btn btn-warning">Modify</button>
+			<button type="submit" id="boardRemBtn" class="btn btn-danger">Remove</button>
+		</c:if>
+	</sec:authorize>
 	<button type="submit" id="boardAllBtn" class="btn btn-primary">List All</button>
 </div>
 	
@@ -49,20 +53,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Add Reply</h4>
+                <h4 class="modal-title" id="myModalLabel">Reply</h4>
             </div>
             <div class="modal-body">
                <div class="form-group">
                		<label>Reply</label>
-               		<input class="form-control" name="reply">
+               		<input class="form-control" name="reply" readonly>
                </div>
                <div class="form-group">
                		<label>Replyer</label>
-               		<input class="form-control" name="replyer">
+               		<input class="form-control" name="replyer" readonly>
                </div>
                <div class="form-group">
                		<label>Reply Date</label>
-               		<input class="form-control" name="replyDate">
+               		<input class="form-control" name="replyDate" readonly>
                </div>
             </div>
             <div class="modal-footer">
@@ -103,12 +107,23 @@
 
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
-<script type="text/javascript" src="/resources/js/chat.js"></script>
+<script type="text/javascript" src="/resources/js/file.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function(){
 		
+		var csrfHeader = "${_csrf.headerName}";
+		var csrfTokenVal = "${_csrf.token}";
+		
+		$(document).ajaxSend(function(e, xhr, options){
+			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
+		});
+	
 		var bno = "${boardVO.bno}";
+		var name = "";
+		<sec:authorize access="isAuthenticated()">
+			name = "${loginUser.username}";
+		</sec:authorize>
 		
 		(function(){
 			$.getJSON("/board/getAttach/"+bno, function(res){
@@ -179,11 +194,15 @@
 		var modalClose = modal.find("#modal-close");
 		
 		$('#addReplyBtn').on("click", function(){
-			modal.find("input").val("");
-			modal.removeClass("fade");
+			
+			modalReply.val("").attr("readonly", false);
+			modalReplyer.val(name);
 			modalReplyDate.closest("div").hide();
+			
 			modal.find("button[id!='modal-close']").hide();
 			modalReg.show();
+			
+			modal.removeClass("fade");
 			modal.modal("show");
 		});
 		
@@ -216,7 +235,7 @@
 		});
 		
 		modalRem.on("click", function(){
-			replyService.remove(modal.data("rno"), function(res){
+			replyService.remove(modal.data("rno"), name, function(res){
 				modal.modal("hide");
 				showList(pageNum);
 			});
@@ -224,17 +243,22 @@
 		
 		replyUl.on("click", "li", function(e){
 			var rno = $(this).data("rno");
-			console.log(rno);
+			
 			replyService.get(rno, function(res){
-				modalReply.val(res.reply);
+				
+				modalReply.val(res.reply).attr("readonly", true);
 				modalReplyer.val(res.replyer);
-				modalReplyDate.val(replyService.displayTime(res.replyDate)).attr("readonly", true);
+				modalReplyDate.val(replyService.displayTime(res.regdate));
+				
 				modal.data("rno", res.rno);
 				
 				modal.find("button[id!='modal-close']").hide();
-				modalMod.show();
-				modalRem.show();
-				
+				if(name == res.replyer){
+					modalMod.show();
+					modalRem.show();
+				}
+			
+				modal.removeClass("fade");
 				modal.modal("show");
 			});
 		});
@@ -287,11 +311,11 @@
 				alert("댓글이 있는 게시물은 삭제할 수 없습니다.");
 				return;
 			}
-			
 			var files = chatService.getFilesInfo();
-			console.log(files);
+		
 			if(files !== ""){
-				$.post("/deleteAllFiles", {files : files});
+				$.post("/board/delete", 
+						{files : files, name: name});
 			}
 			
 			formObj.attr("action", "/board/delete");

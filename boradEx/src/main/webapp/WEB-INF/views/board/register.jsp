@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>    
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" type="text/css" href="/resources/css/upload.css" />
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
 
 <%@ include file="../include/header.jsp" %>
 
@@ -20,7 +19,8 @@
 			</div>
 			<div class="form-group">
 				<label class="exampleInputEmail1">Writer</label>
-				<input type="text" name="writer" placeholder="Enter Writer" class="form-control" <%-- value="${login.uid}" readonly --%>>
+				<input type="text" name="writer" placeholder="Enter Writer" class="form-control" 
+					value="<sec:authentication property='principal.username' />" readonly>
 			</div>
 		</div>
 		<div class="box-footer">

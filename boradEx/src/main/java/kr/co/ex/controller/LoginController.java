@@ -33,12 +33,14 @@ public class LoginController {
 	public void accessError(){
 		
 	}
-	
+
+	/*
 	@GetMapping("/login")
 	public void login(){
+		
 	}
 	
-	@PostMapping("/loginPost")
+	@PostMapping("/login")
 	public String login(LoginDto dto, HttpSession sess, Model model) throws Exception{
 		UserVO user = serv.login(dto);
 		if(user == null) return "/blank";
@@ -69,4 +71,5 @@ public class LoginController {
 		}
 		return "redirect:/";
 	}
+	*/
 }

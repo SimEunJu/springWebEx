@@ -5,10 +5,13 @@
 
 <mapper namespace="kr.co.ex.mapper.UserMapper">
 	
+	<select id="read">
+		select * from tbl_memeber, tbl_member_auth from #{userid} = tbl_memeber.userid and #{userid} = tbl_member_auth
+	</select>
 	
 	<insert id="create">
-		insert into tbl_user(uid, upw, uname) 
-		values(#{uid}, #{upw}, #{uname})	
+		insert into tbl_user(userid, userpw, username) 
+		values(#{userid}, #{userpw}, #{username})	
 	</insert>
 	
 	<update id="updatePoint">

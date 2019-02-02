@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%@ include file="../include/header.jsp" %>
 
@@ -25,6 +26,7 @@
 		<input type="text" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control" value=${login.uid} readonly>
 	</div>
 	
+	<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
 	
 	<div class="box-footer">
 		<ul class="mailbox-attachments clearfix uploadedList">
@@ -37,6 +39,8 @@
 </form>
 </div>
 
+<sec:authentication property="principal.username" var="name" />
+
 <%@ include file="../include/footer.jsp" %>
 
 <%@ include file="../include/upload.jsp" %>
@@ -45,6 +49,8 @@
 
 	$("document").ready(function(){
 		
+	var name = "${name}";
+	
 	var bno = $("input[name='bno']").val();
 		
 	$.getJSON("/board/getAttach/"+bno, function(res){
@@ -61,6 +67,7 @@
 		var role = $(this).attr("role");
 			
 		if(role === "delete"){
+			formObj.append("<input type='hidden' name='name' value='"+name+"' />")
 			formObj.attr("action", "/board/delete");
 			
 		}else if(role === "modify"){
@@ -72,12 +79,10 @@
 			//+"&keyword=" + encodeURIComponent("${cri.keyword}");
 			return;
 		}
-			
+		
 		formObj.submit();
 	});
 	
 });
 	
 </script>
-</body>
-</html>
