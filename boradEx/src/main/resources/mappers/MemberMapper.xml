@@ -5,14 +5,30 @@
 
 <mapper namespace="kr.co.ex.mapper.MemberMapper">
 	
-	<select id="read" resultType="kr.co.ex.domain.MemberVO">
-		select * from tbl_memeber, tbl_member_auth 
-		where #{userid} = tbl_member.userid
+	<resultMap id="login" type="kr.co.ex.domain.MemberVO">
+		<id property="userid" column="userid" />
+		<result property="userpw" column="userpw" />
+		<result property="username" column="username"/>
+		<result property="enabled" column="enabled" />
+		<collection property="authList" ofType="kr.co.ex.domain.AuthVO">
+			<id property="username" column="username" />
+			<result property="auth" column="auth" />
+		</collection>
+	</resultMap>
+	
+	<select id="read" resultMap="login">
+		select * from tbl_member, tbl_member_auth
+		where #{username} = tbl_member.username and #{username} = tbl_member_auth.username
 	</select>
 	
-	<insert id="create">
+	<insert id="createUser">
 		insert into tbl_member(userid, userpw, username) 
 		values(#{username}, #{password}, #{username})	
+	</insert>
+	
+	<insert id="createAuth">
+		insert into tbl_member_auth(username, auth)
+		values(#{username}, #{auth})
 	</insert>
 	
 	<update id="updatePoint">

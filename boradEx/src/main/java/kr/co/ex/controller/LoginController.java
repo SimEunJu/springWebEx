@@ -1,14 +1,16 @@
 package kr.co.ex.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import kr.co.ex.domain.AuthVO;
 import kr.co.ex.dto.LoginDto;
 import kr.co.ex.service.LoginService;
 import lombok.extern.log4j.Log4j;
@@ -43,6 +45,8 @@ public class LoginController {
 	
 	@PostMapping("/board/signin")
 	public String signin(LoginDto user){
+		List<AuthVO> auth = new ArrayList<>();
+		user.setAuths(auth);
 		log.info(user);
 		serv.signIn(user);
 		return "redirect:/";

@@ -4,7 +4,9 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ex.domain.AuthVO;
 import kr.co.ex.domain.UserVO;
 import kr.co.ex.dto.LoginDto;
 import kr.co.ex.mapper.MemberMapper;
@@ -17,8 +19,12 @@ public class LoginServiceImpl implements LoginService {
 	MemberMapper mapper;
 	
 	@Override
+	@Transactional
 	public void signIn(LoginDto dto) {
-		mapper.create(dto);
+		mapper.createUser(dto);
+		for(AuthVO auth: dto.getAuths()){
+			mapper.createAuth(auth);
+		}
 	}
 
 	@Autowired
