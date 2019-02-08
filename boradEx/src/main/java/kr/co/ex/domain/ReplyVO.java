@@ -17,4 +17,8 @@ public class ReplyVO {
 	private int parRno;
 	private String password;
 	private boolean secret;
+	
+	public boolean getSecret(){
+		return secret;
+	}
 }

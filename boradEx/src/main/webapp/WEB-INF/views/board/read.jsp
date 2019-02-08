@@ -63,7 +63,7 @@
                <div class="form-group non-logged">
                		<label>Replyer</label>
                		<input class="form-control" name="replyer" autocomplete="off">
-               		<input type="password" placeholder="4자리 비밀번호를 입력해주세요" autocomplete="off">
+               		<input type="password" name="password" placeholder="4자리 비밀번호를 입력해주세요" autocomplete="off">
                </div>
                <div class="form-group logged" style="display: none">
                		<label>Replyer</label>
@@ -184,7 +184,7 @@
 				}
 				for(let i=0, len=replies.length||0; i<len; i++){
 					if(replies[i].secret){
-						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><p>'+"비밀글입니다."+'</p></div></li>'; 
+						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
 					}
 					else{
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
@@ -202,10 +202,11 @@
 		var modalReply = modal.find("input[name='reply']");
 		
 		function activatedReplyer(){
-			if(name === "") return modal.find(".non-logged");
-			else modal.find(".logged");
+			if(name === "") return modal.find(".non-logged input[name='replyer']");
+			else modal.find(".logged input[name='replyer']");
 		}
 		var modalReplyer = activatedReplyer();
+		console.log(modalReplyer);
 		var modalReplyDate = modal.find("input[name='replyDate']");
 		var modalPassword = modal.find("input[name='password']");
 		var modalSecret = modal.find("input[name='secret']");
@@ -236,7 +237,7 @@
 			else showPeplyer("logged");
 			
 			modalReplyDate.closest("div").hide();
-			
+			modalSecret.parent().show();
 			modal.find("button[id!='modal-close']").hide();
 			modalReg.show();
 			
@@ -283,6 +284,9 @@
 		});
 		
 		replyUl.on("click", "li", function(e){
+		
+			if($(this).data("secret")) return;
+			
 			var rno = $(this).data("rno");
 			
 			replyService.get(rno, function(res){
@@ -290,7 +294,7 @@
 				modalReply.val(res.reply).attr("readonly", true);
 				
 				showReplyer("logged");
-				modal.find(".logged").val(res.replyer);
+				modal.find(".logged input[name='replyer']").val(res.replyer);
 				
 				modalSecret.parent().hide();
 				modalReplyDate.val(replyService.displayTime(res.regdate));
