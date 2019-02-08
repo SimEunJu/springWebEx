@@ -48,7 +48,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -60,9 +60,18 @@
                		<label>Reply</label>
                		<input class="form-control" name="reply" readonly>
                </div>
-               <div class="form-group">
+               <div class="form-group non-logged">
+               		<label>Replyer</label>
+               		<input class="form-control" name="replyer" autocomplete="off">
+               		<input type="password" placeholder="4자리 비밀번호를 입력해주세요" autocomplete="off">
+               </div>
+               <div class="form-group logged" style="display: none">
                		<label>Replyer</label>
                		<input class="form-control" name="replyer" readonly>
+               </div>
+               <div class="form-group">
+               		<label>비밀글</label>
+               		<input class="form-control" type="checkbox" name="secret">
                </div>
                <div class="form-group">
                		<label>Reply Date</label>
@@ -174,29 +183,58 @@
 					return;
 				}
 				for(let i=0, len=replies.length||0; i<len; i++){
-			
-					str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-					str += '</div><p>'+replies[i].reply+'</p></div></li>';
+					if(replies[i].secret){
+						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><p>'+"비밀글입니다."+'</p></div></li>'; 
+					}
+					else{
+						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
+						str += '</div><p>'+replies[i].reply+'</p></div></li>';
+					}
+					
 				}
 				replyUl.html(str);
 				showReplyPagination();
 			})
 		}
+
 		
 		var modal = $(".modal");
 		var modalReply = modal.find("input[name='reply']");
-		var modalReplyer = modal.find("input[name='replyer']");
+		
+		function activatedReplyer(){
+			if(name === "") return modal.find(".non-logged");
+			else modal.find(".logged");
+		}
+		var modalReplyer = activatedReplyer();
 		var modalReplyDate = modal.find("input[name='replyDate']");
+		var modalPassword = modal.find("input[name='password']");
+		var modalSecret = modal.find("input[name='secret']");
 		
 		var modalMod = modal.find("#modal-mod");
 		var modalRem = modal.find("#modal-rem");
 		var modalReg = modal.find("#modal-reg");
 		var modalClose = modal.find("#modal-close");
 		
+		function showReplyer(type){
+			if(type === "nonLogged"){
+				modal.find(".logged").css("display", "none");
+				modal.find(".non-logged").css("display", "");
+				return;
+			}
+			if(type === "logged"){
+				modal.find(".logged").css("display", "");
+				modal.find(".non-logged").css("display", "none");
+				modalReplyer.val(name);
+				return;
+			}
+		}
+		
 		$('#addReplyBtn').on("click", function(){
-			
 			modalReply.val("").attr("readonly", false);
-			modalReplyer.val(name);
+			
+			if(name === "") showReplyer("nonLogged"); 
+			else showPeplyer("logged");
+			
 			modalReplyDate.closest("div").hide();
 			
 			modal.find("button[id!='modal-close']").hide();
@@ -211,10 +249,13 @@
 		})
 		
 		modalReg.on("click", function(){
+			
 			var reply = {
 				reply: modalReply.val(),
 				replyer: modalReplyer.val(),
-				bno: bno
+				password: modalPassword.val(),
+				bno: bno,
+				secret: modalSecret.val() === "on",
 			};
 			replyService.add(reply, function(res){
 				modal.find("input").val("");
@@ -247,7 +288,11 @@
 			replyService.get(rno, function(res){
 				
 				modalReply.val(res.reply).attr("readonly", true);
-				modalReplyer.val(res.replyer);
+				
+				showReplyer("logged");
+				modal.find(".logged").val(res.replyer);
+				
+				modalSecret.parent().hide();
 				modalReplyDate.val(replyService.displayTime(res.regdate));
 				
 				modal.data("rno", res.rno);

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" type="text/css" href="/resources/css/upload.css" />
@@ -19,9 +20,22 @@
 			</div>
 			<div class="form-group">
 				<label class="exampleInputEmail1">Writer</label>
-				<input type="text" name="writer" placeholder="Enter Writer" class="form-control" 
-					value="<sec:authentication property='principal.username' />" readonly>
+				
+				<sec:authorize access="isAuthenticated()">
+					<sec:authentication property="principal.username" var="writer" />
+				</sec:authorize>
+				<c:choose>
+					<c:when test="${writer != null}">
+						<input type="text" name="writer" class="form-control" value="${writer}" readonly>
+					</c:when>
+					<c:otherwise>
+						<input type="text" name="writer" placeholder="Enter Writer" class="form-control" >
+						<input type="password" name="password" 
+							placeholder="4자리 비밀번호를 입력해주세요" class="form-control" >
+					</c:otherwise>
+				</c:choose>
 			</div>
+			<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
 		</div>
 		<div class="box-footer">
 			<button type="submit" class="btn btn-primary">Submit</button>

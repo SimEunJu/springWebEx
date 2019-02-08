@@ -12,4 +12,9 @@ public class ReplyVO {
 	private String replyer;
 	private Date regdate;
 	private Date updatedate;
+	
+	private int chiRno;
+	private int parRno;
+	private String password;
+	private boolean secret;
 }

@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
  <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
  <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+ <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
 <%@ include file="../include/header.jsp" %>
 
@@ -95,6 +95,8 @@
 		var formObj = $("form[role='form']");
 		
 		$("#searchBtn").on("click", function(e){
+			
+			
 			if(!$("select option:selected").val()){
 				alter("검색 종류를 입력하세요");
 				return;

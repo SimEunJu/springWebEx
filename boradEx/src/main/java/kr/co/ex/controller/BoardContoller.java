@@ -79,13 +79,12 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/register")
-	@PreAuthorize("isAuthenticated()")
 	public String regist(){
 		return "/board/register";
 	}
 	
 	@PostMapping("/register")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("permitAll()")
 	public String regist(BoardVO board, RedirectAttributes attrs){
 		try {
 			logger.info(board.toString());

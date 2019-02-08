@@ -6,8 +6,15 @@
 <mapper namespace="kr.co.ex.mapper.BoardMapper">
 
 <insert id="create">
-	insert into tbl_board (title, content, writer)
-	values (#{title}, #{content}, #{writer})
+	insert into tbl_board (title, content, writer
+	<if test="password != null">
+		, password
+	</if>
+	) values (#{title}, #{content}, #{writer}
+	<if test="password != null">
+		, #{password}
+	</if>
+	)
 </insert>
 
 <select id="read" resultType="kr.co.ex.domain.BoardVO">

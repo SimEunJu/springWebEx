@@ -5,8 +5,15 @@
   
 <mapper namespace="kr.co.ex.mapper.ReplyMapper">
   <insert id="create">
-  	insert into tbl_reply(bno, reply, replyer)
-  	values (#{bno}, #{reply}, #{replyer})
+  	insert into tbl_reply(bno, reply, replyer, secret
+  	<if test="password != null">
+  		, password
+  	</if>
+  	) values (#{bno}, #{reply}, #{replyer}, #{secret}
+  	<if test="password != null">
+  		, #{password}
+  	</if>
+  	)
   </insert>
   
   <select id="list" resultType="kr.co.ex.domain.ReplyVO">
