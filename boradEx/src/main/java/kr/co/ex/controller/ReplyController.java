@@ -3,6 +3,8 @@ package kr.co.ex.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,9 +49,7 @@ public class ReplyController {
 	
 	@GetMapping(value = "/{bno}/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<Map<String, Object>> list(
-			@PathVariable Integer bno, 
-			@PathVariable Integer page){
-		
+			@PathVariable Integer bno, @PathVariable Integer page, HttpServletRequest req){
 		try {
 			SearchCriteria cri = new SearchCriteria();
 			cri.setPage(page);
@@ -60,7 +60,10 @@ public class ReplyController {
 			
 			Map<String, Object> map = new HashMap<>();
 			map.put("pageMaker", pm);
-			map.put("replies", serv.listCriteriaReply(bno, cri));
+			String currentUser = null;
+			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
+			System.out.println(currentUser);
+			map.put("replies", serv.listCriteriaReply(bno, cri, currentUser));
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

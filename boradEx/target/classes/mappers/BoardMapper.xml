@@ -21,6 +21,10 @@
 	select * from tbl_board where bno=#{bno}
 </select>
 
+<select id="readWriterName" resultType="java.lang.String">
+	select writer from tbl_board where bno=#{bno}
+</select>
+
 <update id="update">
 	update tbl_board set title=#{title}, content=#{content}, writer=#{writer}
 	where bno=#{bno}

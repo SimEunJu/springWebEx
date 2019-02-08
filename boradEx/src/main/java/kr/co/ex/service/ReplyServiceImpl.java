@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
+import kr.co.ex.mapper.BoardMapper;
 import kr.co.ex.mapper.ReplyMapper;
 
 @Service
@@ -15,6 +17,9 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Autowired
 	private ReplyMapper mapper;
+	
+	@Autowired
+	private BoardMapper boardMapper;
 	
 	@Override
 	public void addReply(ReplyVO vo) throws Exception {
@@ -33,7 +38,11 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public List<ReplyVO> listCriteriaReply(Integer bno, Criteria cri) throws Exception {
+	@Transactional
+	public List<ReplyVO> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception {
+		
+		if(getWriterName(bno).equals(currentUser)) return mapper.listCriteria(bno, cri);
+		
 		return mapper.listCriteria(bno, cri).stream().map(r -> {
 			if(r.getSecret()){
 				r.setReplyer(null);
@@ -41,6 +50,10 @@ public class ReplyServiceImpl implements ReplyService {
 			}
 			return r;
 		}).collect(Collectors.toList());
+	}
+	
+	private String getWriterName(int bno){
+		return boardMapper.readWriterName(bno);
 	}
 	
 	@Override

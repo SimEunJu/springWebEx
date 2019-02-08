@@ -182,8 +182,10 @@
 					replyUl.html = "";
 					return;
 				}
+				let isSecret = false;
 				for(let i=0, len=replies.length||0; i<len; i++){
-					if(replies[i].secret){
+					isSecret = replies[i].reply === null;
+					if(isSecret){
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
 					}
 					else{
@@ -203,10 +205,10 @@
 		
 		function activatedReplyer(){
 			if(name === "") return modal.find(".non-logged input[name='replyer']");
-			else modal.find(".logged input[name='replyer']");
+			else return modal.find(".logged input[name='replyer']");
 		}
 		var modalReplyer = activatedReplyer();
-		console.log(modalReplyer);
+		
 		var modalReplyDate = modal.find("input[name='replyDate']");
 		var modalPassword = modal.find("input[name='password']");
 		var modalSecret = modal.find("input[name='secret']");
@@ -234,7 +236,7 @@
 			modalReply.val("").attr("readonly", false);
 			
 			if(name === "") showReplyer("nonLogged"); 
-			else showPeplyer("logged");
+			else showReplyer("logged");
 			
 			modalReplyDate.closest("div").hide();
 			modalSecret.parent().show();
