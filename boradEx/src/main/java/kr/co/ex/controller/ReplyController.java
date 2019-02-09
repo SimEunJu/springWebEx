@@ -62,7 +62,7 @@ public class ReplyController {
 			map.put("pageMaker", pm);
 			String currentUser = null;
 			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
-			System.out.println(currentUser);
+			
 			map.put("replies", serv.listCriteriaReply(bno, cri, currentUser));
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (Exception e) {
@@ -83,8 +83,8 @@ public class ReplyController {
 	}
  	
 	@PutMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
-	@PreAuthorize("principal.username == #vo.writer")
-	public ResponseEntity<String> update(@PathVariable Integer rno, @RequestBody ReplyVO vo){
+	@PreAuthorize("principal.username == #vo.replyer")
+	public ResponseEntity<String> update(@PathVariable Integer rno, ReplyVO vo){
 		try {
 			serv.modifyReply(vo);
 			return new ResponseEntity<String>("success", HttpStatus.OK);
@@ -95,7 +95,7 @@ public class ReplyController {
 	}
 	
 	@DeleteMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
-	@PreAuthorize("principal.username == #name")
+	@PreAuthorize("principal.username == #vo.replyer")
 	public ResponseEntity<String> remove(@PathVariable Integer rno, @RequestParam String name, ReplyVO vo){
 		try {
 			serv.removeReply(rno);

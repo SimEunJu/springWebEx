@@ -5,15 +5,8 @@
   
 <mapper namespace="kr.co.ex.mapper.ReplyMapper">
   <insert id="create">
-  	insert into tbl_reply(bno, reply, replyer, secret
-  	<if test="password != null">
-  		, password
-  	</if>
-  	) values (#{bno}, #{reply}, #{replyer}, #{secret}
-  	<if test="password != null">
-  		, #{password}
-  	</if>
-  	)
+  	insert into tbl_reply(bno, reply, replyer, secret, password, par_rno) 
+  	values (#{bno}, #{reply}, #{replyer}, #{secret}, #{password}, #{parRno})
   </insert>
   
   <select id="list" resultType="kr.co.ex.domain.ReplyVO">
@@ -21,7 +14,8 @@
   </select>
   
   <select id="listCriteria" resultType="kr.co.ex.domain.ReplyVO">
-  	select * from tbl_reply where bno=#{bno} 
+  	select * from tbl_reply 
+  	where bno=1 and isnull(par_rno) 
   	order by rno desc
   	limit #{cri.pageStart}, #{cri.perPageNum} 
   </select>

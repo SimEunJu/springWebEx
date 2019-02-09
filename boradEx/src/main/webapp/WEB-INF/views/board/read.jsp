@@ -133,6 +133,8 @@
 		<sec:authorize access="isAuthenticated()">
 			name = "${loginUser.username}";
 		</sec:authorize>
+		var isLogged = name === "" ? false : true;
+		
 		
 		(function(){
 			$.getJSON("/board/getAttach/"+bno, function(res){
@@ -190,7 +192,7 @@
 					}
 					else{
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += '</div><p>'+replies[i].reply+'</p></div></li>';
+						str += '<button class="btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'</p></div></li>';
 					}
 					
 				}
@@ -232,7 +234,7 @@
 			}
 		}
 		
-		$('#addReplyBtn').on("click", function(){
+		function showReplyAddModal(){
 			modalReply.val("").attr("readonly", false);
 			
 			if(name === "") showReplyer("nonLogged"); 
@@ -245,22 +247,48 @@
 			
 			modal.removeClass("fade");
 			modal.modal("show");
+		}
+		
+		$('#addReplyBtn').on("click", function(){
+			showReplyAddModal();
 		});
 		
 		modalClose.on("click", function(){
 			$.modal.close();
-		})
+		});
+		
+		function checkInputVal(inputList){
+			
+			for(let item in inputList){
+				
+				if(inputList[item]===null || inputList[item]===undefined || (''+inputList[item]).trim() === "") return false;
+			}
+			return true;
+		}
 		
 		modalReg.on("click", function(){
+			var required = {
+					reply: modalReply.val(),
+					replyer: modalReplyer.val(),
+					bno: bno,
+			}
+			if(isLogged && !checkInputVal(required)){
+				alert("빈 칸을 채워주세요.");
+				return;
+			}
+			else if(!isLogged){
+				required.password = modalPassword.val();
+				if(!checkInputVal(required)){
+					alert("빈 칸을 채워주세요.");
+					return;
+				}
+			}
 			
-			var reply = {
-				reply: modalReply.val(),
-				replyer: modalReplyer.val(),
-				password: modalPassword.val(),
-				bno: bno,
-				secret: modalSecret.val() === "on",
-			};
-			replyService.add(reply, function(res){
+			required.parRno = modal.data("parRno");
+			required.secret = modalSecret.is(":checked");
+			console.log(required.secret);
+			
+			replyService.add(required, function(res){
 				modal.find("input").val("");
 				$.modal.close();
 				showList(1);
@@ -270,7 +298,8 @@
 		modalMod.on("click", function(){
 			var reply = {
 				rno: modal.data('rno'),
-				reply: modalReply.val()
+				reply: modalReply.val(),
+				replyer: modalReplyer.val()
 			};
 			replyService.update(reply, function(res){
 				modal.modal("hide");
@@ -279,13 +308,18 @@
 		});
 		
 		modalRem.on("click", function(){
-			replyService.remove(modal.data("rno"), name, function(res){
+			replyService.remove(modal.data("rno"), modalReplyer.val(), function(res){
 				modal.modal("hide");
 				showList(pageNum);
 			});
 		});
 		
-		replyUl.on("click", "li", function(e){
+		replyUl.on("click", "button", function(e){
+			showReplyAddModal();
+			modal.data("parRno", $(this).parents("li").data("rno"));
+		});
+		
+		/* replyUl.on("click", "li", function(e){
 		
 			if($(this).data("secret")) return;
 			
@@ -312,7 +346,7 @@
 				modal.removeClass("fade");
 				modal.modal("show");
 			});
-		});
+		}); */
 		
 		replyFooter.on("click", "li a", function(e){
 			e.preventDefault();
