@@ -51,6 +51,11 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
+	public void updateLike(int bno, int diff) throws Exception {
+		mapper.updateLike(bno, diff);
+	}
+
+	@Override
 	@Transactional
 	public void remove(Integer bno) throws Exception {
 		mapper.deleteAllAttach(bno);

@@ -11,7 +11,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +30,7 @@ import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
+import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.service.BoardService;
 import lombok.extern.log4j.Log4j;
 
@@ -76,6 +79,20 @@ public class BoardContoller {
 			e.printStackTrace();
 		}
 		return "/board/slist";
+	}
+	
+	@GetMapping("/like/{bno}")
+	public ResponseEntity<Void> updateLike(@PathVariable int bno, @RequestParam int diff){
+		try {
+			if(diff > 0) diff = 1;
+			else if(diff < 0) diff = -1;
+			else throw new BadLikeUpdateException();
+			
+			serv.updateLike(bno, diff);
+		} catch (Exception e) {
+			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@GetMapping("/register")

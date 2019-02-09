@@ -38,6 +38,12 @@
 		</c:if>
 	</sec:authorize>
 	<button type="submit" id="boardAllBtn" class="btn btn-primary">List All</button>
+	
+	<button class="like" class="btn btn-primary btn-sm" style="scolor: white;">
+		<span style="font-size: 20px; font-weight: bold;">♥</span>
+		좋아요 
+		<span class="like-num">${boardVO.userLike}</span>
+	</button>
 </div>
 	
 <p></p>
@@ -201,6 +207,31 @@
 			})
 		}
 
+		function updateLike(like, diff){
+			
+			$.ajax({
+				method: "get",
+				url: "/board/like/"+bno,
+				data: {diff: diff},
+				success: function(){
+					like.css("color", diff == 1 ? "red" : "white");
+					console.log(like);
+					var likeNum = like.find(".like-num");
+					likeNum.text(parseInt(likeNum.text())+diff);
+				}
+			});
+		}
+		
+		$(".like").on("click", function(){
+			if($(this).css("color") === "red"){ 
+				updateLike($(this), -1);
+				return;
+			}
+			else{
+				updateLike($(this), 1);
+				return;
+			}
+		});
 		
 		var modal = $(".modal");
 		var modalReply = modal.find("input[name='reply']");

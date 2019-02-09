@@ -30,6 +30,10 @@
 	where bno=#{bno}
 </update>
 
+<update id="updateLike">
+	update tbl_board set user_like = user_like+#{diff} where bno=#{bno}
+</update>
+
 <delete id="delete">
 	delete from tbl_board where bno=#{bno}
 </delete>
