@@ -26,5 +26,6 @@ public interface BoardService {
 	public void removeAttach(String fullName) throws Exception;
 	
 	public int getReplyCnt(int bno) throws Exception;
+	
 	public void updateViewCnt(int bno) throws Exception;
 }

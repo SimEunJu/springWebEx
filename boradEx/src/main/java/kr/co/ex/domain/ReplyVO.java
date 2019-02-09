@@ -18,6 +18,8 @@ public class ReplyVO {
 	private String password;
 	private boolean secret;
 	
+	private int addedCount;
+	
 	public boolean getSecret(){
 		return secret;
 	}

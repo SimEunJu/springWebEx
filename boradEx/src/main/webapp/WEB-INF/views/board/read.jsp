@@ -192,7 +192,7 @@
 					}
 					else{
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += '<button class="btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'</p></div></li>';
+						str += '<button class="added btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'<a href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies"></div></li>';
 					}
 					
 				}
@@ -314,10 +314,62 @@
 			});
 		});
 		
-		replyUl.on("click", "button", function(e){
+		replyUl.on("click", ".added", function(e){
 			showReplyAddModal();
 			modal.data("parRno", $(this).parents("li").data("rno"));
 		});
+		
+		replyUl.on("click", "a", function(e){
+			e.preventDefault();
+			getAddedList($(this).parents("li"));	
+		});
+		
+		function getAddedList(eachReply){
+			
+			var parRno = eachReply.data("rno");
+			var regex = new RegExp(/\d+/);
+			var totalNum = parseInt(/\d+/.exec(eachReply.find("a").text())[0]);
+			
+			var eachReplySection = eachReply.find(".added-replies");
+			var page = eachReplySection.data("page") ? page+1 : 1;
+			
+			$.getJSON('/replies/added/'+parRno+"/"+page, function(replies){
+				var str = "";
+				
+				for(let i=0, len=replies.length||0; i<len; i++){
+					isSecret = replies[i].reply === null;
+					if(isSecret){
+						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
+					}
+					else{
+						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
+						str += '</div><p>'+replies[i].reply+'</p></div></li>';
+					}
+				}
+				
+				if(page === 1) str += '<div class="reply-btns"><button class="more btn btn-primary btn-sm">더보기</button><button class="fold btn btn-primary btn-sm pull-left">접기</button></div>';
+				eachReplySection.append(str);
+				
+				if(page*10 >= totalNum) eachReplySection.find(".more").hide();
+				else eachReplySection.find(".more").show();
+				
+				eachReplySection.data("page", page);
+			});
+		}
+		
+		replyUl.on("click", ".reply-btns", function(e){
+			var target = $(e.target);
+			var addedSection = $(e.currentTarget).parent();
+			
+			if(target.hasClass("fold")){
+				addedSection.hide();
+				return;
+			}
+			if(target.hasClass("more")){
+				getAddedList(addedSection.parent());
+			}
+			
+		})
 		
 		/* replyUl.on("click", "li", function(e){
 		

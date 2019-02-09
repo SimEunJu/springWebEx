@@ -1,5 +1,8 @@
 package kr.co.ex.domain;
 
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import lombok.Getter;
 
 @Getter
@@ -23,6 +26,15 @@ public class Criteria {
 	public int getPageStart(){
 		return (this.page - 1)*this.perPageNum;
 	}
+	
+	public String makeQuery(){
+		UriComponents uri = UriComponentsBuilder.newInstance()
+				.queryParam("page", page)
+				.queryParam("perPageNum", perPageNum)
+				.build();
+		return uri.toString();
+	}
+	
 	@Override
 	public String toString() {
 		return "Criteria [page=" + page + ", perPageNum=" + perPageNum + "]";

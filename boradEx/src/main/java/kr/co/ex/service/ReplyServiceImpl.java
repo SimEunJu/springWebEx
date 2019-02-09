@@ -1,6 +1,5 @@
 package kr.co.ex.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,19 +16,19 @@ import kr.co.ex.mapper.ReplyMapper;
 public class ReplyServiceImpl implements ReplyService {
 
 	@Autowired
-	private ReplyMapper mapper;
+	private ReplyMapper replyMapper;
 	
 	@Autowired
 	private BoardMapper boardMapper;
 	
 	@Override
 	public void addReply(ReplyVO vo) throws Exception {
-		mapper.create(vo);
+		replyMapper.create(vo);
 	}
 	
 	@Override
 	public List<ReplyVO> listReply(Integer bno) throws Exception {	
-		return mapper.list(bno).stream().map(r -> {
+		return replyMapper.list(bno).stream().map(r -> {
 			if(r.getSecret()){
 				r.setReplyer(null);
 				r.setReply(null);
@@ -41,14 +40,22 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	@Transactional
 	public List<ReplyVO> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception {
+
+		if(getWriterName(bno).equals(currentUser)){
+			return replyMapper.listCriteria(bno, cri)
+					.stream().map(r -> {
+						r.setAddedCount(getAddedTotalCount(r.getRno()));
+						return r;
+					}).collect(Collectors.toList());
+		}
+			
 		
-		if(getWriterName(bno).equals(currentUser)) return mapper.listCriteria(bno, cri);
-		
-		return mapper.listCriteria(bno, cri).stream().map(r -> {
+		return replyMapper.listCriteria(bno, cri).stream().map(r -> {
 			if(r.getSecret()){
 				r.setReplyer(null);
 				r.setReply(null);
 			}
+			r.setAddedCount(getAddedTotalCount(r.getRno()));
 			return r;
 		}).collect(Collectors.toList());
 	}
@@ -58,23 +65,33 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 	
 	@Override
+	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) {
+		return replyMapper.listCriteriaAdded(parRno, cri);
+	}
+
+	@Override
 	public int getTotalCount(Integer bno) throws Exception {
-		return mapper.totalCount(bno);
+		return replyMapper.totalCount(bno);
+	}
+
+	@Override
+	public int getAddedTotalCount(int parRno) {
+		return replyMapper.addedTotalCount(parRno);
 	}
 
 	@Override
 	public ReplyVO getReply(int rno) throws Exception {
-		return mapper.get(rno);
+		return replyMapper.get(rno);
 	}
 
 	@Override
 	public void modifyReply(ReplyVO vo) throws Exception {
-		mapper.update(vo);
+		replyMapper.update(vo);
 	}
 
 	@Override
 	public void removeReply(Integer rno) throws Exception {
-		mapper.delete(rno);
+		replyMapper.delete(rno);
 	}
 	
 }

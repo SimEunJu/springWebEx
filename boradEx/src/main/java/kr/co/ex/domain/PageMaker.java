@@ -7,11 +7,11 @@ public class PageMaker {
 	private boolean prev;
 	private boolean next;
 	
-	private SearchCriteria cri;
+	private Criteria cri;
 	private int displayPageNum = 10;
 	
 	// 1. set criteria
-	public void setCri(SearchCriteria cri){                  
+	public void setCri(Criteria cri){                  
 		this.cri = cri;
 	}
 	// 2. set total count

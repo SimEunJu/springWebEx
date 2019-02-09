@@ -24,14 +24,6 @@ public class SearchCriteria extends Criteria {
 		}
 	}
 	
-	public String makeQuery(){
-		UriComponents uri = UriComponentsBuilder.newInstance()
-				.queryParam("page", page)
-				.queryParam("perPageNum", perPageNum)
-				.build();
-		return uri.toString();
-	}
-	
 	public String makeSearch(){
 		UriComponents uri = UriComponentsBuilder.newInstance()
 				.queryParam("page", page)

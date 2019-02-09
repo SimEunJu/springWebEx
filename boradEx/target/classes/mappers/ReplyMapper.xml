@@ -15,13 +15,23 @@
   
   <select id="listCriteria" resultType="kr.co.ex.domain.ReplyVO">
   	select * from tbl_reply 
-  	where bno=1 and isnull(par_rno) 
+  	where bno=#{bno}
   	order by rno desc
   	limit #{cri.pageStart}, #{cri.perPageNum} 
   </select>
   
+  <select id="listCriteriaAdded" resultType="kr.co.ex.domain.ReplyVO">
+	select * from tbl_reply
+	where par_rno=#{parRno}
+	limit #{cri.pageStart}, #{cri.perPageNum}   
+  </select>
+  
   <select id="totalCount" resultType="int">
   	select count(rno) from tbl_reply where bno=#{bno}
+  </select>
+  
+  <select id="addedTotalCount" resultType="int">
+  	select count(par_rno) from tbl_reply where par_rno=#{parRno}
   </select>
   
   <select id="get" resultType="kr.co.ex.domain.ReplyVO">

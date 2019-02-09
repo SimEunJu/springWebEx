@@ -1,6 +1,7 @@
 package kr.co.ex.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
-import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.ReplyService;
 import lombok.extern.log4j.Log4j;
 
@@ -51,7 +52,7 @@ public class ReplyController {
 	public ResponseEntity<Map<String, Object>> list(
 			@PathVariable Integer bno, @PathVariable Integer page, HttpServletRequest req){
 		try {
-			SearchCriteria cri = new SearchCriteria();
+			Criteria cri = new Criteria();
 			cri.setPage(page);
 			
 			PageMaker pm = new PageMaker();
@@ -68,6 +69,23 @@ public class ReplyController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value="/added/{parRno}/{page}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<ReplyVO>> addedList(@PathVariable int parRno, @PathVariable int page, HttpServletRequest req){
+		try{
+			Criteria cri = new Criteria();
+			cri.setPage(page);
+			
+			String currentUser = null;
+			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
+			
+			List<ReplyVO> replies = serv.listCriteriaAddedReply(parRno, cri);
+			return new ResponseEntity<>(replies, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
