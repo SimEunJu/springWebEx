@@ -15,7 +15,7 @@
   
   <select id="listCriteria" resultType="kr.co.ex.domain.ReplyVO">
   	select * from tbl_reply 
-  	where bno=#{bno}
+  	where bno=#{bno} and isnull(par_rno)
   	order by rno desc
   	limit #{cri.pageStart}, #{cri.perPageNum} 
   </select>
@@ -23,6 +23,7 @@
   <select id="listCriteriaAdded" resultType="kr.co.ex.domain.ReplyVO">
 	select * from tbl_reply
 	where par_rno=#{parRno}
+	order by rno
 	limit #{cri.pageStart}, #{cri.perPageNum}   
   </select>
   

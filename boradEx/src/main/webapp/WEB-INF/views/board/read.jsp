@@ -192,7 +192,7 @@
 					}
 					else{
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += '<button class="added btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'<a href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies"></div></li>';
+						str += '<button class="added btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="0"></div></li>';
 					}
 					
 				}
@@ -321,19 +321,32 @@
 		
 		replyUl.on("click", "a", function(e){
 			e.preventDefault();
-			getAddedList($(this).parents("li"));	
+			if($(this).get(0).dataset.open === "true") {
+				var rno = $(this).attr("href");
+				var reply = $(this).parents("li[data-rno='"+rno+"']");
+				reply.find("li").remove();
+				reply.find("button").hide();
+				$(this).attr("data-open","false")
+				return;
+			}
+			
+			$(this).attr("data-open","true");
+			getAddedList($(this).parents("li"));
 		});
 		
 		function getAddedList(eachReply){
-			
+			console.log(eachReply);
 			var parRno = eachReply.data("rno");
 			var regex = new RegExp(/\d+/);
 			var totalNum = parseInt(/\d+/.exec(eachReply.find("a").text())[0]);
+		
+			if(totalNum === 0) return;
 			
 			var eachReplySection = eachReply.find(".added-replies");
-			var page = eachReplySection.data("page") ? page+1 : 1;
+			var curPage = parseInt(eachReplySection.data("page"));
+			var reqPage = curPage === 0 ? 1 : curPage;
 			
-			$.getJSON('/replies/added/'+parRno+"/"+page, function(replies){
+			$.getJSON('/replies/added/'+parRno+"/"+reqPage, function(replies){
 				var str = "";
 				
 				for(let i=0, len=replies.length||0; i<len; i++){
@@ -347,13 +360,13 @@
 					}
 				}
 				
-				if(page === 1) str += '<div class="reply-btns"><button class="more btn btn-primary btn-sm">더보기</button><button class="fold btn btn-primary btn-sm pull-left">접기</button></div>';
+				if(curPage === 0) str += '<div class="reply-btns"><button class="more btn btn-primary btn-sm">더보기</button><button class="fold btn btn-primary btn-sm pull-left">접기</button></div>';
 				eachReplySection.append(str);
 				
-				if(page*10 >= totalNum) eachReplySection.find(".more").hide();
-				else eachReplySection.find(".more").show();
+				eachReplySection.find(".reply-btns").show();
+				if(reqPage*10 >= totalNum) eachReplySection.find(".more").hide();
 				
-				eachReplySection.data("page", page);
+				eachReplySection.attr("data-page", reqPage+1);
 			});
 		}
 		
@@ -362,7 +375,10 @@
 			var addedSection = $(e.currentTarget).parent();
 			
 			if(target.hasClass("fold")){
-				addedSection.hide();
+				addedSection.find("li").remove();
+				addedSection.find(".reply-btns").hide();
+				addedSection.attr("data-page", 1);
+				addedSection.parent().find("a").attr("data-open", "false");
 				return;
 			}
 			if(target.hasClass("more")){
