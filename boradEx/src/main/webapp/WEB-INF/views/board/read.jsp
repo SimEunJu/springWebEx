@@ -126,7 +126,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		
+	
 		var csrfHeader = "${_csrf.headerName}";
 		var csrfTokenVal = "${_csrf.token}";
 		
@@ -140,7 +140,6 @@
 			name = "${loginUser.username}";
 		</sec:authorize>
 		var isLogged = name === "" ? false : true;
-		
 		
 		(function(){
 			$.getJSON("/board/getAttach/"+bno, function(res){
@@ -198,7 +197,7 @@
 					}
 					else{
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += '<button class="added btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="0"></div></li>';
+						str += '<button class="added btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="1"></div></li>';
 					}
 					
 				}
@@ -317,7 +316,6 @@
 			
 			required.parRno = modal.data("parRno");
 			required.secret = modalSecret.is(":checked");
-			console.log(required.secret);
 			
 			replyService.add(required, function(res){
 				modal.find("input").val("");
@@ -366,7 +364,7 @@
 		});
 		
 		function getAddedList(eachReply){
-			console.log(eachReply);
+		
 			var parRno = eachReply.data("rno");
 			var regex = new RegExp(/\d+/);
 			var totalNum = parseInt(/\d+/.exec(eachReply.find("a").text())[0]);
@@ -374,8 +372,7 @@
 			if(totalNum === 0) return;
 			
 			var eachReplySection = eachReply.find(".added-replies");
-			var curPage = parseInt(eachReplySection.data("page"));
-			var reqPage = curPage === 0 ? 1 : curPage;
+			var reqPage = parseInt(eachReplySection.get(0).dataset.page);
 			
 			$.getJSON('/replies/added/'+parRno+"/"+reqPage, function(replies){
 				var str = "";
@@ -391,13 +388,11 @@
 					}
 				}
 				
-				if(curPage === 0) str += '<div class="reply-btns"><button class="more btn btn-primary btn-sm">더보기</button><button class="fold btn btn-primary btn-sm pull-left">접기</button></div>';
+				if(reqPage === 1) str += '<div class="reply-btns"><button class="more btn btn-primary btn-sm">더보기</button><button class="fold btn btn-primary btn-sm pull-left">접기</button></div>';
 				eachReplySection.append(str);
 				
-				eachReplySection.find(".reply-btns").show();
 				if(reqPage*10 >= totalNum) eachReplySection.find(".more").hide();
 				
-				eachReplySection.attr("data-page", reqPage+1);
 			});
 		}
 		
@@ -406,10 +401,9 @@
 			var addedSection = $(e.currentTarget).parent();
 			
 			if(target.hasClass("fold")){
-				addedSection.find("li").remove();
-				addedSection.find(".reply-btns").hide();
-				addedSection.attr("data-page", 1);
-				addedSection.parent().find("a").attr("data-open", "false");
+				addedSection.children().remove();
+				var reply = addedSection.parent();
+				reply.find("a").attr("data-open", "false");
 				return;
 			}
 			if(target.hasClass("more")){

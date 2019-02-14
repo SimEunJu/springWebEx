@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -117,6 +118,7 @@ public class BoardContoller {
 	@GetMapping("/list/{bno}")
 	public String readDetail(@PathVariable Integer bno, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
+			log.info("board controller "+bno);
 			serv.updateViewCnt(bno);
 			model.addAttribute("replyCnt", serv.getReplyCnt(bno));
 			model.addAttribute(serv.read(bno));

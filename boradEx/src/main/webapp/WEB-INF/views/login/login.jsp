@@ -7,7 +7,7 @@
 	<div>
 		<a href="/board/list"><button style="margin-bottom: 15px;">HOME</button></a>
 	</div>
-	<form method="post" action="/login" >
+	<form method="post" action="https://localhost:8443/login" >
 		<div class="form-group has-feedback">
 			<input class="form-control" placeholder="user id" type="text" name="username" />
 			<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -27,7 +27,7 @@
 			</div>
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }">
 		</div>
-		<a href="/board/login/google">구글 로그인</a>
+		<a href="/board/login/oauth/google">구글 로그인</a>
 	</form>
 </div>
 

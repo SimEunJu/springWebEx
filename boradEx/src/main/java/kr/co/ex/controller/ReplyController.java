@@ -49,9 +49,11 @@ public class ReplyController {
 	}
 	
 	@GetMapping(value = "/{bno}/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<Map<String, Object>> list(
 			@PathVariable Integer bno, @PathVariable Integer page, HttpServletRequest req){
 		try {
+			log.info("reply");
 			Criteria cri = new Criteria();
 			cri.setPage(page);
 			
@@ -73,6 +75,7 @@ public class ReplyController {
 	}
 	
 	@GetMapping(value="/added/{parRno}/{page}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<List<ReplyVO>> addedList(@PathVariable int parRno, @PathVariable int page, HttpServletRequest req){
 		try{
 			Criteria cri = new Criteria();

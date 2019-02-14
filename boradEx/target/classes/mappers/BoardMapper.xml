@@ -124,7 +124,7 @@
 	values(LAST_INSERT_ID(), #{fileName}, #{uploadPath}, #{uuid}, #{fileType})
 </update>
 
-<select id="readReplyCnt" resultType="int">
+<select id="readReplyCnt" resultType="java.lang.Integer">
 	select count(rno) from tbl_reply where bno=#{bno}
 </select>
 
