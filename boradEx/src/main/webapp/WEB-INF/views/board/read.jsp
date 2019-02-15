@@ -130,9 +130,9 @@
 		var csrfHeader = "${_csrf.headerName}";
 		var csrfTokenVal = "${_csrf.token}";
 		
-		$(document).ajaxSend(function(e, xhr, options){
+		/* $(document).ajaxSend(function(e, xhr, options){
 			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
-		});
+		}); */
 	
 		var bno = "${boardVO.bno}";
 		var name = "";
@@ -207,11 +207,17 @@
 		}
 
 		function updateLike(like, diff){
-			
+			if(name === ""){ 
+				alert("로그인이 필요합니다.");
+				return;
+			}
 			$.ajax({
 				method: "get",
-				url: "/board/like/"+bno,
-				data: {diff: diff},
+				url: "/board/like",
+				data: {
+					bno: bno,
+					diff: diff
+					username: name},
 				success: function(){
 					like.css("color", diff == 1 ? "red" : "white");
 					console.log(like);
@@ -410,36 +416,7 @@
 				getAddedList(addedSection.parent());
 			}
 			
-		})
-		
-		/* replyUl.on("click", "li", function(e){
-		
-			if($(this).data("secret")) return;
-			
-			var rno = $(this).data("rno");
-			
-			replyService.get(rno, function(res){
-				
-				modalReply.val(res.reply).attr("readonly", true);
-				
-				showReplyer("logged");
-				modal.find(".logged input[name='replyer']").val(res.replyer);
-				
-				modalSecret.parent().hide();
-				modalReplyDate.val(replyService.displayTime(res.regdate));
-				
-				modal.data("rno", res.rno);
-				
-				modal.find("button[id!='modal-close']").hide();
-				if(name == res.replyer){
-					modalMod.show();
-					modalRem.show();
-				}
-			
-				modal.removeClass("fade");
-				modal.modal("show");
-			});
-		}); */
+		});
 		
 		replyFooter.on("click", "li a", function(e){
 			e.preventDefault();

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.service.BoardService;
+import kr.co.ex.service.UserLikeService;
 import lombok.extern.log4j.Log4j;
 
 @Controller
@@ -43,7 +45,10 @@ public class BoardContoller {
 	private static final Logger logger = LoggerFactory.getLogger(BoardContoller.class);
 	
 	@Autowired
-	private BoardService serv;
+	private BoardService boardServ;
+	
+	@Autowired
+	private UserLikeService likeServ;
 	
 	@Resource
 	String uploadPath;
@@ -62,13 +67,13 @@ public class BoardContoller {
 			
 			String keyword = cri.getKeyword();
 			if(keyword == null || keyword.trim().length() == 0){
-				totalCount = serv.getTotalCount();
-				boardList = serv.listSearch(cri);
+				totalCount = boardServ.getTotalCount();
+				boardList = boardServ.listSearch(cri);
 				pageMaker.setCri(cri);
 			}
 			else{
-				totalCount = serv.getSearchCount(cri);
-				boardList = serv.listSearch(cri);
+				totalCount = boardServ.getSearchCount(cri);
+				boardList = boardServ.listSearch(cri);
 				pageMaker.setCri(cri);
 			}
 			
@@ -82,14 +87,16 @@ public class BoardContoller {
 		return "/board/slist";
 	}
 	
-	@GetMapping("/like/{bno}")
-	public ResponseEntity<Void> updateLike(@PathVariable int bno, @RequestParam int diff){
+	@GetMapping("/like")
+	public ResponseEntity<Void> updateLike(@RequestParam int bno, @RequestParam int diff, @RequestParam String username){
+		
 		try {
-			if(diff > 0) diff = 1;
-			else if(diff < 0) diff = -1;
-			else throw new BadLikeUpdateException();
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			if(auth == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			
-			serv.updateLike(bno, diff);
+			if(!auth.getName().equals(username)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			
+			boardServ.updateLike(bno, diff, username);
 		} catch (Exception e) {
 			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -106,7 +113,7 @@ public class BoardContoller {
 	public String regist(BoardVO board, RedirectAttributes attrs){
 		try {
 			logger.info(board.toString());
-			serv.register(board);
+			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,9 +126,9 @@ public class BoardContoller {
 	public String readDetail(@PathVariable Integer bno, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			log.info("board controller "+bno);
-			serv.updateViewCnt(bno);
-			model.addAttribute("replyCnt", serv.getReplyCnt(bno));
-			model.addAttribute(serv.read(bno));
+			boardServ.updateViewCnt(bno);
+			model.addAttribute("replyCnt", boardServ.getReplyCnt(bno));
+			model.addAttribute(boardServ.read(bno));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -131,7 +138,7 @@ public class BoardContoller {
 	@GetMapping(value="/getAttach/{bno}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<AttachVO> getAttach(@PathVariable Integer bno) throws Exception{
-		List<AttachVO> attaches = serv.getAttach(bno);
+		List<AttachVO> attaches = boardServ.getAttach(bno);
 		log.info(attaches);
 		return attaches;
 	}
@@ -140,7 +147,7 @@ public class BoardContoller {
 	@PreAuthorize("principal.username == #name")
 	public String read(@RequestParam Integer bno, @RequestParam String name, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
-			model.addAttribute(serv.read(bno));
+			model.addAttribute(boardServ.read(bno));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,7 +159,7 @@ public class BoardContoller {
 	public String modify(@RequestParam Integer bno, BoardVO vo, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			log.info(vo.toString());
-			serv.modify(vo);
+			boardServ.modify(vo);
 			attrs.addFlashAttribute("msg", "success");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,8 +172,8 @@ public class BoardContoller {
 	@PreAuthorize("principal.username == #name")
 	public String delete(@RequestParam Integer bno, @RequestParam String name, SearchCriteria cri, RedirectAttributes attrs){
 		try{
-			deleteFile(serv.getAttach(bno));
-			serv.remove(bno);
+			deleteFile(boardServ.getAttach(bno));
+			boardServ.remove(bno);
 			attrs.addFlashAttribute("msg", "success");
 		} catch(Exception e){
 			e.printStackTrace();

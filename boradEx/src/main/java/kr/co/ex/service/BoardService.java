@@ -17,7 +17,7 @@ public interface BoardService {
 	public BoardVO read(Integer bno) throws Exception;
 	
 	public void modify(BoardVO board) throws Exception;
-	public void updateLike(int bno, int diff) throws Exception;
+	public void updateLike(int bno, int diff, String username) throws Exception;
 	
 	public void remove(Integer bno) throws Exception;
 	public List<BoardVO> listAll() throws Exception;

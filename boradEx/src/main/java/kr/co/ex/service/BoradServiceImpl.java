@@ -10,13 +10,18 @@ import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.SearchCriteria;
+import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.mapper.BoardMapper;
+import kr.co.ex.mapper.UserLikeMapper;
 
 @Service
 public class BoradServiceImpl implements BoardService {
 
 	@Autowired
 	private BoardMapper mapper;
+	
+	@Autowired
+	private UserLikeMapper likeMapper;
 	
 	@Override
 	@Transactional
@@ -51,8 +56,19 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void updateLike(int bno, int diff) throws Exception {
-		mapper.updateLike(bno, diff);
+	@Transactional
+	public void updateLike(int bno, int diff, String username) throws Exception {	
+		if(diff > 0){
+			likeMapper.addLike(bno, username);
+			mapper.updateLike(bno, 1);
+		}
+		else if(diff < 0){
+			likeMapper.subLike(bno, username);
+			mapper.updateLike(bno, -1);
+		}
+		else throw new BadLikeUpdateException();
+		
+		
 	}
 
 	@Override
