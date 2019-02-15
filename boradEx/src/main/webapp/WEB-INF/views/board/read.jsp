@@ -216,8 +216,9 @@
 				url: "/board/like",
 				data: {
 					bno: bno,
-					diff: diff
-					username: name},
+					diff: diff,
+					username: name
+					},
 				success: function(){
 					like.css("color", diff == 1 ? "red" : "white");
 					console.log(like);

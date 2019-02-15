@@ -16,7 +16,7 @@
 			</div>
 			<div class="form-group">
 				<label for="exampleInputPassword1">Content</label>
-				<textarea class="form-control" row="3" name="content" placeholder="Enter ..."></textarea>
+				<textarea name="content" id="editor" name="content"></textarea>
 			</div>
 			<div class="form-group">
 				<label class="exampleInputEmail1">Writer</label>
@@ -49,12 +49,23 @@
 	
 <script src="/resources/js/file.js"></script>
 
+<script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+
 <script type="text/javascript">
 
 var form = $("#registerForm");
 
 $("button[type='submit']").on("click", function(e){
 	e.preventDefault();
+	console.dir(form);
 	var str = fileService.getFilesInfo();
 	form.append(str).submit();
 });
