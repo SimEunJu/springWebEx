@@ -1,10 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
- <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
- <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
- <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
-<%@ include file="../include/header.jsp" %>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 	
+    <title>daily 게시판</title>    
+    
+	<%@include file="../include/cssFiles.jsp" %>
+
+</head>
+
+<body>
 
 <form role="form">
 	<input type="hidden" name="page" value="${pageMaker.cri.page }">
@@ -77,7 +92,9 @@
 	
 <%@ include file="../common/pagination.jsp" %>
 
-<%@ include file="../include/footer.jsp" %>
+<%@ include file="../include/jsFiles.jsp" %>
+
+</body>
 
 <script type="text/javascript">
 	$("document").ready(function(){
@@ -96,7 +113,6 @@
 		
 		$("#searchBtn").on("click", function(e){
 			
-			
 			if(!$("select option:selected").val()){
 				alter("검색 종류를 입력하세요");
 				return;
@@ -107,13 +123,13 @@
 				return;
 			}
 			
-			window.location.href = "/board/list"+"${pageMaker.cri.makeQuery()}"
+			window.location.href = "/board/daily"+"${pageMaker.cri.makeQuery()}"
 									+"&searchType=" + $("select option:selected").val()
 									+"&keyword=" + encodeURIComponent($("input[name='keyword']").val());
 		});
 		
 		$("#newBtn").on("click", function(){
-			window.location.href = "/board/register";
+			window.location.href = "/board/daily/new";
 		});
 		
 	})

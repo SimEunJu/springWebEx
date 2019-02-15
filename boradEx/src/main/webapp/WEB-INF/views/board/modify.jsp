@@ -2,7 +2,19 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<%@ include file="../include/header.jsp" %>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 	
+    <title>daily : ${boardVO.title}</title>    
+    
+	<%@include file="../include/cssFiles.jsp" %>
+
+</head>
+
+<body>
 
 <div class="box-body">
 <form role="form" method="post">
@@ -41,8 +53,6 @@
 
 <sec:authentication property="principal.username" var="name" />
 
-<%@ include file="../include/footer.jsp" %>
-
 <%@ include file="../include/upload.jsp" %>
 
 <script type="text/javascript">
@@ -68,13 +78,15 @@
 			
 		if(role === "delete"){
 			formObj.append("<input type='hidden' name='name' value='"+name+"' />")
-			formObj.attr("action", "/board/delete");
+			formObj.attr("method", "DELETE")
+			formObj.attr("action", "/board/daily/"+${bno});
 			
 		}else if(role === "modify"){
-			formObj.attr("action", "/board/modify");
+			formObj.attr("method", "PUT");
+			formObj.attr("action", "/board/daily/"+${bno});
 			
 		}else{
-			window.location.href = "/board/list"+"${pageMaker.makeSearch(pagekMaker.cri.getPage)}"
+			window.location.href = "/board/daily"+"${pageMaker.makeSearch(pagekMaker.cri.getPage)}"
 			//+"&searchType=" + "${cri.searchType}"
 			//+"&keyword=" + encodeURIComponent("${cri.keyword}");
 			return;
@@ -86,3 +98,5 @@
 });
 	
 </script>
+</body>
+</html>

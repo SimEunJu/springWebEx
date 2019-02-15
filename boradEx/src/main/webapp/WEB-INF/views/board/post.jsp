@@ -3,7 +3,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<%@ include file="../include/header.jsp" %>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 	
+    <title>daily : ${boardVO.title}</title>    
+    
+	<%@include file="../include/cssFiles.jsp" %>
+
+</head>
 	
 <form role="form" method="post" >
 	<input type="hidden" name="bno" value="${boardVO.bno }">
@@ -117,8 +127,6 @@
 </div>
 
 <%@ include  file="../reply/replyList.jsp" %>
-
-<%@ include file="../include/footer.jsp" %>
 
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
@@ -486,3 +494,5 @@
 		});
 	});
 </script>
+</body>
+</html>

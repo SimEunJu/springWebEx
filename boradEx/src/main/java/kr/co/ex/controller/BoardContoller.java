@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -100,8 +102,14 @@ public class BoardContoller {
 	public String registerPost(BoardVO board, RedirectAttributes attrs){
 		try {
 			log.info(board.toString());
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			
+			if(auth != null) board.setWriter(auth.getName());
+			
 			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
@@ -118,7 +126,7 @@ public class BoardContoller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "/board/read";
+		return "/board/post";
 	}
 	
 	@GetMapping(value="/{boardNo}/attach", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -142,7 +150,7 @@ public class BoardContoller {
 	
 	@PutMapping("/{boardNo}")
 	@PreAuthorize("principal.username == #vo.writer")
-	public String modify(@PathVariable Integer bno, BoardVO board, SearchCriteria cri, RedirectAttributes attrs){
+	public String modifyPost(@PathVariable Integer bno, BoardVO board, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			log.info(board.toString());
 			boardServ.modify(board);
@@ -156,7 +164,7 @@ public class BoardContoller {
 	
 	@DeleteMapping("/{boardNo}")
 	@PreAuthorize("principal.username == #name")
-	public String delete(@PathVariable Integer boardNo, @RequestParam String username, SearchCriteria cri, RedirectAttributes attrs){
+	public String deletePost(@PathVariable Integer boardNo, @RequestParam String username, SearchCriteria cri, RedirectAttributes attrs){
 		try{
 			this.deleteFile(boardServ.getAttach(boardNo));
 			boardServ.remove(boardNo);

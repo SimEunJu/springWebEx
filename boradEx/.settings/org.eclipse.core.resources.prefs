@@ -1,10 +1,9 @@
 eclipse.preferences.version=1
 encoding//src/main/webapp/WEB-INF/views/accessError.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/views/board/list.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/board/daily.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/board/modify.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/views/board/read.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/views/board/register.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/views/board/slist.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/board/new.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/board/post.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/custom_404.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/err_common.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/include/searchBar.jsp=UTF-8

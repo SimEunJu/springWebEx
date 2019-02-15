@@ -1,17 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" type="text/css" href="/resources/css/upload.css" />
+<!DOCTYPE html>
+<html lang="ko">
 
-<%@ include file="../include/header.jsp" %>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 	
+    <title>daily 새 글</title>    
+    
+	<%@include file="../include/cssFiles.jsp" %>
+	<link rel="stylesheet" type="text/css" href="/resources/css/upload.css" />
+
+</head>
+
+<body>
 
 <div class="box-body">
-	<form role="form" id="registerForm" method="post">
+	<form role="form" id="registerForm" action="/board/daily/new" method="post">
 		<div class="box-body">
 			<div class="form-group">
-				<label for="exampleInputEmail1">Title</label>
+				<label for="exampleInputEmail1">제목</label>
 				<input type="text" name="title" class="form-control" placeholder="Enter Title">
 			</div>
 			<div class="form-group">
@@ -20,19 +34,15 @@
 			</div>
 			<div class="form-group">
 				<label class="exampleInputEmail1">Writer</label>
-				
 				<sec:authorize access="isAuthenticated()">
 					<sec:authentication property="principal.username" var="writer" />
 				</sec:authorize>
 				<c:choose>
-					<c:when test="${writer != null}">
-						<input type="text" name="writer" class="form-control" value="${writer}" readonly>
-					</c:when>
-					<c:otherwise>
+					<c:when test="${writer eq null}">
 						<input type="text" name="writer" placeholder="Enter Writer" class="form-control" >
 						<input type="password" name="password" 
 							placeholder="4자리 비밀번호를 입력해주세요" class="form-control" >
-					</c:otherwise>
+					</c:when>
 				</c:choose>
 			</div>
 			<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
@@ -44,10 +54,6 @@
 </div>
 
 <%@ include file="../include/upload.jsp" %>
-
-<%@ include file="../include/footer.jsp" %>
-	
-<script src="/resources/js/file.js"></script>
 
 <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
 
