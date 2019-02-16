@@ -33,18 +33,20 @@ import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.service.UserLikeService;
-import lombok.Setter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/board/daily")
 @Log4j
 public class BoardContoller {
 	
-	@Setter
+	@NonNull
 	private BoardService boardServ;
 	
-	@Setter
+	@NonNull
 	private UserLikeService likeServ;
 	
 	// 이미지 파일이 저장되는 루트 경로		
@@ -52,7 +54,7 @@ public class BoardContoller {
 	String uploadPath;
 	
 	// @param cri 몇 번째 page인지, page마다 몇 개의 글을 보여주는지, 검색 타입, 검색 키워드
-	@GetMapping("/")
+	@GetMapping("")
 	public String showPostList(@ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			PageMaker pageMaker = new PageMaker();
@@ -137,7 +139,7 @@ public class BoardContoller {
 		return attaches;
 	}
 	
-	@GetMapping("/")
+	@GetMapping("/mod")
 	@PreAuthorize("principal.username == #name")
 	public String modifyPost(@RequestParam Integer bno, @RequestParam String name, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {

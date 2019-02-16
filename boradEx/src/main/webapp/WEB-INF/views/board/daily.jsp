@@ -71,7 +71,7 @@
                     	<c:forEach var="board" items="${boardList}">
                     		<tr class="odd gradeX">
                     			<td>${board.bno}</td>
-                    			<td><a href="/board/list/${board.bno}/${pageMaker.cri.makeSearch()}">${board.title}</a></td>
+                    			<td><a href="/board/daily/${board.bno}/${pageMaker.cri.makeSearch()}">${board.title}</a></td>
                     			<td>${board.writer}</td>
                     			<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${board.regdate}"></fmt:formatDate></td>
                     			<td>${board.viewcnt}</td>

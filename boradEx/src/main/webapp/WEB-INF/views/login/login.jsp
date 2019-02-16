@@ -1,13 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
-<%@ include file="../include/header.jsp" %>
 
 <div class="box-body">
 	<div>
-		<a href="/board/list"><button style="margin-bottom: 15px;">HOME</button></a>
+		<a href="/board/daily"><button style="margin-bottom: 15px;">HOME</button></a>
 	</div>
-	<form method="post" action="https://localhost:8443/login" >
+	<form method="post" action="/login" >
 		<div class="form-group has-feedback">
 			<input class="form-control" placeholder="user id" type="text" name="username" />
 			<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -30,5 +28,3 @@
 		<a href="/board/login/oauth/google">구글 로그인</a>
 	</form>
 </div>
-
-<%@ include file="../include/footer.jsp" %>

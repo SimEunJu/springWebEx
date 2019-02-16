@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<%@ include file="include/header.jsp" %>
 <section class="content">
 	<div class="row">
 		<div class="col-md-12">
@@ -20,7 +19,5 @@
 		</div>
 	</div>
 </section>
-<%@ include file="include/footer.jsp" %>
-
 </body>
 </html>

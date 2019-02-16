@@ -126,7 +126,9 @@
 	</div>
 </div>
 
-<%@ include  file="../reply/replyList.jsp" %>
+<%@ include file="../reply/replyList.jsp" %>
+
+<%@ include file="../include/jsFiles.jsp" %>
 
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
@@ -150,7 +152,7 @@
 		var isLogged = name === "" ? false : true;
 		
 		(function(){
-			$.getJSON("/board/getAttach/"+bno, function(res){
+			$.getJSON("/board/daily/"+bno+"/attach", function(res){
 				var str = "";
 				$(res).each(function(i, attach){
 					if(attach.fileType){
@@ -214,18 +216,18 @@
 			})
 		}
 
-		function updateLike(like, diff){
+		function updateLike(like, likeCnt){
 			if(name === ""){ 
 				alert("로그인이 필요합니다.");
 				return;
 			}
 			$.ajax({
 				method: "get",
-				url: "/board/like",
+				url: "/board/daily/"+bno+"/like",
 				data: {
 					bno: bno,
-					diff: diff,
-					username: name
+					likeCnt: likeCnt,
+					username: encodeURIComponent(name)
 					},
 				success: function(){
 					like.css("color", diff == 1 ? "red" : "white");
