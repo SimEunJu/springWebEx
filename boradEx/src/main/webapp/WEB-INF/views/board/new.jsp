@@ -33,12 +33,12 @@
 				<textarea name="content" id="editor" name="content"></textarea>
 			</div>
 			<div class="form-group">
-				<label class="exampleInputEmail1">Writer</label>
 				<sec:authorize access="isAuthenticated()">
 					<sec:authentication property="principal.username" var="writer" />
 				</sec:authorize>
 				<c:choose>
 					<c:when test="${writer eq null}">
+						<label class="exampleInputEmail1">Writer</label>
 						<input type="text" name="writer" placeholder="Enter Writer" class="form-control" >
 						<input type="password" name="password" 
 							placeholder="4자리 비밀번호를 입력해주세요" class="form-control" >
@@ -52,6 +52,8 @@
 		</div>
 	</form>
 </div>
+
+<%@ include file="../include/jsFiles.jsp" %>
 
 <%@ include file="../include/upload.jsp" %>
 

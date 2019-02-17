@@ -25,6 +25,6 @@
 			</div>
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }">
 		</div>
-		<a href="/board/login/oauth/google">구글 로그인</a>
+		<a href="/board/oauth2/authorization/google">Google</a>
 	</form>
 </div>

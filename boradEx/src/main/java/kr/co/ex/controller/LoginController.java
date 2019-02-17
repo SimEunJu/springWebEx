@@ -39,7 +39,7 @@ public class LoginController {
 		return "login/login";	
 	}	
 	
-	@GetMapping("/board/oauth")
+	@GetMapping("/board/oauth2/login")
 	public String getGoogleCode(HttpServletRequest req){
 		log.info(SecurityContextHolder.getContext().getAuthentication().getName());
 		return "login/google";
@@ -53,6 +53,11 @@ public class LoginController {
 		log.info(user);
 		serv.signIn(user);
 		return "redirect:/";
+	}
+	
+	@GetMapping("/board/logout")
+	public String logout(){
+		return "login/logout";
 	}
 	
 	/*
