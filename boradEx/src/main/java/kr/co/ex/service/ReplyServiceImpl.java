@@ -44,7 +44,11 @@ public class ReplyServiceImpl implements ReplyService {
 		if(getWriterName(bno).equals(currentUser)){
 			return replyMapper.listCriteria(bno, cri)
 					.stream().map(r -> {
-						r.setAddedCount(getAddedTotalCount(r.getRno()));
+						try {
+							r.setAddedCount(getAddedTotalCount(r.getRno()));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						return r;
 					}).collect(Collectors.toList());
 		}
@@ -55,7 +59,11 @@ public class ReplyServiceImpl implements ReplyService {
 				r.setReplyer(null);
 				r.setReply(null);
 			}
-			r.setAddedCount(getAddedTotalCount(r.getRno()));
+			try {
+				r.setAddedCount(getAddedTotalCount(r.getRno()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return r;
 		}).collect(Collectors.toList());
 	}
@@ -65,7 +73,12 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 	
 	@Override
-	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) {
+	public String getReplyer(int parBno) throws Exception {
+		return boardMapper.readWriterName(parBno);
+	}
+
+	@Override
+	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) throws Exception {
 		return replyMapper.listCriteriaAdded(parRno, cri);
 	}
 
@@ -75,7 +88,7 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public int getAddedTotalCount(int parRno) {
+	public int getAddedTotalCount(int parRno) throws Exception {
 		return replyMapper.addedTotalCount(parRno);
 	}
 

@@ -39,12 +39,16 @@
    	select * from tbl_reply where rno=#{rno}
   </select>
   
+  <select id="getReplyer" resultType="String">
+  	select replyer from tbl_reply where par_rno=#{parRno}
+  </select>
+  
   <update id="update">
   	update tbl_reply set reply=#{reply}, updatedate=now()
   	where rno=#{rno}
   </update>
   
-  <delete id="delete">
-  	delete from tbl_reply where rno=#{rno}
-  </delete>
+  <update id="delete">
+  	update tbl_reply set delete_flag="1" where rno=#{rno}
+  </update>
 </mapper>

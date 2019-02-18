@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +21,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.domain.Criteria;
+import kr.co.ex.domain.NotificationVO;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
+import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.ReplyService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 @RestController
 @Log4j
 @RequestMapping("/replies")
+@RequiredArgsConstructor
 public class ReplyController {
 
-	@Autowired
-	ReplyService serv;
+	@NonNull
+	private ReplyService serv;
+	
+	@NonNull
+	private NotificationService notiServ;
 	
 	@PostMapping(consumes="application/json", produces={MediaType.TEXT_PLAIN_VALUE})
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<String> register(@RequestBody ReplyVO vo){
+	public ResponseEntity<String> registerReply(@RequestBody ReplyVO vo){
 		try {
 			log.info(vo.toString());
 			serv.addReply(vo);
@@ -50,7 +57,7 @@ public class ReplyController {
 	
 	@GetMapping(value = "/{bno}/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@PreAuthorize("permitAll()")
-	public ResponseEntity<Map<String, Object>> list(
+	public ResponseEntity<Map<String, Object>> getReplyList(
 			@PathVariable Integer bno, @PathVariable Integer page, HttpServletRequest req){
 		try {
 			log.info("reply");
@@ -85,7 +92,16 @@ public class ReplyController {
 			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
 			
 			List<ReplyVO> replies = serv.listCriteriaAddedReply(parRno, cri);
+			// 과연 여기에 두는 것이 최선인가...
+			NotificationVO noti = NotificationVO
+				.builder()
+					.userid(serv.getReplyer(parRno))
+					.rno(parRno)
+					.bno(null)
+					.build();
+			notiServ.registerNotification(noti);
 			return new ResponseEntity<>(replies, HttpStatus.OK);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

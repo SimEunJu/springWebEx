@@ -16,6 +16,7 @@ public class BoardVO {
 	private Date updatedate;
 	private Integer viewcnt;
 	private Integer userLike;
+	private char deleteType;
 	
 	private List<AttachVO> files;
 }
