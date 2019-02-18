@@ -123,6 +123,7 @@ public class BoardContoller {
 	public String showEachPost(@PathVariable Integer boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			boardServ.updateViewCnt(boardNo);
+			model.addAttribute("isUserLiked", likeServ.isUserLiked());
 			model.addAttribute("replyCnt", boardServ.getReplyCnt(boardNo));
 			model.addAttribute(boardServ.read(boardNo));
 		} catch (Exception e) {
@@ -139,19 +140,19 @@ public class BoardContoller {
 		return attaches;
 	}
 	
-	@GetMapping("/mod")
-	@PreAuthorize("principal.username == #name")
-	public String modifyPost(@RequestParam Integer bno, @RequestParam String name, @ModelAttribute("cri") SearchCriteria cri, Model model){
+	@GetMapping("/{boardNo}/mod")
+	@PreAuthorize("isAuthenticated()")
+	public String modifyPost(@PathVariable Integer boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
-			model.addAttribute(boardServ.read(bno));
-		} catch (Exception e) {
+			model.addAttribute(boardServ.read(boardNo));
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return "/board/modify";
 	}
 	
 	@PutMapping("/{boardNo}")
-	@PreAuthorize("principal.username == #vo.writer")
+	@PreAuthorize("isAuthenticated()")
 	public String modifyPost(@PathVariable Integer bno, BoardVO board, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			log.info(board.toString());

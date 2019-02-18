@@ -49,7 +49,7 @@
 	</sec:authorize>
 	<button type="submit" id="boardAllBtn" class="btn btn-primary">List All</button>
 	
-	<button class="like" class="btn btn-primary btn-sm" style="scolor: white;">
+	<button class="like" class="btn btn-primary btn-sm" style="color: ${isUserLiked ? 'red' : 'white'}">
 		<span style="font-size: 20px; font-weight: bold;">♥</span>
 		좋아요 
 		<span class="like-num">${boardVO.userLike}</span>
@@ -463,14 +463,15 @@
 	
 		var formObj = $("form[role='form']");
 		
-		$("#boardModBtn").on("click",function(){
-			formObj.attr("action", "/board/modify");
+		$("#boardModBtn").on("click",function(e){
+			e.preventDefault();
+			formObj.attr("action", "/board/daily/"+bno+"/mod");
 			formObj.attr("method", "get");
-			formObj.submit();
+			formObj.submit()
 		});
 		
-		$("#boardRemBtn").on("click",function(){
-			
+		$("#boardRemBtn").on("click",function(e){
+			e.preventDefault();
 			var replyCnt = $(".chat li").length;
 			console.log(replyCnt);
 			if(replyCnt > 0){
@@ -484,13 +485,14 @@
 						{files : files, name: name});
 			}
 			
-			formObj.attr("action", "/board/delete");
-			formObj.attr("method", "post");
+			formObj.attr("action", "/board/daily/"+bno);
+			formObj.attr("method", "DELETE");
 			formObj.submit();
 		});
 		
-		$("#boardAllBtn").on("click",function(){
-			formObj.attr("action", "/board/list");
+		$("#boardAllBtn").on("click",function(e){
+			e.preventDefault();
+			formObj.attr("action", "/board/daily");
 			formObj.attr("method", "get");
 			formObj.submit();
 		});

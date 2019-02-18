@@ -35,7 +35,7 @@
 	<div class="form-group">
 	
 		<label class="exampleInputEmail1">Writer</label>
-		<input type="text" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control" value=${login.uid} readonly>
+		<input type="text" value="${boardVO.writer}" name="writer" placeholder="Enter Writer" class="form-control" readonly>
 	</div>
 	
 	<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
@@ -53,17 +53,19 @@
 
 <sec:authentication property="principal.username" var="name" />
 
+<%@ include file="../include/jsFiles.jsp" %>
+
 <%@ include file="../include/upload.jsp" %>
 
 <script type="text/javascript">
 
-	$("document").ready(function(){
+$("document").ready(function(){
 		
 	var name = "${name}";
 	
 	var bno = $("input[name='bno']").val();
 		
-	$.getJSON("/board/getAttach/"+bno, function(res){
+	$.getJSON("/board/daily/"+bno+"/attach", function(res){
 		var files = fileService.showFiles(res);
 		$(".upload-result ul").html(files);
 	});
@@ -77,13 +79,13 @@
 		var role = $(this).attr("role");
 			
 		if(role === "delete"){
-			formObj.append("<input type='hidden' name='name' value='"+name+"' />")
-			formObj.attr("method", "DELETE")
-			formObj.attr("action", "/board/daily/"+${bno});
+			formObj.append("<input type='hidden' name='name' value='"+name+"' />");
+			formObj.attr("method", "DELETE");
+			formObj.attr("action", "/board/daily/"+bno);;
 			
 		}else if(role === "modify"){
 			formObj.attr("method", "PUT");
-			formObj.attr("action", "/board/daily/"+${bno});
+			formObj.attr("action", "/board/daily/"+bno);
 			
 		}else{
 			window.location.href = "/board/daily"+"${pageMaker.makeSearch(pagekMaker.cri.getPage)}"
