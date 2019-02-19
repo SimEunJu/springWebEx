@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.ex.mapper.MemberMapper">
 	
 	<resultMap id="login" type="kr.co.ex.domain.MemberVO">
-		<id property="userid" column="userid" />
+		<id property="username" column="username" />
 		<result property="userpw" column="userpw" />
 		<result property="username" column="username"/>
 		<result property="enabled" column="enabled" />
@@ -22,7 +22,7 @@
 	</select>
 	
 	<insert id="createUser">
-		insert into tbl_member(userid, userpw, username) 
+		insert into tbl_member(username, userpw, username) 
 		values(#{username}, #{password}, #{username})	
 	</insert>
 	
