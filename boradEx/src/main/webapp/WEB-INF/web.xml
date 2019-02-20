@@ -9,6 +9,7 @@
 		<param-value>
 			/WEB-INF/spring/appServlet/session.xml
 			/WEB-INF/spring/root-context.xml
+			/WEB-INF/spring/task.xml
 			/WEB-INF/spring/security-context.xml
 		</param-value>
 	</context-param>

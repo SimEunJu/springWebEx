@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class DateUtils {
+	public static LocalDateTime getToday(){
+		return LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+	}
 	public static LocalDateTime getADaysAgo(int days){
 		return LocalDateTime.of(LocalDate.now().minusWeeks(days), LocalTime.MIDNIGHT);
 	}

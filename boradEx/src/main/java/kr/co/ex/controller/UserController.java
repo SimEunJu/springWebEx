@@ -31,8 +31,8 @@ public class UserController {
 	//@PreAuthorize("isAuthenticated()")
 	public String showAdminInfo(Model model){
 		model.addAttribute("postCnt", statServ.getPostCount('d'));
-		model.addAttribute("postLeaveCnt", statServ.getUserLeaveCount('d'));
-		model.addAttribute("postJoinCnt", statServ.getUserJoinCount('d'));
+		model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount('d'));
+		model.addAttribute("userJoinCnt", statServ.getUserJoinCount('d'));
 		return "/dashBoard/admin/adminMain";
 	}
 	

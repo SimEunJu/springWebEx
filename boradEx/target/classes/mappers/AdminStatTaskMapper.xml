@@ -19,7 +19,7 @@
 	
 <insert id="createUserStat">
 	insert into tbl_user_stat(today, join_cnt, leave_cnt, post_cnt) 
-	values(#{today}, #{join_cnt}, #{leave_cnt}, #{post_cnt})
+	values(#{today}, #{joinCnt}, #{leaveCnt}, #{postCnt})
 </insert>
 
 </mapper>
