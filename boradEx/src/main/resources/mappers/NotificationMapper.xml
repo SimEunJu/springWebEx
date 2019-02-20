@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.ex.mapper.NotificationMapper">
+
+<insert id="createNotification">
+	insert into tbl_notification(bno, rno, username) values(#{bno}, #{rno}, #{username})
+</insert>
+
+<select id="readNotification" resultType="kr.co.ex.domain.NotificationVO">
+	select * from tbl_notification where username=#{username}
+</select>
+
+</mapper>

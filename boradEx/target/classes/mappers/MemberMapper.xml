@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.ex.mapper.MemberMapper">
+	
+	<resultMap id="login" type="kr.co.ex.domain.MemberVO">
+		<id property="username" column="username" />
+		<result property="userpw" column="userpw" />
+		<result property="username" column="username"/>
+		<result property="enabled" column="enabled" />
+		<collection property="authList" ofType="kr.co.ex.domain.AuthVO">
+			<id property="username" column="username" />
+			<result property="auth" column="auth" />
+		</collection>
+	</resultMap>
+	
+	<select id="read" resultMap="login">
+		select * from tbl_member, tbl_member_auth
+		where #{username} = tbl_member.username and #{username} = tbl_member_auth.username
+	</select>
+	
+	<insert id="createUser">
+		insert into tbl_member(username, userpw, username) 
+		values(#{username}, #{password}, #{username})	
+	</insert>
+	
+	<insert id="createAuth">
+		insert into tbl_member_auth(username, auth)
+		values(#{username}, #{auth})
+	</insert>
+	
+	<update id="updatePoint">
+		update tbl_user set point = point+#{point} where uid=#{uid}
+	</update>
+</mapper>

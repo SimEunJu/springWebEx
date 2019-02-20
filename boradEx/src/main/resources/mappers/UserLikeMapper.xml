@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.co.ex.mapper.UserLikeMapper">
+
+<insert id="addLike">
+	insert into tbl_user_like(bno, username) values(#{bno}, #{username}) 
+</insert>
+
+<delete id="subLike">
+	delete from tbl_user_like where bno=#{bno} and username=#{username}
+</delete>  
+
+<select id="isUserLiked" resultType="int">
+	select count(userid) from tbl_user_like where username=#{username}
+</select>
+  
+</mapper>
