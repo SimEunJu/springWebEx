@@ -19,13 +19,13 @@
   <div class="collapse navbar-collapse" id="navbar">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">로그인/로그아웃</a>
+        <a class="nav-link" href="/board/login">로그인/로그아웃</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">내 정보</a>
+        <a class="nav-link" href="/board/admin/info">내 정보</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">알림</a>
+        <a class="nav-link" href="/board/admin/noti">알림</a>
       </li>
     </ul>
   </div>
@@ -35,12 +35,12 @@
   <div class="row">
     <div class="col-12 col-md-3">
 		<ul class="list-group">
-			<li class="list-group-item">알림들</li>
-			<li class="list-group-item">사용자 문의사항</li>
-			<li class="list-group-item">회원관리</li>
-			<li class="list-group-item">내가 쓴 글들</li>
-			<li class="list-group-item">내가 쓴 댓글들</li>
-			<li class="list-group-item">관리자 정보</li>
+			<a href="/board/admin/noti"><li class="list-group-item">알림들</li></a>
+			<a href="/board/admin/msg"><li class="list-group-item">메시지함</li></a>
+			<a href="/board/admin/user"><li class="list-group-item">회원관리</li></a>
+			<a href="/board/admin/post"><li class="list-group-item">내가 쓴 글들</li></a>
+			<a href="/board/admin/reply"><li class="list-group-item">내가 쓴 댓글들</li></a>
+			<a href="/board/admin/info"><li class="list-group-item">관리자 정보</li></a>
 		</ul>
     </div>
     
@@ -48,7 +48,6 @@
     	<div class="row">
     		<div>
     		<p>사용자 유입/유출 현황</p>
-    		<div>기준 일주일(default)/ 달/ 년/</div>
     		<canvas id="chart_user_inout" width="400" height="400"></canvas>
     		<div class="range">
     			<input type="radio" name="cri" value="d">일</input>

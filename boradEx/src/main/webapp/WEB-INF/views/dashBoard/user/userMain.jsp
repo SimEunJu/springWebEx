@@ -22,19 +22,19 @@
 <aside>
 	<ul>
 		<li>알림들</li>
+		<li>메시지</li>
 		<li>내가 쓴 글들</li>
 		<li>내가 쓴 댓글들</li>
-		<li>회원정보 수정</li>
-		<li>회원 탈퇴</li>
-		<li>관리자에게 문의</li>
+		<li>회원정보/탈퇴</li>
+		<li>관리자에게 문의(모달)</li>
 	</ul>
 </aside>
 
 <main>
 	<section>알림들</section>
+	<section>메시지</section>
 	<section>내가 쓴 글들</section>
 	<section>내가 쓴 댓글들</section>
-	<section>안내 사항</section>
 </main>
 
 <footer>
