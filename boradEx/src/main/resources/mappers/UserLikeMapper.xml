@@ -14,7 +14,7 @@
 </delete>  
 
 <select id="isUserLiked" resultType="int">
-	select count(userid) from tbl_user_like where username=#{username}
+	select count(username) from tbl_user_like where username=#{username}
 </select>
   
 </mapper>

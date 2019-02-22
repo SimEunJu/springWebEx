@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,12 +21,16 @@
     		</tr>
   		</thead>
   		
- 		<tbody>
+  		<tbody>
     		<tr>
-      			<th scope="row"><input type="checkbox" name="msg[0]" value="msg_no" /></th>
-      			<td>Mark</td>
-      			<td>관리자님께 문의드립니다.</td>
-      			<td>2019/2/21</td>
+    			<c:forEach var="m" items="msg" varStatus="i">
+      				<th scope="row"><input type="checkbox" name="msg[${i}]" value="${m.msgNo}" /></th>
+      				<td>${m.sender}</td>
+      				<td>${m.title}</td>
+      				<td>
+      					<fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${m.regdate}" />
+      				</td>
+    			</c:forEach>
     		</tr>
   		</tbody>
 	</table>

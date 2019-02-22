@@ -3,7 +3,7 @@ const replyService = (function(){
 	function add(reply, callback, error){
 		$.ajax({
 			type: 'post',
-			url: '/replies',
+			url: '/board/daily/'+reply.bno+"/reply",
 			data: JSON.stringify(reply),
 			contentType: 'application/json; charset=utf-8',
 			success: function(result, status, xhr){
@@ -17,18 +17,18 @@ const replyService = (function(){
 	function getList(param, callback, error){
 		const bno = param.bno;
 		const page = param.page || 1;
-		$.getJSON(`/replies/${bno}/${page}`, function(data){
+		$.getJSON(`/board/daily/${bno}/reply/${page}`, function(data){
 			if(callback) callback(data);
 		}).fail(function(xhr, status, err){
 			if(error) error(err);
 		});
 	}
 	
-	function remove(rno, replyer, callback, error){
+	function remove({param}, callback, error){
 		$.ajax({
 			type: 'delete',
-			url: `/replies/${rno}`,
-			data: {replyer: replyer},
+			url: `/board/daily/${param.bno}/reply/${param.rno}`,
+			data: {replyer: param.replyer},
 			success: function(result, status, xhr){
 				if(callback) callback(result);
 			},
@@ -40,7 +40,7 @@ const replyService = (function(){
 	function update(reply, callback, error){
 		$.ajax({
 			type: 'put',
-			url: `/replies/${reply.rno}`,
+			url: `/board/daily/${reply.bno}/reply/${reply.rno}`,
 			data: JSON.stringify(reply),
 			contentType: 'application/json, charset=utf-8',
 			success: function(result, status, xhr){
@@ -52,7 +52,7 @@ const replyService = (function(){
 		})
 	}
 	function get(rno, callback, error){
-		$.get(`/replies/${rno}`, function(result){
+		$.get(`/board/daily/${bno}/reply/${rno}`, function(result){
 			if(callback) callback(result);
 		}).fail(function(xhr, status, err){
 			if(error) error(err);

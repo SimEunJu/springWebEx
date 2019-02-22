@@ -1,32 +1,38 @@
 package kr.co.ex.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import kr.co.ex.domain.MsgVO;
-import kr.co.ex.persistence.MsgDao;
-import kr.co.ex.persistence.UserDao;
+import kr.co.ex.mapper.MsgMapper;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class MsgServiceImpl implements MsgService {
 	
-	@Autowired
-	MsgDao msgdao;
-	
-	@Autowired
-	UserDao userdao;
-	
+	@NonNull
+	private MsgMapper msgMapper;
+
 	@Override
-	public void sendMsg(MsgVO msg) throws Exception {
-		msgdao.create(msg);
-		userdao.updatePoint(msg.getSender(), 10);
+	public List<MsgVO> getMsgList(String receiver) throws Exception {
+		return msgMapper.readMsg(receiver);
 	}
 
 	@Override
-	public MsgVO readMsg(String uid, int mid) throws Exception {
-		msgdao.updateState(mid);
-		userdao.updatePoint(uid, 5);
-		return msgdao.read(mid);
+	public void setSenderDeleteFlag(int msgNo) throws Exception {
+		msgMapper.updateSenderDeleteFlag(msgNo);
 	}
 
+	@Override
+	public void setReceiverDeleteFlag(int msgNo) throws Exception {
+		msgMapper.updateReceiverDeleteFlag(msgNo);
+	}
+
+	@Override
+	public void registerMsg(MsgVO vo) throws Exception {
+		msgMapper.createMsg(vo);
+	}	
 }

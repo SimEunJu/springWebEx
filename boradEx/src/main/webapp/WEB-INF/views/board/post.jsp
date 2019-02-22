@@ -64,52 +64,6 @@
 	</div>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: none">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Reply</h4>
-            </div>
-            <div class="modal-body">
-               <div class="form-group">
-               		<label>Reply</label>
-               		<input class="form-control" name="reply" readonly>
-               </div>
-               <div class="form-group non-logged">
-               		<label>Replyer</label>
-               		<input class="form-control" name="replyer" autocomplete="off">
-               		<input type="password" name="password" placeholder="4자리 비밀번호를 입력해주세요" autocomplete="off">
-               </div>
-               <div class="form-group logged" style="display: none">
-               		<label>Replyer</label>
-               		<input class="form-control" name="replyer" readonly>
-               </div>
-               <div class="form-group">
-               		<label>비밀글</label>
-               		<input class="form-control" type="checkbox" name="secret">
-               </div>
-               <div class="form-group">
-               		<label>Reply Date</label>
-               		<input class="form-control" name="replyDate" readonly>
-               </div>
-            </div>
-            <div class="modal-footer">
-            	<button type="button" id="modal-mod" class="btn btn-warning">Modify</button>
-            	<button type="button" id="modal-rem" class="btn btn-danger">Remove</button>
-                <button type="button" id="modal-reg" class="btn btn-primary">Register</button>
-                <!-- <a rel="modal:close" class="close-modal ">   -->     
-               		<button type="button" id="modal-close"  class="btn btn-default">Close</button>
-               	<!-- </a> -->
-                
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
@@ -126,6 +80,21 @@
 	</div>
 </div>
 
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
 <%@ include file="../reply/replyList.jsp" %>
 
 <%@ include file="../include/jsFiles.jsp" %>
@@ -136,27 +105,33 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-	
-		var csrfHeader = "${_csrf.headerName}";
-		var csrfTokenVal = "${_csrf.token}";
+			
+		const csrfHeader = "${_csrf.headerName}";
+		const csrfTokenVal = "${_csrf.token}";
 		
 		/* $(document).ajaxSend(function(e, xhr, options){
 			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
 		}); */
 	
-		var bno = "${boardVO.bno}";
-		var name = "";
-		<sec:authorize access="isAuthenticated()">
-			name = "${loginUser.username}";
-		</sec:authorize>
-		var isLogged = name === "" ? false : true;
+		const bno = "${boardVO.bno}";
+		let nameTestAuth = "";
+		let isLoggedTestAuth = false;
 		
+		<sec:authorize access="isAuthenticated()">
+			nameTestAuth = "${loginUser.username}";
+			isLoggedTestAuth = true;
+		</sec:authorize>
+		
+		const name = nameTestAuth;
+		const isLogged = isLoggedTestAuth;
+		
+		// 첨부파일(이미지 등) 불러오기
 		(function(){
 			$.getJSON("/board/daily/"+bno+"/attach", function(res){
-				var str = "";
+				let str = "";
 				$(res).each(function(i, attach){
-					if(attach.fileType){
-						var filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
+					if(attach.fileType.includes("img")){
+						const filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
 						str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'><div>";
 						str += "<img src='/displayFile?fileName="+filePath+"'></div></li>";
 					}else{
@@ -168,17 +143,18 @@
 			});
 		})();
 		
-		var pageNum = 1;
-		var replyFooter = $(".panel-footer");
+		// 댓글 불러오기
+		let pageNum = 1;
+		const replyFooter = $(".panel-footer");
 		function showReplyPagination(){
-			var str = "<ul class='pagination pull-right'>";
+			let str = "<ul class='pagination pull-right'>";
 			if("${pm.prev}"){ 
 				str += "<li class='page-item'><a class='page-link' href='"+"${pm.startPage-1}"+"'>Prev</a></li>";
 			}
-			var startPage = parseInt("${startPage}");
-			var endPage = parseInt("${endPage}");
+			const startPage = parseInt("${startPage}");
+			const endPage = parseInt("${endPage}");
 			for(let i=startPage; i<=endPage; i++){
-				var active = pageNum == i ? "active" : "";
+				const active = pageNum == i ? "active" : "";
 				str += "<li class='page-item "+active+"'><a class='page-link' href='"+i+"</a></li>";
 			}
 			if("${pm.next}"){ 
@@ -188,181 +164,58 @@
 			replyFooter.html(str);
 		}
 		
-		var replyUl = $(".chat");
+		const replyUl = $(".chat");
+		const option = '<div class=""><span class="pull-right report">|신고</span><span id="reply-del" class="pull-right">|삭제</span><span id="reply-added" class="pull-right">대댓글</span></div>';
+		
 		showList(1);
 		function showList(page){
 			replyService.getList({bno: bno, page: page||1}, function(res){
-
-				var {replies} = res;	
-				var str = "";
+				
+				const {replies} = res;	
+				let str = "";		
+				
 				if(replies === null || replies.length === 0){
 					replyUl.html = "";
 					return;
 				}
 				let isSecret = false;
 				for(let i=0, len=replies.length||0; i<len; i++){
-					isSecret = replies[i].reply === null;
+					isSecret = replies[i].reply === null ? true : false;
 					if(isSecret){
-						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
+						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀 댓글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
 					}
 					else{
+						
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += '<button class="added btn btn-primary btn-xs pull-right">대댓글</button></div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="1"></div></li>';
+						str += option
+						str += '</div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="1"></div></li>';
 					}
 					
 				}
 				replyUl.html(str);
 				showReplyPagination();
-			})
+
+			});
 		}
 
-		function updateLike(like, likeCnt){
-			if(name === ""){ 
-				alert("로그인이 필요합니다.");
-				return;
-			}
-			$.ajax({
-				method: "get",
-				url: "/board/daily/"+bno+"/like",
-				data: {
-					bno: bno,
-					likeCnt: likeCnt,
-					username: encodeURIComponent(name)
-					},
-				success: function(){
-					like.css("color", diff == 1 ? "red" : "white");
-					console.log(like);
-					var likeNum = like.find(".like-num");
-					likeNum.text(parseInt(likeNum.text())+diff);
-				}
-			});
-		}
-		
-		$(".like").on("click", function(){
-			if($(this).css("color") === "red"){ 
-				updateLike($(this), -1);
-				return;
-			}
-			else{
-				updateLike($(this), 1);
-				return;
-			}
-		});
-		
-		var modal = $(".modal");
-		var modalReply = modal.find("input[name='reply']");
-		
-		function activatedReplyer(){
-			if(name === "") return modal.find(".non-logged input[name='replyer']");
-			else return modal.find(".logged input[name='replyer']");
-		}
-		var modalReplyer = activatedReplyer();
-		
-		var modalReplyDate = modal.find("input[name='replyDate']");
-		var modalPassword = modal.find("input[name='password']");
-		var modalSecret = modal.find("input[name='secret']");
-		
-		var modalMod = modal.find("#modal-mod");
-		var modalRem = modal.find("#modal-rem");
-		var modalReg = modal.find("#modal-reg");
-		var modalClose = modal.find("#modal-close");
-		
-		function showReplyer(type){
-			if(type === "nonLogged"){
-				modal.find(".logged").css("display", "none");
-				modal.find(".non-logged").css("display", "");
-				return;
-			}
-			if(type === "logged"){
-				modal.find(".logged").css("display", "");
-				modal.find(".non-logged").css("display", "none");
-				modalReplyer.val(name);
-				return;
-			}
-		}
-		
-		function showReplyAddModal(){
-			modalReply.val("").attr("readonly", false);
-			
-			if(name === "") showReplyer("nonLogged"); 
-			else showReplyer("logged");
-			
-			modalReplyDate.closest("div").hide();
-			modalSecret.parent().show();
-			modal.find("button[id!='modal-close']").hide();
-			modalReg.show();
-			
-			modal.removeClass("fade");
-			modal.modal("show");
-		}
-		
-		$('#addReplyBtn').on("click", function(){
-			showReplyAddModal();
-		});
-		
-		modalClose.on("click", function(){
-			$.modal.close();
-		});
-		
-		function checkInputVal(inputList){
-			
-			for(let item in inputList){
-				
-				if(inputList[item]===null || inputList[item]===undefined || (''+inputList[item]).trim() === "") return false;
-			}
-			return true;
-		}
-		
-		modalReg.on("click", function(){
-			var required = {
-					reply: modalReply.val(),
-					replyer: modalReplyer.val(),
-					bno: bno,
-			}
-			if(isLogged && !checkInputVal(required)){
-				alert("빈 칸을 채워주세요.");
-				return;
-			}
-			else if(!isLogged){
-				required.password = modalPassword.val();
-				if(!checkInputVal(required)){
-					alert("빈 칸을 채워주세요.");
-					return;
-				}
-			}
-			
-			required.parRno = modal.data("parRno");
-			required.secret = modalSecret.is(":checked");
-			
-			replyService.add(required, function(res){
-				modal.find("input").val("");
-				$.modal.close();
-				showList(1);
-			});
-		});
-		
-		modalMod.on("click", function(){
-			var reply = {
-				rno: modal.data('rno'),
-				reply: modalReply.val(),
-				replyer: modalReplyer.val()
-			};
-			replyService.update(reply, function(res){
-				modal.modal("hide");
+		replyUl.on("click", "#reply-del",function(e){
+			const rno = $(this).parents("li").data("rno");
+			replyService.remove({rno : rno, bno: bno}, 
+				function(res){
 				showList(pageNum);
 			});
 		});
 		
-		modalRem.on("click", function(){
-			replyService.remove(modal.data("rno"), modalReplyer.val(), function(res){
-				modal.modal("hide");
-				showList(pageNum);
-			});
-		});
+		const replyForm = $(".reply" ).clone();
+		console.log(replyForm);
+		let curShowedReplyForm = null;
 		
-		replyUl.on("click", ".added", function(e){
-			showReplyAddModal();
-			modal.data("parRno", $(this).parents("li").data("rno"));
+		replyUl.on("click", "#reply-added", function(e){
+			getAddedList($(this).parents("li"));
+			replySec.data("parRno", $(this).parents("li").data("rno"));
+			if(curShowedReplyForm) curShowedReplyForm.remove();
+			replyUl.parents("li").find(".reply-btns").prepend(replyForm);
+			
 		});
 		
 		replyUl.on("click", "a", function(e){
@@ -380,6 +233,104 @@
 			getAddedList($(this).parents("li"));
 		});
 		
+		replyUl.on("click", ".reply-btns", function(e){
+			var target = $(e.target);
+			var addedSection = $(e.currentTarget).parent();
+			
+			if(target.hasClass("fold")){
+				addedSection.children().remove();
+				var reply = addedSection.parent();
+				reply.find("a").attr("data-open", "false");
+				return;
+			}
+			if(target.hasClass("more")){
+				getAddedList(addedSection.parent());
+			}
+			
+		});
+		
+		function updateLike(like, likeCnt){
+			if(!isLogged){ 
+				alert("로그인이 필요합니다.");
+				return;
+			}
+			$.ajax({
+				method: "get",
+				url: "/board/daily/"+bno+"/like",
+				data: {
+					bno: bno,
+					likeCnt: likeCnt,
+					username: encodeURIComponent(name)
+					},
+				success: function(){
+					like.css("color", diff == 1 ? "red" : "white");
+					var likeNum = like.find(".like-num");
+					likeNum.text(parseInt(likeNum.text())+diff);
+				}
+			});
+		}
+		
+		$(".like").on("click", function(){
+			if($(this).css("color") === "red"){ 
+				updateLike($(this), -1);
+				return;
+			}
+			else{
+				updateLike($(this), 1);
+				return;
+			}
+		});
+		
+		const replySec = $(".reply");
+		const reply = replySec.find("textarea[name='reply']");
+		
+		const replyer = replySec.find("input[name='replyer']");
+		const replyPassword = replySec.find("input[name='password']");
+		const replySecret = replySec.find("input[name='secret']");
+		
+		const replyReg = replySec.find("#reply-reg");
+		
+		function checkInputVal(inputList){
+			
+			for(let item in inputList){
+				
+				if(inputList[item]===null || inputList[item]===undefined || (''+inputList[item]).trim() === "") return false;
+			}
+			return true;
+		}
+		
+		replyReg.on("click", function(){
+			var required = {
+					reply: reply.val(),
+					replyer: replyer.val(),
+					bno: bno,
+			}
+			if(isLogged && !checkInputVal(required)){
+				alert("빈 칸을 채워주세요.");
+				return;
+			}
+			else if(!isLogged){
+				required.password = replyPassword.val();
+				if(!checkInputVal(required)){
+					alert("빈 칸을 채워주세요.");
+					return;
+				}
+			}
+			
+			//required.parRno = replySec.data("parRno");
+			required.secret = replySecret.is(":checked");
+			required.bno = bno;
+			
+			console.log(required);
+			
+			replyService.add(required, function(res){
+				replySec.find("input").val("");
+				replySec.data("parRno","");
+				showList(1);
+			});
+			
+		});
+		
 		function getAddedList(eachReply){
 		
 			var parRno = eachReply.data("rno");
@@ -391,7 +342,7 @@
 			var eachReplySection = eachReply.find(".added-replies");
 			var reqPage = parseInt(eachReplySection.get(0).dataset.page);
 			
-			$.getJSON('/replies/added/'+parRno+"/"+reqPage, function(replies){
+			$.getJSON('/board/daily/'+bno+'/reply/added/'+parRno+"/"+reqPage, function(replies){
 				var str = "";
 				
 				for(let i=0, len=replies.length||0; i<len; i++){
@@ -413,22 +364,6 @@
 			});
 		}
 		
-		replyUl.on("click", ".reply-btns", function(e){
-			var target = $(e.target);
-			var addedSection = $(e.currentTarget).parent();
-			
-			if(target.hasClass("fold")){
-				addedSection.children().remove();
-				var reply = addedSection.parent();
-				reply.find("a").attr("data-open", "false");
-				return;
-			}
-			if(target.hasClass("more")){
-				getAddedList(addedSection.parent());
-			}
-			
-		});
-		
 		replyFooter.on("click", "li a", function(e){
 			e.preventDefault();
 			var targetPage = $(this).attr("href");
@@ -448,18 +383,10 @@
 			}
 		});
 		
-		function showImage(path){
-			$(".big-picture-wrapper").css("display","flex").show();
-			$(".big-picture").html("<img src='/displayFile?fileName="+path+"'>").animate({width: "100%", height: "100%"}, 1000);
-		}
 		
-		var pictureWrapper = $(".big-picture-wrapper");
-		pictureWrapper.on("click", function(){
-			$(".big-picture").animate({width: "0", height: "0"}, 1000);
-			setTimeout(function(){
-				pictureWrapper.hide();
-			}, 1000);
-		});
+		function showImage(path){
+			$(".modal-body p").html("<img src='/displayFile?fileName="+path+"'>");
+		}
 	
 		var formObj = $("form[role='form']");
 		

@@ -27,14 +27,7 @@ public class UserController {
 		return "board/user";
 	}
 	
-	@GetMapping("/board/admin")
-	//@PreAuthorize("isAuthenticated()")
-	public String showAdminInfo(Model model){
-		model.addAttribute("postCnt", statServ.getPostCount('d'));
-		model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount('d'));
-		model.addAttribute("userJoinCnt", statServ.getUserJoinCount('d'));
-		return "/dashBoard/admin/adminMain";
-	}
+	
 	
 	@GetMapping("/board/user/info/auth")
 	@PreAuthorize("isAuthenticated()")

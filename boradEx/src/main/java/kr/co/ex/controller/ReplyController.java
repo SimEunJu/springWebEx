@@ -32,7 +32,7 @@ import lombok.extern.log4j.Log4j;
 
 @RestController
 @Log4j
-@RequestMapping("/replies")
+@RequestMapping("/board/daily/{bno}/reply")
 @RequiredArgsConstructor
 public class ReplyController {
 
@@ -42,12 +42,20 @@ public class ReplyController {
 	@NonNull
 	private NotificationService notiServ;
 	
-	@PostMapping(consumes="application/json", produces={MediaType.TEXT_PLAIN_VALUE})
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<String> registerReply(@RequestBody ReplyVO vo){
+	@PostMapping(value="", consumes="application/json", produces={MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> registerReply(ReplyVO vo, 
+			@RequestParam String writer, @PathVariable int bno){
 		try {
 			log.info(vo.toString());
 			serv.addReply(vo);
+			if(!writer.equals(vo.getReplyer())){
+				NotificationVO noti = NotificationVO.builder()
+						.rno(vo.getRno())
+						.bno(bno)
+						.username(writer)
+						.build();
+				notiServ.registerNotification(noti);
+			}
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,7 +63,7 @@ public class ReplyController {
 		}
 	}
 	
-	@GetMapping(value = "/{bno}/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@GetMapping(value = "/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@PreAuthorize("permitAll()")
 	public ResponseEntity<Map<String, Object>> getReplyList(
 			@PathVariable Integer bno, @PathVariable Integer page, HttpServletRequest req){
@@ -83,7 +91,8 @@ public class ReplyController {
 	
 	@GetMapping(value="/added/{parRno}/{page}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("permitAll()")
-	public ResponseEntity<List<ReplyVO>> addedList(@PathVariable int parRno, @PathVariable int page, HttpServletRequest req){
+	public ResponseEntity<List<ReplyVO>> addedList(@PathVariable int bno, @PathVariable int parRno, 
+			@PathVariable int page, HttpServletRequest req){
 		try{
 			Criteria cri = new Criteria();
 			cri.setPage(page);
@@ -92,14 +101,7 @@ public class ReplyController {
 			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
 			
 			List<ReplyVO> replies = serv.listCriteriaAddedReply(parRno, cri);
-			// 과연 여기에 두는 것이 최선인가...
-			NotificationVO noti = NotificationVO
-				.builder()
-					.userid(serv.getReplyer(parRno))
-					.rno(parRno)
-					.bno(null)
-					.build();
-			notiServ.registerNotification(noti);
+			
 			return new ResponseEntity<>(replies, HttpStatus.OK);
 			
 		} catch (Exception e) {
@@ -108,7 +110,7 @@ public class ReplyController {
 		}
 	}
 	
-	@GetMapping(value="/{rno}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	/*@GetMapping(value="/{rno}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<ReplyVO> getReply(@PathVariable int rno){
 		ResponseEntity<ReplyVO> res = null;
 		try {
@@ -117,7 +119,7 @@ public class ReplyController {
 			e.printStackTrace();
 		}
 		return res;
-	}
+	}*/
  	
 	@PutMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	@PreAuthorize("principal.username == #vo.replyer")

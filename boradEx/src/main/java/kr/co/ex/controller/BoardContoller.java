@@ -32,6 +32,7 @@ import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
+import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.UserLikeService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,10 @@ public class BoardContoller {
 	
 	@NonNull
 	private BoardService boardServ;
-	
 	@NonNull
 	private UserLikeService likeServ;
+	@NonNull
+	private NotificationService notiServ;
 	
 	// 이미지 파일이 저장되는 루트 경로		
 	@Resource
@@ -120,12 +122,16 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/{boardNo}")
-	public String showEachPost(@PathVariable Integer boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
+	public String showEachPost(@PathVariable Integer boardNo, 
+			@RequestParam(required=false) String from, @RequestParam(required=false) Integer rno,
+			@ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			boardServ.updateViewCnt(boardNo);
+			if(from != null && from.equals("noti")) notiServ.markReadFlagNotification(rno);
 			model.addAttribute("isUserLiked", likeServ.isUserLiked());
 			model.addAttribute("replyCnt", boardServ.getReplyCnt(boardNo));
 			model.addAttribute(boardServ.read(boardNo));
+			log.info(boardServ.read(boardNo));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

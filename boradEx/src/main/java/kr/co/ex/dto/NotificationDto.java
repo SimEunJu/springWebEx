@@ -1,15 +1,13 @@
-package kr.co.ex.domain;
+package kr.co.ex.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
-@Builder
-public class NotificationVO {
+public class NotificationDto {
 	private Integer nno;
 	private LocalDateTime regdate;
 	private LocalDateTime readdate;
@@ -19,4 +17,7 @@ public class NotificationVO {
 	private Integer rno;
 	private String username;
 	private char type;
+	
+	private String title;
+	private String reply;
 }
