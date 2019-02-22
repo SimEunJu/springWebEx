@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
+import kr.co.ex.dto.ReplyDto;
 import kr.co.ex.mapper.BoardMapper;
 import kr.co.ex.mapper.ReplyMapper;
 
@@ -39,13 +40,14 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	@Transactional
-	public List<ReplyVO> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception {
+	public List<ReplyDto> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception {
 
 		if(getWriterName(bno).equals(currentUser)){
 			return replyMapper.listCriteria(bno, cri)
 					.stream().map(r -> {
 						try {
 							r.setAddedCount(getAddedTotalCount(r.getRno()));
+							r.setDeleteFlag(true);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -55,10 +57,11 @@ public class ReplyServiceImpl implements ReplyService {
 			
 		
 		return replyMapper.listCriteria(bno, cri).stream().map(r -> {
-			if(r.getSecret()){
+			if(r.isSecret()){
 				r.setReplyer(null);
 				r.setReply(null);
 			}
+			else if(r.getReplyer().equals(currentUser)) r.setDeleteFlag(true);
 			try {
 				r.setAddedCount(getAddedTotalCount(r.getRno()));
 			} catch (Exception e) {

@@ -4,11 +4,12 @@ import java.util.List;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
+import kr.co.ex.dto.ReplyDto;
 
 public interface ReplyService {
 	public void addReply(ReplyVO vo) throws Exception;
 	public List<ReplyVO> listReply(Integer bno) throws Exception;
-	public List<ReplyVO> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception;
+	public List<ReplyDto> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception;
 	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) throws Exception;
 	
 	public int getTotalCount(Integer bno) throws Exception;

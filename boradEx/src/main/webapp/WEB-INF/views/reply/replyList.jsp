@@ -11,11 +11,11 @@
 			<div class="panel-body">
 				<div class="row reply-sec">
 					<div class="col-sm-2">
-						<div class="reply-secret">
-							<label>비밀글</label>
-							<input type="checkbox" name="secret">
-						</div>
 						<sec:authorize access="isAuthenticated()">
+							<div class="reply-secret">
+								<label>비밀글</label>
+								<input type="checkbox" name="secret">
+							</div>
 							<div class="logged"><input type="hidden" name="replyer"></div>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">

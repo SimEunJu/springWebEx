@@ -165,7 +165,7 @@
 		}
 		
 		const replyUl = $(".chat");
-		const option = '<div class=""><span class="pull-right report">|신고</span><span id="reply-del" class="pull-right">|삭제</span><span id="reply-added" class="pull-right">대댓글</span></div>';
+		const option = '<div><span class="pull-right report">|신고</span><span id="reply-del" class="pull-right">|삭제</span><span id="reply-added" class="pull-right" data-open="false">대댓글</span></div>';
 		
 		showList(1);
 		function showList(page){
@@ -181,13 +181,27 @@
 				let isSecret = false;
 				for(let i=0, len=replies.length||0; i<len; i++){
 					isSecret = replies[i].reply === null ? true : false;
-					if(isSecret){
+					if(replies[i].deleteFlag){
+						switch(replies[i].deleteFlag){
+						case('R'):
+							str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"댓글 작성자가 삭제한 댓글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
+							break;
+						case('B'):
+							str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"게시글 작성자가 삭제한 댓글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
+							break;
+						case('A'):
+							str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"관리자가 삭제한 댓글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
+							break;
+						}
+					}
+					else if(isSecret){
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀 댓글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
 					}
 					else{
-						
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += option
+						str += '<div><span class="pull-right report">|신고</span>';
+						if(replies[i].deleteFlag) str += '<span id="reply-del" class="pull-right">|삭제</span>';
+						str += '<span id="reply-added" class="pull-right" data-open="false">대댓글</span></div>';
 						str += '</div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="1"></div></li>';
 					}
 					
@@ -206,31 +220,33 @@
 			});
 		});
 		
-		const replyForm = $(".reply" ).clone();
+		const replyForm = $(".reply-sec" ).clone();
 		console.log(replyForm);
 		let curShowedReplyForm = null;
 		
 		replyUl.on("click", "#reply-added", function(e){
-			getAddedList($(this).parents("li"));
-			replySec.data("parRno", $(this).parents("li").data("rno"));
+			if(toggleAddedReply($(this)) === false) return;
+			replySec.data("parRno", reply.data("rno"));
 			if(curShowedReplyForm) curShowedReplyForm.remove();
 			replyUl.parents("li").find(".reply-btns").prepend(replyForm);
 			
 		});
-		
-		replyUl.on("click", "a", function(e){
-			e.preventDefault();
-			if($(this).get(0).dataset.open === "true") {
-				var rno = $(this).attr("href");
-				var reply = $(this).parents("li[data-rno='"+rno+"']");
+		function toggleAddedReply(self){
+			if($(self).get(0).dataset.open === "true") {
+				var reply = $(self).parents("li");
 				reply.find("li").remove();
 				reply.find("button").hide();
-				$(this).attr("data-open","false")
-				return;
+				$(self).attr("data-open","false")
+				return false;
 			}
 			
-			$(this).attr("data-open","true");
-			getAddedList($(this).parents("li"));
+			$(self).attr("data-open","true");
+			getAddedList($(self).parents("li"));
+			return true;
+		}
+		replyUl.on("click", "a", function(e){
+			e.preventDefault();
+			toggleAddedReply($(this));
 		});
 		
 		replyUl.on("click", ".reply-btns", function(e){
@@ -363,7 +379,7 @@
 				
 			});
 		}
-		
+	
 		replyFooter.on("click", "li a", function(e){
 			e.preventDefault();
 			var targetPage = $(this).attr("href");

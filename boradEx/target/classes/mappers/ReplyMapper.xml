@@ -15,7 +15,7 @@
   	select * from tbl_reply where bno=#{bno}
   </select>
   
-  <select id="listCriteria" resultType="kr.co.ex.domain.ReplyVO">
+  <select id="listCriteria" resultType="kr.co.ex.dto.ReplyDto">
   	select * from tbl_reply 
   	where bno=#{bno} and isnull(par_rno)
   	order by rno desc
