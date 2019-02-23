@@ -49,7 +49,7 @@
 	</sec:authorize>
 	<button type="submit" id="boardAllBtn" class="btn btn-primary">List All</button>
 	
-	<button class="like" class="btn btn-primary btn-sm" style="color: ${isUserLiked ? 'red' : 'white'}">
+	<button class="like" class="btn btn-primary btn-sm" style="color: ${isUserLiked ? 'red' : 'black'}">
 		<span style="font-size: 20px; font-weight: bold;">♥</span>
 		좋아요 
 		<span class="like-num">${boardVO.userLike}</span>
@@ -165,7 +165,6 @@
 		}
 		
 		const replyUl = $(".chat");
-		const option = '<div><span class="pull-right report">|신고</span><span id="reply-del" class="pull-right">|삭제</span><span id="reply-added" class="pull-right" data-open="false">대댓글</span></div>';
 		
 		showList(1);
 		function showList(page){
@@ -198,11 +197,11 @@
 						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀 댓글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
 					}
 					else{
-						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
+						str += '<li class="left clearfix" data-open="false" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
 						str += '<div><span class="pull-right report">|신고</span>';
 						if(replies[i].deleteFlag) str += '<span id="reply-del" class="pull-right">|삭제</span>';
 						str += '<span id="reply-added" class="pull-right" data-open="false">대댓글</span></div>';
-						str += '</div><p>'+replies[i].reply+'<a data-open="false" href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-replies" data-page="1"></div></li>';
+						str += '</div><p>'+replies[i].reply+'<a href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-form"></div><div class="added-replies" data-page="1"></div></li>';
 					}
 					
 				}
@@ -221,26 +220,28 @@
 		});
 		
 		const replyForm = $(".reply-sec" ).clone();
-		console.log(replyForm);
-		let curShowedReplyForm = null;
 		
 		replyUl.on("click", "#reply-added", function(e){
-			if(toggleAddedReply($(this)) === false) return;
-			replySec.data("parRno", reply.data("rno"));
-			if(curShowedReplyForm) curShowedReplyForm.remove();
-			replyUl.parents("li").find(".reply-btns").prepend(replyForm);
+			const reply = $(this).parents("li");
+			const replyFormSec = reply.find(".added-form");
 			
+			if(replyFormSec.find(".reply-sec").length === 0){
+				$(replyFormSec).append(replyForm);
+				if(reply.get(0).dataset.open === "false") toggleAddedReply($(this));
+			}
+			else{
+				if(toggleAddedReply($(this)) === false) replyFormSec.children().remove();
+			}
 		});
 		function toggleAddedReply(self){
-			if($(self).get(0).dataset.open === "true") {
-				var reply = $(self).parents("li");
-				reply.find("li").remove();
-				reply.find("button").hide();
-				$(self).attr("data-open","false")
+			var reply = $(self).parents("li");
+			if(reply.get(0).dataset.open === "true") {
+				reply.find(".added-replies").children().remove();
+				reply.attr("data-open","false")
 				return false;
 			}
 			
-			$(self).attr("data-open","true");
+			reply.attr("data-open","true");
 			getAddedList($(self).parents("li"));
 			return true;
 		}
@@ -250,13 +251,13 @@
 		});
 		
 		replyUl.on("click", ".reply-btns", function(e){
-			var target = $(e.target);
-			var addedSection = $(e.currentTarget).parent();
+			const target = $(e.target);
+			const addedSection = $(e.currentTarget).parents(".added-replies");
 			
 			if(target.hasClass("fold")){
 				addedSection.children().remove();
-				var reply = addedSection.parent();
-				reply.find("a").attr("data-open", "false");
+				const reply = addedSection.parents("li");
+				reply.attr("data-open", "false");
 				return;
 			}
 			if(target.hasClass("more")){
@@ -279,7 +280,7 @@
 					username: encodeURIComponent(name)
 					},
 				success: function(){
-					like.css("color", diff == 1 ? "red" : "white");
+					like.css("color", diff == 1 ? "red" : "black");
 					var likeNum = like.find(".like-num");
 					likeNum.text(parseInt(likeNum.text())+diff);
 				}
@@ -332,11 +333,9 @@
 					return;
 				}
 			}
-			
-			//required.parRno = replySec.data("parRno");
+		
+			required.parRno = replySec.data("parRno");
 			required.secret = replySecret.is(":checked");
-			required.bno = bno;
-			
 			console.log(required);
 			
 			replyService.add(required, function(res){
