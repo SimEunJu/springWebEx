@@ -1,5 +1,6 @@
 package kr.co.ex.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -20,9 +21,12 @@ public interface BoardMapper {
 	public void updateLike(@Param("bno") int bno, @Param("diff") int diff) throws Exception;
 	
 	public void delete(Integer bno) throws Exception;
+	
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
+	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception;
+	
 	public int searchCount(SearchCriteria cri) throws Exception;
 	public int totalCount() throws Exception;
 	

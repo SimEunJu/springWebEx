@@ -59,7 +59,7 @@ const replyService = (function(){
 		})
 	}
 	function displayTime(timeVal){
-		
+		console.log(timeVal);
 		var today = new Date();
 		var gap = today.getTime() - timeVal;
 		var dateObj = new Date(timeVal);

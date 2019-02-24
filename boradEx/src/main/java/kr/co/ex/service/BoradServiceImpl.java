@@ -1,5 +1,6 @@
 package kr.co.ex.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,11 @@ public class BoradServiceImpl implements BoardService {
 	@Override
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception {
 		return mapper.listCriteria(cri);
+	}
+
+	@Override
+	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception {
+		return mapper.listRegdate(regdate);
 	}
 
 	@Override

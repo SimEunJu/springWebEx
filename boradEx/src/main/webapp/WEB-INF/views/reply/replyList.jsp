@@ -9,7 +9,7 @@
 			</div>
 			
 			<div class="panel-body">
-				<div class="row reply-sec">
+				<div class="row reply-form">
 					<div class="col-sm-2">
 						<sec:authorize access="isAuthenticated()">
 							<div class="reply-secret">
@@ -31,10 +31,10 @@
 						</div>
 					</div>
 					<div class="col-sm-1">
-						<button class="btn btn-primary btn-xs" id="reply-reg">입력</button>
+						<button class="btn btn-primary btn-xs reply-reg">입력</button>
 					</div>
-				</div>
 				<hr>
+				</div>
 				<ul class="chat">
 					
 				</ul>

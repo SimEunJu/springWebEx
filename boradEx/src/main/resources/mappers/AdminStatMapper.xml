@@ -5,8 +5,12 @@
 
 <mapper namespace="kr.co.ex.mapper.AdminStatMapper">
 
-<select id="getUserJoinCount" resultType="int">
-	select join_cnt from tbl_user_stat where today > #{date}
+<select id="getUserJoinCount" resultType="long">
+	<![CDATA[
+		select sum(join_cnt) from tbl_user_stat 
+		where #{startDay} <= regdate and regdate < #{endDay}
+	]]>
+	
 </select>
 
 <select id="getUserLeaveCount" resultType="int">

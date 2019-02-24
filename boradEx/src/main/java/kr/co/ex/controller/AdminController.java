@@ -1,15 +1,21 @@
 package kr.co.ex.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.co.ex.domain.Criteria;
 import kr.co.ex.service.AdminStatService;
+import kr.co.ex.service.BoardService;
 import kr.co.ex.service.MsgService;
 import kr.co.ex.service.NotificationService;
+import kr.co.ex.util.DateUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -25,13 +31,21 @@ public class AdminController {
 	private NotificationService notiServ;
 	@NonNull
 	private MsgService msgServ;
+	@NonNull
+	private BoardService boardServ;
 	
 	@GetMapping("")
-	public String showAdminInfo(Model model){
-		model.addAttribute("postCnt", statServ.getPostCount('d'));
-		model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount('d'));
-		model.addAttribute("userJoinCnt", statServ.getUserJoinCount('d'));
-		return "";
+	public String showAdminInfo(@RequestParam(required=false, defaultValue="d") char type, Model model){
+		try{
+			model.addAttribute("postCnt", statServ.getPostCount(type));
+			model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount(type));
+			model.addAttribute("userJoinCnt", statServ.getUserJoinCount(type));
+			LocalDateTime defaultDate = DateUtils.getAFewWeeksAgo(1);
+			model.addAttribute("hotPost", boardServ.listRegdate(defaultDate));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "dashBoard/admin/adminMain";
 	}
 	
 	@GetMapping("/noti")
@@ -42,7 +56,7 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "";
+		return "dashBoard/noti";
 	}
 	
 	@GetMapping("/msg")
@@ -53,23 +67,25 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "";
+		return "dashBoard/msg";
 	}
 	@GetMapping("/user")
-	public String manageUser(){
-		return "";
+	public String manageUser(Criteria cri, Model model){
+		
+		return "dashBoard/admin/userManage";
 	}
 	@GetMapping("/post")
-	public String managePost(){
-		return "";
+	public String managePost(Criteria cri, Model model){
+		return "dashBoard/post";
 	}
 	@GetMapping("/reply")
-	public String manageReply(){
-		return "";
+	public String manageReply(Criteria cri, Model model){
+		return "dashBoard/reply";
 	}
+	
 	@GetMapping("/info")
-	public String showAdminInfo(){
-		return "";
+	public String showAdminInfo(Model model){
+		return "dashBoard/admin/adminInfo";
 	}
 	
 	

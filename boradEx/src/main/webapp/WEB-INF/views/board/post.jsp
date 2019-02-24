@@ -23,6 +23,7 @@
 	<input type="hidden" name="keyword" value="${cri.keyword }">
 </form>
 
+<div class="container">
 <div class="box-body">
 	<div class="form-group">
 		<label for="exampleInputEmail1">Title</label>
@@ -78,6 +79,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 <div class="modal" tabindex="-1" role="dialog">
@@ -199,8 +201,8 @@
 					else{
 						str += '<li class="left clearfix" data-open="false" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
 						str += '<div><span class="pull-right report">|신고</span>';
-						if(replies[i].deleteFlag) str += '<span id="reply-del" class="pull-right">|삭제</span>';
-						str += '<span id="reply-added" class="pull-right" data-open="false">대댓글</span></div>';
+						if(replies[i].deleteFlag) str += '<span class="pull-right reply-del">|삭제</span>';
+						str += '<span class="pull-right reply-added" data-open="false">대댓글</span></div>';
 						str += '</div><p>'+replies[i].reply+'<a href="'+replies[i].rno+'"> ['+replies[i].addedCount+']'+'</a></p></div><div class="added-form"></div><div class="added-replies" data-page="1"></div></li>';
 					}
 					
@@ -211,7 +213,7 @@
 			});
 		}
 
-		replyUl.on("click", "#reply-del",function(e){
+		replyUl.on("click", ".reply-del",function(e){
 			const rno = $(this).parents("li").data("rno");
 			replyService.remove({rno : rno, bno: bno}, 
 				function(res){
@@ -219,13 +221,14 @@
 			});
 		});
 		
-		const replyForm = $(".reply-sec" ).clone();
+		const replyForm = $(".reply-form" ).clone()
+		replyForm.find("button").removeClass('reply-reg').addClass('added-reply-reg');
 		
-		replyUl.on("click", "#reply-added", function(e){
+		replyUl.on("click", ".reply-added", function(e){
 			const reply = $(this).parents("li");
 			const replyFormSec = reply.find(".added-form");
 			
-			if(replyFormSec.find(".reply-sec").length === 0){
+			if(replyFormSec.find(".reply-form").length === 0){
 				$(replyFormSec).append(replyForm);
 				if(reply.get(0).dataset.open === "false") toggleAddedReply($(this));
 			}
@@ -250,6 +253,14 @@
 			toggleAddedReply($(this));
 		});
 		
+		replyUl.on("click", ".added-reply-reg", function(e){
+			e.preventDefault();
+			const replySec = $(e.currentTarget).parents("li");
+			const replyForm = replySec.find(".reply-form");
+			replyForm.attr("data-parrno", replySec.data("rno"));
+			addReply(replyForm);
+		});
+		
 		replyUl.on("click", ".reply-btns", function(e){
 			const target = $(e.target);
 			const addedSection = $(e.currentTarget).parents(".added-replies");
@@ -258,6 +269,7 @@
 				addedSection.children().remove();
 				const reply = addedSection.parents("li");
 				reply.attr("data-open", "false");
+				addedSection.siblings(".added-form").remove();
 				return;
 			}
 			if(target.hasClass("more")){
@@ -298,14 +310,14 @@
 			}
 		});
 		
-		const replySec = $(".reply");
+		const replySec = $(".reply-form");
 		const reply = replySec.find("textarea[name='reply']");
 		
 		const replyer = replySec.find("input[name='replyer']");
 		const replyPassword = replySec.find("input[name='password']");
 		const replySecret = replySec.find("input[name='secret']");
 		
-		const replyReg = replySec.find("#reply-reg");
+		const replyReg = replySec.find(".reply-reg");
 		
 		function checkInputVal(inputList){
 			
@@ -315,11 +327,10 @@
 			}
 			return true;
 		}
-		
-		replyReg.on("click", function(){
+		function addReply(checkArea){
 			var required = {
-					reply: reply.val(),
-					replyer: replyer.val(),
+					reply: checkArea.find("textarea[name='reply']").val(),
+					replyer: checkArea.find("input[name='replyer']").val(),
 					bno: bno,
 			}
 			if(isLogged && !checkInputVal(required)){
@@ -327,23 +338,26 @@
 				return;
 			}
 			else if(!isLogged){
-				required.password = replyPassword.val();
+				required.password = checkArea.find("input[name='password']").val();
+				console.log(required);
 				if(!checkInputVal(required)){
 					alert("빈 칸을 채워주세요.");
 					return;
 				}
 			}
 		
-			required.parRno = replySec.data("parRno");
-			required.secret = replySecret.is(":checked");
+			required.parRno = checkArea.data("parrno");
+			required.secret = checkArea.is(":checked");
 			console.log(required);
 			
 			replyService.add(required, function(res){
-				replySec.find("input").val("");
-				replySec.data("parRno","");
+				checkArea.find("input").val("");
+				checkArea.data("parrno","");
 				showList(1);
 			});
-			
+		}
+		replyReg.on("click", function(){
+			addReply(replySec);		
 		});
 		
 		function getAddedList(eachReply){

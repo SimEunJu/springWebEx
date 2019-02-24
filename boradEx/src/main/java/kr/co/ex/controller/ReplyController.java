@@ -82,6 +82,7 @@ public class ReplyController {
 			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
 			
 			map.put("replies", serv.listCriteriaReply(bno, cri, currentUser));
+		
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

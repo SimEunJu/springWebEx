@@ -1,6 +1,7 @@
 package kr.co.ex.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +13,8 @@ public class ReplyDto {
 	private Integer bno;
 	private String reply;
 	private String replyer;
-	private LocalDateTime regdate;
-	private LocalDateTime updatedate;
+	private Date regdate;
+	private Date updatedate;
 
 	private Integer parRno;
 	private boolean secret;

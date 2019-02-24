@@ -54,6 +54,15 @@
 	]]>	
 </select>
 
+<select id="listRegdate" resultType="kr.co.ex.domain.BoardVO">
+ 	<![CDATA[
+ 		select * from tbl_board
+ 		where regdate>#{regdate}
+ 		order by viewcnt desc
+ 		limit 0, 10 
+	 ]]>
+</select>
+
 <select id="totalCount" resultType="int">
 	<![CDATA[
 		select count(bno) from tbl_board where bno>0;
