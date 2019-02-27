@@ -29,6 +29,7 @@ public interface BoardService {
 	
 	public int getSearchCount(SearchCriteria cri) throws Exception;
 	public int getTotalCount() throws Exception;
+	public int getTotalCntByWriter(String username) throws Exception;
 	
 	public List<AttachVO> getAttach(Integer bno) throws Exception;
 	public void removeAttach(String fullName) throws Exception;

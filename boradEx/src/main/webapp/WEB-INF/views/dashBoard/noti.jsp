@@ -21,9 +21,9 @@
   		</thead>
   		
  		<tbody>
-    		<tr>
     			<c:forEach var="n" items="noti" varStatus="i">
-    				<th scope="row"><input type="checkbox" name="noti[${i}]" value="${n.nno}" /></th>
+    				<tr>
+    				<th scope="row"><input type="checkbox" name="noti" value="${n.nno}" /></th>
       				<c:choose>
       					<c:when test="${not empty n.title}">
       						<a href="/board/daily/${n.bno}?from=noti&rno=${n.rno}"><td class="noti" style="weight: ${n.read_flag ? 'bold' : ''}">[ ${title} ]에 댓글이 달렸습니다.</td></a>
@@ -35,17 +35,50 @@
       				<td>
       					<fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${n.regdate}" />
       				</td>
+      				</tr>
     			</c:forEach>
-    		</tr>
   		</tbody>
 	</table>
+	<nav aria-label="Page navigation">
+  		<ul class="pagination">
+  			<c:if test="${pageMaker.prev}">
+    		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
+    		</c:if>
+    		
+    		<c:forEach begin=1 end="${pageMaker.endPage>10 ? 10 : pageMaker.endPage}" varStatus="idx">
+    		<li class="page-item"><a class="page-link" href="${varStatus.count}">1</a></li>
+    		</c:forEach>
+    		
+    		<c:if test="${pageMaker.next}">
+    		<li class="page-item"><a class="page-link next" href="">&raquo;</a></li>
+  			</c:if>
+  		</ul>
+	</nav>
 </div>
 
+<script id="table-row" type="text/x-handlebars-template">
+{{#each users}}	
+	<tr>
+		<th scope="row"><input type="checkbox" name="noti" value="{{nno}}" /></th> 
+    		{{#if title}}<a href="/board/daily/{{bno}}?from=noti&rno={{rno}}"><td class="noti" style="weight: {{#if readFlag}}'bold'{{else}}''{{/if}}">[ {{title}} ]에 댓글이 달렸습니다.</td></a>
+      		{{else}}<a href="/board/daily/{{bno}}?from=noti&rno={{rno}}"><td class="noti" style="weight: {{#if readFlag}}'bold'{{else}}''{{/if}}">[ {{reply}} ]에 대댓글이 달렸습니다.</td></a>
+      		{{/if}}
+			<td>{{#dateFormat regdate}}</td>
+     </tr>
+{{/each}}
+</script>
+
+<script src="/radioInputHandle.js"></script>
 <script>
 $("document").ready(function(){
-	$(".noti").on("click", function(){
-		
+	const tableRowSekeleton   = document.getElementById("table-row").innerHTML;
+	const template = Handlebars.compile(tableRowSekeleton);
+	Handlebars.registerHelper("dateFormat", function(date){
+		return new Date(date).toJSON().replace("z", " ").substring(0,16);
 	});
+	
+	const check = checkServInitiator("noti", "/board/api/admin/user", template);
+	
 });
 </script>
 </body>

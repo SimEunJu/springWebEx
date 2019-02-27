@@ -29,6 +29,7 @@ public interface BoardMapper {
 	
 	public int searchCount(SearchCriteria cri) throws Exception;
 	public int totalCount() throws Exception;
+	public int readTotalCntByWriter(String username) throws Exception;
 	
 	public String readWriterName(int bno);
 	

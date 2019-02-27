@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,15 +22,22 @@
   		</thead>
   		
  		<tbody>
+ 			<c:forEach var="post" items="${board}">
     		<tr>
-      			<th scope="row"><input type="checkbox" name="noti[0]" value="nno" /></th>
-      			<td>공지사항입니다.</td>
-				<td>100</td>
-      			<td>2019/2/21</td>
+      			<th scope="row"><input type="checkbox" name="post" value="${post.bno}" /></th>
+      			<td><a href="/board/daily/${post.bno}">${post.title}[${post.replyCnt}]</a></td>
+				<td>${post.viewcnt}</td>
+      			<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${post.regdate}" /></td>
     		</tr>
+    		</c:forEach>
   		</tbody>
 	</table>
 </div>
 
+<script>
+$("document").ready(function(){
+	
+});
+</script>
 </body>
 </html>

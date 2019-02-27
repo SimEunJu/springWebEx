@@ -19,4 +19,5 @@ public class NotificationVO {
 	private Integer rno;
 	private String username;
 	private char type;
+
 }

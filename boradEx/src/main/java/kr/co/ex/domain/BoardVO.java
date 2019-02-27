@@ -3,9 +3,11 @@ package kr.co.ex.domain;
 import java.util.Date;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter @Setter @ToString
 public class BoardVO {
 	private Integer bno;
 	private String title;
@@ -18,5 +20,6 @@ public class BoardVO {
 	private Integer userLike;
 	private char deleteType;
 	
+	private Integer replyCnt;
 	private List<AttachVO> files;
 }

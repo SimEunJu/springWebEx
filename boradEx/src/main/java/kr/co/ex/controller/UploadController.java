@@ -87,7 +87,7 @@ public class UploadController {
 			
 			if(UploadFileUtils.isImage(saveFile)){
 				UploadFileUtils.makeThumbnail(savePath, saveFileName);
-				attach.setFileType(true);
+				attach.setFileType(f.getContentType());
 			}
 			attaches.add(attach);
 			log.info(attaches.toString());

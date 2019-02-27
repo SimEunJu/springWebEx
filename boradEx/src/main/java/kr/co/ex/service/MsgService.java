@@ -8,5 +8,7 @@ public interface MsgService {
 	public List<MsgVO> getMsgList(String receiver) throws Exception;
 	public void setSenderDeleteFlag(int msgNo) throws Exception;
 	public void setReceiverDeleteFlag(int msgNo) throws Exception;
+	
 	public void registerMsg(MsgVO vo) throws Exception;
+	public void registerMsgList(List<String> receivers, MsgVO vo) throws Exception;
 }

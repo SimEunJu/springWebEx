@@ -26,9 +26,7 @@ public class UserController {
 		
 		return "board/user";
 	}
-	
-	
-	
+
 	@GetMapping("/board/user/info/auth")
 	@PreAuthorize("isAuthenticated()")
 	public String showUserAuthInfo(){

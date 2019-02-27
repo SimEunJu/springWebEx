@@ -11,9 +11,12 @@ public class MemberVO implements Serializable{
 
 	private String userpw;
 	private String username;
-	private char enabled;
+	private String state;
+	private int reportCnt;
 	
 	private LocalDateTime regdate;
 	private LocalDateTime updatedate;
+	private LocalDateTime leaveDate; 
+	
 	private List<AuthVO> authList;
 }

@@ -5,7 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.imageio.ImageIO;
 
@@ -19,15 +20,15 @@ import lombok.extern.log4j.Log4j;
 public class UploadFileUtils {
 	private static Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 	
+	
 	public static String calcFolder(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date();
-		String str = sdf.format(date);
-		return str.replaceAll("-", "\\\\");
+		String date = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		return date.replaceAll("-", File.pathSeparator);
 	}
 	
 	public static String makePath(String path){
 		File uploadPath = new File(path, calcFolder());
+		
 		if(!uploadPath.exists()) uploadPath.mkdirs();
 		return uploadPath.toString();
 	}

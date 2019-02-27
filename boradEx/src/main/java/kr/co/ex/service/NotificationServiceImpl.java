@@ -5,11 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.NotificationVO;
 import kr.co.ex.dto.NotificationDto;
-import kr.co.ex.mapper.BoardMapper;
 import kr.co.ex.mapper.NotificationMapper;
-import kr.co.ex.mapper.ReplyMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -29,8 +28,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	@Transactional
-	public List<NotificationDto> getNotifications(String username) throws Exception {
-		return notiMapper.readNotification(username);
+	public List<NotificationDto> getNotifications(String username, Criteria cri) throws Exception {
+		return notiMapper.readNotification(username, cri);
 	}
 
 	@Override
@@ -41,6 +40,11 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void deleteNotification(int nno) throws Exception {
 		notiMapper.deleteNotification(nno);
+	}
+
+	@Override
+	public int getNotiCntByUsername(String username) throws Exception {
+		return notiMapper.readMemberNotiCnt(username);
 	}
 
 }

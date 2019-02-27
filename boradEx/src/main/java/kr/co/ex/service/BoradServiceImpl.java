@@ -2,8 +2,8 @@ package kr.co.ex.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +14,17 @@ import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.mapper.BoardMapper;
 import kr.co.ex.mapper.UserLikeMapper;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BoradServiceImpl implements BoardService {
 
-	@Autowired
+	@NonNull
 	private BoardMapper mapper;
 	
-	@Autowired
+	@NonNull
 	private UserLikeMapper likeMapper;
 	
 	@Override
@@ -84,9 +87,19 @@ public class BoradServiceImpl implements BoardService {
 		return mapper.listAll();
 	}
 
+	// ÇØ±«¸ÁÃø
 	@Override
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception {
-		return mapper.listCriteria(cri);
+		return mapper.listCriteria(cri).stream()
+				.map(l -> {
+					try {
+						l.setReplyCnt(mapper.readReplyCnt(l.getBno()));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return l;
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -127,6 +140,11 @@ public class BoradServiceImpl implements BoardService {
 	@Override
 	public void updateViewCnt(int bno) throws Exception {
 		mapper.updateViewCnt(bno);
+	}
+
+	@Override
+	public int getTotalCntByWriter(String username) throws Exception {
+		return mapper.readTotalCntByWriter(username);
 	}
 	
 }

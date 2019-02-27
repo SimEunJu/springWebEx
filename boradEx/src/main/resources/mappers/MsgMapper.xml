@@ -19,6 +19,14 @@
 	
 	<insert id="createMsg">
 		insert into tbl_msg(title, content, sender, receiver)
-		values(#{title}, #{content}, #{sender}, #{receiver})
+		values (#{title}, #{content}, #{sender}, #{receiver})
+	</insert>
+	
+	<insert id="createMsgList">
+		insert into tbl_msg(title, content, sender, receiver)
+		values
+		<foreach open="(" separator="," close=")" item="receiver" collection="list">
+			#{title}, #{content}, #{sender}, #{receiver}
+		</foreach>
 	</insert>
 </mapper>

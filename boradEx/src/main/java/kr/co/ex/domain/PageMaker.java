@@ -11,7 +11,8 @@ public class PageMaker {
 	private int displayPageNum = 10;
 	
 	// 1. set criteria
-	public void setCri(Criteria cri){                  
+	public void setCri(Criteria cri){
+		this.displayPageNum = cri.getPerPageNum();
 		this.cri = cri;
 	}
 	// 2. set total count

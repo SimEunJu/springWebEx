@@ -96,6 +96,11 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
+	public int getTotalCntByReplyer(String username) throws Exception {
+		return replyMapper.readTotalCntByReplyer(username);
+	}
+	
+	@Override
 	public ReplyVO getReply(int rno) throws Exception {
 		return replyMapper.get(rno);
 	}

@@ -34,4 +34,33 @@
 	<update id="updatePoint">
 		update tbl_user set point = point+#{point} where uid=#{uid}
 	</update>
+	
+	<select id="listMember" resultType="kr.co.ex.domain.MemberVO">
+		select * from tbl_member order by mno desc limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="listReportMember" resultType="kr.co.ex.domain.MemberVO">
+		select * from tbl_member order by report desc limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="listStateMember" resultType="kr.co.ex.domain.MemberVO">
+		select * from tbl_member 
+		where state=#{state}
+		order by report desc limit #{pageStart}, #{perPageNum}
+	</select>
+
+	<select id="readMemberCnt" resultType="int">
+		select count(*) from tbl_member;
+	</select>
+	
+	<insert id="updateBanState">
+		<foreach collection="list" item="username" open="(" separator="," close=")">
+			update tbl_member set state=#{state} where username=#{username}
+		</foreach>
+	</insert>
+
+	<select id="readUserByKeyword">
+		select * from tbl_member where username like '%'||#{keyword}||'%'
+	</select>
+
 </mapper>

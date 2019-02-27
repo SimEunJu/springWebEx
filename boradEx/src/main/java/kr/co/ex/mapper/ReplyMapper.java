@@ -18,6 +18,7 @@ public interface ReplyMapper {
 
 	public int totalCount(Integer bno) throws Exception;
 	public int addedTotalCount(int parRno) throws Exception;
+	public int readTotalCntByReplyer(String username);
 	
 	public String getReplyer(int parRno) throws Exception;
 	public ReplyVO get(int rno) throws Exception;

@@ -1,5 +1,6 @@
 package kr.co.ex.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -29,6 +30,11 @@ public class MsgServiceImpl implements MsgService {
 	@Override
 	public void setReceiverDeleteFlag(int msgNo) throws Exception {
 		msgMapper.updateReceiverDeleteFlag(msgNo);
+	}
+
+	@Override
+	public void registerMsgList(List<String> receivers, MsgVO vo) throws Exception {
+		msgMapper.createMsgList(receivers, vo);
 	}
 
 	@Override

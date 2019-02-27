@@ -70,6 +70,10 @@
 	
 </select>
 
+<select id="readTotalCntByWriter" resultType="int">
+	select count(bno) from tbl_board where writer=#{username}
+</select>
+
 <sql id="search">
 	<if test="typeArr != null">
 	<trim prefix=" and (" suffix=") " prefixOverrides="or">
