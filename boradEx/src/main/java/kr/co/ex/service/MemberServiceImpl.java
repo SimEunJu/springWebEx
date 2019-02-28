@@ -41,18 +41,18 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public List<MemberVO> listMember(int start, int end) {
-		return memMapper.listMember(start, end);
+	public List<MemberVO> listMember(int page, int perPageNum) {
+		return memMapper.listMember(page, perPageNum);
 	}
 
 	@Override
-	public List<MemberVO> listReportMember(int start, int end) {
-		return memMapper.listReportMember(start, end);
+	public List<MemberVO> listReportMember(int page, int perPageNum) {
+		return memMapper.listReportMember(page, perPageNum);
 	}
 
 	@Override
-	public List<MemberVO> listStateMember(int start, int end, String state) {
-		return memMapper.listStateMember(start, end, state);
+	public List<MemberVO> listStateMember(int page, int perPageNum, String state) {
+		return memMapper.listStateMember(page, perPageNum, state);
 	}
 
 	@Override
@@ -63,6 +63,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void updateState(List<String> members, String state) {
 		memMapper.updateState(members, state);
+	}
+
+	@Override
+	public List<MemberVO> getMemberByKeyword(String keyword) {
+		return memMapper.readUserByKeyword(keyword);
 	}
 
 	

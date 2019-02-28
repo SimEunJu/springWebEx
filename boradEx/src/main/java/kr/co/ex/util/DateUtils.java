@@ -16,7 +16,10 @@ public class DateUtils {
 	public static LocalDateTime getAFewWeeksAgo(int weeks){
 		// monday == 1
 		DayOfWeek today = LocalDate.now().getDayOfWeek();
-		LocalDate sundayOfThisWeek = LocalDate.now().minusDays(today.getValue() + 1);
+		LocalDate sundayOfThisWeek;
+		if(today == DayOfWeek.SUNDAY) sundayOfThisWeek = LocalDate.now(); 
+		else sundayOfThisWeek = LocalDate.now().minusDays(today.getValue());
+		
 		return LocalDateTime.of(sundayOfThisWeek.minusWeeks(weeks), LocalTime.MIDNIGHT);
 	}
 	public static LocalDateTime getAFewMonthAgo(int months){

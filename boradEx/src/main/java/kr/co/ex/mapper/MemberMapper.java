@@ -18,9 +18,11 @@ public interface MemberMapper {
 	public void createUser(LoginDto login);
 	public void createAuth(AuthVO auth);
 	
-	public List<MemberVO> listMember(@Param("start") int start, @Param("end") int end);
-	public List<MemberVO> listReportMember(@Param("start") int start, @Param("end") int end);
-	public List<MemberVO> listStateMember(@Param("start") int start, @Param("end") int end, @Param("state") String state);
+	public List<MemberVO> listMember(@Param("page") int page, @Param("perPageNum") int perPageNum);
+	public List<MemberVO> listReportMember(@Param("page") int start, @Param("perPageNum") int perPageNum);
+	public List<MemberVO> listStateMember(@Param("page") int start, @Param("perPageNum") int perPageNum, @Param("state") String state);
 
-	public void updateState(List<String> members, String state);
+	public void updateState(@Param("members") List<String> members, @Param("state") String state);
+
+	public List<MemberVO> readUserByKeyword(String keyword);
 }

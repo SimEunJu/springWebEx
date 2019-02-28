@@ -57,7 +57,7 @@
 <select id="listRegdate" resultType="kr.co.ex.domain.BoardVO">
  	<![CDATA[
  		select * from tbl_board
- 		where regdate>#{regdate}
+ 		where regdate >= #{regdate}
  		order by viewcnt desc
  		limit 0, 10 
 	 ]]>

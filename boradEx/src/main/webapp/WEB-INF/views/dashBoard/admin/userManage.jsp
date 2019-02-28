@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://ex.co.kr/format_local_datetime" prefix="cf" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>회원 관리</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-
-// 경고 회원 정지 회원을 지정할 수 있도록
 
 <div class="container">
 	<div class="user_cri">
@@ -20,7 +20,7 @@
 		<input type="radio" id="user-active" name="userType" value="active">
   		<label for="user-active">활동 회원</label>
 		
-		<input type="radio" id="user-banned" name="userType" value="report">
+		<input type="radio" id="user-banned" name="userType" value="banned">
   		<label for="user-banned">정지 회원</label>
 		
 		<input type="radio" id="user-banned" name="userType" value="report">
@@ -57,29 +57,29 @@
   		</thead>
   		
  		<tbody>
- 			<c:forEach var="user" items="users">
+ 			<c:forEach var="u" items="${users}">
     		<tr>
-      			<th scope="row"><input type="checkbox" name="user" value="${user.username}" /></th>
-      			<td>${user.username}</td>
-      			<td>${user.state }</td>
-      			<td>${user.regdate }</td>
-      			<td>${user.visitdate }</td>
-      			<td>${user.reportCnt }</td>
+      			<th scope="row"><input type="checkbox" name="user" value="${u.username}" /></th>
+      			<td>${u.username}</td>
+      			<td>${u.state }</td>
+      			<%-- <td>${u.visitdate }</td> --%>
+      			<td>${cf:formatLocalDateTime(u.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
+      			<td>${u.reportCnt }</td>
     		</tr>
     		</c:forEach>
   		</tbody>
 	</table>
 	<nav aria-label="Page navigation">
   		<ul class="pagination">
-  			<c:if test="${pageMaker.prev}">
+  			<c:if test="${pagination.prev}">
     		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
     		</c:if>
     		
-    		<c:forEach begin=1 end="${pageMaker.endPage>10 ? 10 : pageMaker.endPage}" varStatus="idx">
-    		<li class="page-item"><a class="page-link class" href="${varStatus.count}">${idx}</a></li>
+    		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
+    		<li class="page-item ${idx.count==1 ? 'active' : '' }"><a class="page-link class" href="${idx.count}">${idx.count}</a></li>
     		</c:forEach>
     		
-    		<c:if test="${pageMaker.next}">
+    		<c:if test="${pagination.next}">
     		<li class="page-item"><a class="page-link next" href="">&raquo;</a></li>
   			</c:if>
   		</ul>
@@ -110,7 +110,7 @@
   </div>
 </div>
 
-<script src="pagination-hb" type="text/x-handlebars-template">
+<script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}
 <li class="page-item"><a class="page-link" href="">&laquo;</a></li>
 {{/if}}
@@ -121,7 +121,7 @@
 <li class="page-item"><a class="page-link" href="">&raquo;</a></li>
 {{/if}}
 </script>
-<script src="receiver-list-hb" type="text/x-handlebars-template">
+<script id="receiver-list-hb" type="text/x-handlebars-template">
 <ul>
 	{{#forArr start, end, msgData}}
 	<li>{{this}}</li>
@@ -131,29 +131,39 @@
 	{{/forArr}}
 </ul>
 </script>
-<script src="table-row" type="text/x-handlebars-template">
+<script id="table-row" type="text/x-handlebars-template">
 {{#each users}}	
 	<tr>
 		<th scope="row"><input type="checkbox" name="user" value="{{username}}" /></th>
       	<td>{{username}}</td>
       	<td>{{state}}</td>
-      	<td>{{regdate}}</td>
-      	<td>{{#dateFormat visitdate}}</td>
+		<td>visitdate</td>
+      	<td>{{dateFormat regdate}}</td>
       	<td>{{reportCnt}}</td>
      </tr>
 {{/each}}
 </script>
 
-<script src="/checkboxHandle.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
+<script src="/resources/js/checkboxHandle.js"></script>
 <script>
 $("document").ready(function(){
-	const check	= checkServInitiator("user", "/board/api/admin/user", context);
+	
+	const csrfToken = "${_csrf.token }";
+	const csrfHeader = "${_csrf.headerName }";
+	$(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(csrfHeader, csrfToken);
+    });
+	
+	const check	= checkServInitiator("user", "/board/api/admin/user");
 	
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
 	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
 	Handlebars.registerHelper("dateFormat", function(date){
-		return new Date(date).toJSON().replace("z", " ").substring(0,16);
+		if(date === null) return;
+		return date.year+"-"+date.monthValue+"-"+date.dayOfMonth+" "+date.hour+":"+date.minute;
 	});
 	
 	const paginationSkeleton = document.getElementById("pagination-hb").innerHTML;
@@ -185,6 +195,7 @@ $("document").ready(function(){
 		appendChecked($(".pagination .active").find("a").attr("href"));
 		
 		const receiverList = "";
+		let msgData = checked;
 		
 		if($("input[value='all']").is(":checked")) receiverList =  $("input[type='radio']:checked").html();
 		else{
@@ -214,20 +225,28 @@ $("document").ready(function(){
 			title: modal.find(".title").val(),
 			content: modal.find(".msg").val()
 		}
-		$.post("/board/api/admin/user/msg", data.stringify(envelope))
+		$.post("/board/api/admin/user/msg", JSON.stringify(envelope))
 			.done(function(){
 				$(".msg").val("");
 				$(".recevier").html("");
 				checked = [];
+				checkedPage = {};
 				alert("메시지가 성공적으로 발송되었습니다.");
 			});
 	});
 	
 	$(".btn-ban").on("click", function(e){
 		appendChecked($(".pagination .active").find("a").attr("href"));
-		$.post("/board/api/admin/user/ban", data.stringify(msgData))
+	
+		$.post({
+			url: "/board/api/admin/user/ban",
+			data: JSON.stringify(checked),
+			contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+		})
 		.done(function(){
 			checked = [];
+			checkedPage = {};
 			alert("선택된 회원을 정지 처리 하였습니다.");
 		});
 	});
@@ -243,7 +262,7 @@ $("document").ready(function(){
 	$("input[type='radio']").on("click", function(e){
 		
 		checked = [];
-		const userType = e.currentTarget.val();
+		const userType = $(e.target).val();
 		
 		$.getJSON("/board/api/admin/user?type="+userType)
 			.done(function(users){
@@ -266,7 +285,8 @@ $("document").ready(function(){
 	function appendChecked(page){
 		if(!checkedPage.hasOwnProperty(page)){
 			checkedPage[page] = page;
-			checked.concat(collectCheckVal());
+			checked = checked.concat(collectCheckVal());
+			
 		}
 	}
 	
@@ -282,7 +302,7 @@ $("document").ready(function(){
 		
 		appendChecked(page);
 		
-		const userQuery;
+		let userQuery;
 		if($(target).hasClass("prev")) userQuery = {move: "prev"};
 		else if($(target).hasClass("next")) userQuery = {move : "next"};
 		

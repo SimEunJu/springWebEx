@@ -52,7 +52,7 @@
     		<p>사용자 유입/유출 현황</p>
     		<canvas id="chart_user_inout" width="400" height="400"></canvas>
     		<div class="range">
-    			<input type="radio" name="inout-cri" value="d">일</input>
+    			<input type="radio" name="inout-cri" value="d" checked>일</input>
     			<input type="radio" name="inout-cri" value="w">주</input>
     			<input type="radio" name="inout-cri" value="m">월</input>
     		</div>
@@ -63,7 +63,7 @@
 			
 			<canvas id="chart_user_visit" width="400" height="400"></canvas>
 			<div class="range">
-    			<input type="radio" name="visit-cri" value="d">일</input>
+    			<input type="radio" name="visit-cri" value="d" checked>일</input>
     			<input type="radio" name="visit-cri" value="w">주</input>
     			<input type="radio" name="visit-cri" value="m">월</input>
     		</div>
@@ -78,7 +78,7 @@
 				
 				<canvas id="chart_user_board" width="400" height="400"></canvas>
 				<div class="range">
-    			<input type="radio" name="board-cri" value="d">일</input>
+    			<input type="radio" name="board-cri" value="d" checked>일</input>
     			<input type="radio" name="board-cri" value="w">주</input>
     			<input type="radio" name="board-cri" value="m">월</input>
     		</div>
@@ -132,7 +132,7 @@ $("document").ready(function(){
 	            fill: false,
 	            borderColor: 'rgb(255, 99, 132)',
 	            backgroundColor: 'rgb(255, 99, 132)',
-	            data: [10,11,12,13,14,15,...${userJoinCnt}],
+	            data: ${userJoinCnt},
 	            yAxisId: "user-in",
 	        },
 	        {
@@ -140,7 +140,7 @@ $("document").ready(function(){
 	            fill: false,
 	            borderColor: 'rgb(66, 134, 244)',
 	            backgroundColor: 'rgb(66, 134, 244)',
-	            data: [0,1,2,3,4,5,...${userLeaveCnt}],
+	            data: ${userLeaveCnt},
 	            yAxisId: "user-out",
 	        }],
 	    },
@@ -151,25 +151,23 @@ $("document").ready(function(){
 	    		text: "사용자 유입/유출 현황"
 	    	},
 	    }
-	}
+	};
 	const chart_user_inout = new Chart(chart_user_inout_ctx, chart_user_inout_config);
 	
 	const chart_user_visit_ctx = document.getElementById('chart_user_visit').getContext('2d');
 	const chart_user_visit_config = {
 	    type: 'bar',
-
-	    data: [{
+	    data: {
 	        labels: labeling('d'),
-	        datasets: {
+	        datasets: [{
 	            label: "방문 수",
-	            fill: false,
+	            borderWidth: 1,
 	            borderColor: 'rgb(255, 99, 132)',
 	            backgroundColor: 'rgb(255, 99, 132)',
-	            data: [1,2,3,4,5,6,7],
-	            yAxisId: "user-visit",
-	        },
-	    }],
-
+	            data: [10,10,10,10,10,10],
+	            yAxisId: "user-visit"
+	        }],
+	    },
 	    options: {
 	    	title: {
 	    		display: true,
@@ -183,18 +181,17 @@ $("document").ready(function(){
 	const chart_user_board_config = {
 	    type: 'line',
 
-	    data: [{
+	    data: {
 	        labels: labeling('d'),
-	        datasets: {
+	        datasets: [{
 	            label: "게시글 수",
 	            fill: false,
 	            borderColor: 'rgb(255, 99, 132)',
 	            backgroundColor: 'rgb(255, 99, 132)',
-	            data: [1,2,3,4,5,6,7],
+	            data: ${postCnt},
 	            yAxisId: "user-board",
-	        },
-	    }],
-
+	        }],
+	    },
 	    options: {
 	    	title: {
 	    		display: true,
@@ -209,9 +206,14 @@ $("document").ready(function(){
 			if(url.includes("inout")){
 				config.data.datasets[0].data = res.join;
 				config.data.datasets[1].data = res.leave;
+				
 			}else if(url.includes("board")){
 				config.data.datasets.data = res.board;
 			}
+			const regexArr = /[dwm]$/.exec(url);
+			const type = regexArr[0];
+			config.data.labels = labeling(type);
+			
 			target.update();
 		}).fail(function(xhr, textStatus, error){
 			console.warn(error);
@@ -219,8 +221,8 @@ $("document").ready(function(){
 	}
 	
 	$("input[type='radio']").on("click", function(e){
-		const choice = e.currentTarget();
-		const rootUrl = "/board/api/admin/stat/";
+		const choice = $(e.target);
+		const rootUrl = "/board/api/admin/";
 		switch(choice.attr("name")){
 		case "inout-cri":
 			ajax(rootUrl+"inout?type="+choice.val(), chart_user_inout_config, chart_user_inout);
@@ -239,20 +241,21 @@ $("document").ready(function(){
 	function labeling(type){
 		
 		const now = new Date();
-		const today = new Date(now.getFullYear(), now.getMonth()-1, now.getDate());
-		const month = today.getMonth();
-		const year = today.getFullYear();
+		let today = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+		let month = today.getMonth();
+		let year = today.getFullYear();
 		
 		let labels = [];
-		for(var i=0; i<7; i++) labels.push(null);
+		for(var i=0; i<6; i++) labels.push(null);
+		let label = "";
 		
 		switch(type){
 		case "d":
-			
+			{
 			let day = today;
-			let label = "";
+			
 			let nMonth, nYear, nLabel;
-			for(let i=6; i>=0; i--){
+			for(let i=5; i>=0; i--){
 				day.setDate(day.getDate() - 1);
 				
 				nYear = day.getFullYear();
@@ -270,18 +273,19 @@ $("document").ready(function(){
 				labels[i] = label;
 				label = "";
 			}
-			
+			}
 			break;
 		
 		case "w":
-		
-			const sunday = today.setDate(today.getDate()-today.getDay());
+			{
+			const sunday = new Date(today.setDate(today.getDate()-today.getDay()+7));
+			console.log(sunday);
 			
 			let label = "";
 			let nthWeek;
 			
-			for(let i=6; i>=0; i--){
-				sunday.setDate(sunday.getDate() - (6-i)*7);
+			for(let i=5; i>=0; i--){
+				sunday.setDate(sunday.getDate() - 7);
 				
 				nYear = sunday.getFullYear();
 				if(year !== nYear){
@@ -290,7 +294,7 @@ $("document").ready(function(){
 				}
 				nMonth = sunday.getMonth();
 				if(month !== nMonth){
-					label += nMonth+"월 ";
+					label += (nMonth+1) +"월 ";
 					month = nMonth;
 				}
 				
@@ -298,30 +302,27 @@ $("document").ready(function(){
 				
 				labels[i] = label+nthWeek+"주";
 				label = "";
-				
+			}
 			}
 			break;
 		case "m":
-			
+			{
 			let nYear;
 			let label = "";
 			
 			for(let i=5; i>=0; i--){ 
 				
-				nYear = day.getFullYear();
+				nYear = today.getFullYear();
 				if(year !== nYear){
 					label += nYear+"년 ";
 					year = nYear;
 				}
-				
-				label += today.setDate(today.getMonth() - (6-i)).getMonth()+"월";
+				today.setMonth(today.getMonth() - 1)
+				label += (today.getMonth()+1) +"월";
 				labels[i] = label;
 				label = "";
 			}
-			break;
-			
-		case "y":
-			for(let i=5; i>=0; i--) labels[i] = today.setDate(today.getFullYear()-1).getFullYear()+"년";
+			}
 			break;
 		default: return []		
 		}

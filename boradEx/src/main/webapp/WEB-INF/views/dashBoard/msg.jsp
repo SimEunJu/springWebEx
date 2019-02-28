@@ -26,7 +26,7 @@
   		<tbody>
     		<tr>
     			<c:forEach var="m" items="msg" varStatus="i">
-      				<th scope="row"><input type="checkbox" name="msg[${i}]" value="${m.msgNo}" /></th>
+      				<th scope="row"><input type="checkbox" name="msg" value="${m.msgNo}" /></th>
       				<td>${m.sender}</td>
       				<td>${m.title}</td>
       				<td>
@@ -66,11 +66,9 @@
 {{#each msg}}	
 	<tr>
 		<th scope="row"><input type="checkbox" name="user" value="{{username}}" /></th>
-      	<td>{{username}}</td>
-      	<td>{{state}}</td>
-      	<td>{{regdate}}</td>
-      	<td>{{#dateFormat visitdate}}</td>
-      	<td>{{reportCnt}}</td>
+      	<td>{{sender}}</td>
+      	<td>{{title}}</td>
+      	<td>{{#dateFormat regdate}}</td>
      </tr>
 {{/each}}
 </script>

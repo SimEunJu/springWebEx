@@ -25,7 +25,7 @@ import lombok.extern.log4j.Log4j;
 
 @Component
 @Log4j
-@AllArgsConstructor
+//@AllArgsConstructor
 public class FileDeleteTask {
 
 		private SqlSession sess;

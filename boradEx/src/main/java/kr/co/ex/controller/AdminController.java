@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.ex.domain.Criteria;
-import kr.co.ex.domain.NotificationVO;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.dto.NotificationDto;
 import kr.co.ex.service.AdminStatService;
@@ -26,8 +25,10 @@ import kr.co.ex.util.PaginationUtils;
 import kr.co.ex.util.UserType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 
 @Controller
+@Log4j
 @RequestMapping("/board/admin")
 //@PreAuthorize("hasRole(ADMIN)")
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class AdminController {
 	@GetMapping("")
 	public String showAdminInfo(@RequestParam(required=false, defaultValue="d") char type, Model model){
 		try{
-			model.addAttribute("postCnt", statServ.getPostCount(type));
+			model.addAttribute("postCnt", statServ.getPostCount('m'));
 			model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount(type));
 			model.addAttribute("userJoinCnt", statServ.getUserJoinCount(type));
 			LocalDateTime defaultDate = DateUtils.getAFewWeeksAgo(1);
@@ -85,7 +86,6 @@ public class AdminController {
 		
 		model.addAttribute("pagination", pm);
 		model.addAttribute("users", memServ.ListCategorizedMember(UserType.ALL, cri));
-		
 		return "dashBoard/admin/userManage";
 	}
 	

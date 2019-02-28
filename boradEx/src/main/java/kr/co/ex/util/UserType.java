@@ -1,36 +1,12 @@
 package kr.co.ex.util;
 
 public enum UserType {
-	ALL("all"){
-		public String getTypeInitial(){
-			return "ALL";
-		}
-	}, 
-	ACTIVE("active"){
-		public String getTypeInitial(){
-			return "A";
-		}
-	}, 
-	REPORT("report"){
-		public String getTypeInitial(){
-			return "R";
-		}
-	}, 
-	BANNED("banned"){
-		public String getTypeInitial(){
-			return "B";
-		}
-	}, 
-	SLEEP("sleep"){
-		public String getTypeInitial(){
-			return "S";
-		}
-	}, 
-	LEAVE("leave"){
-		public String getTypeInitial(){
-			return "L";
-		}
-	};
+	ALL("all"), 
+	ACTIVE("A"), 
+	REPORT("R"), 
+	BANNED("B"), 
+	SLEEP("S"), 
+	LEAVE("L");
 	
 	final private String type;
 	
@@ -38,9 +14,9 @@ public enum UserType {
 		this.type = type;
 	}
 	
-	public String getType(){
+	public String getTypeInitial(){
 		return type;
 	}
 	
-	abstract public String getTypeInitial();
+	//abstract public String getTypeInitial();
 }
