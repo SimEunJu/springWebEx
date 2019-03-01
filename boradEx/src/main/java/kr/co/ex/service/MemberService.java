@@ -10,9 +10,9 @@ public interface MemberService {
 	public int getMemberCnt();
 	
 	public List<MemberVO> ListCategorizedMember(UserType type, Criteria cri);
-	public List<MemberVO> listMember(int page, int perPageNum);
-	public List<MemberVO> listReportMember(int page, int perPageNum);
-	public List<MemberVO> listStateMember(int page, int perPageNum, String state);
+	public List<MemberVO> listMember(Criteria cri);
+	public List<MemberVO> listReportMember(Criteria cri);
+	public List<MemberVO> listStateMember(Criteria cri, String state);
 	
 	public void updateState(List<String> members, String state);
 	

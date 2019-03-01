@@ -147,5 +147,10 @@ public class BoradServiceImpl implements BoardService {
 	public int getTotalCntByWriter(String username) throws Exception {
 		return mapper.readTotalCntByWriter(username);
 	}
+
+	@Override
+	public List<BoardVO> listBoardByWriter(String writer) throws Exception {
+		return mapper.listBoardByWriter(writer);
+	}
 	
 }

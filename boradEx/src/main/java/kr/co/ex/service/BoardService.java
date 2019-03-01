@@ -26,6 +26,7 @@ public interface BoardService {
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
 	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception;
+	public List<BoardVO> listBoardByWriter(String writer) throws Exception;
 	
 	public int getSearchCount(SearchCriteria cri) throws Exception;
 	public int getTotalCount() throws Exception;

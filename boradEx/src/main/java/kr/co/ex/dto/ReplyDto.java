@@ -18,7 +18,7 @@ public class ReplyDto {
 
 	private Integer parRno;
 	private boolean secret;
-	private char deleteType;
+	private String deleteType;
 	
 	private boolean deleteFlag;
 	

@@ -1,6 +1,6 @@
 package kr.co.ex.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -10,8 +10,8 @@ public class ReplyVO {
 	private Integer bno;
 	private String reply;
 	private String replyer;
-	private Date regdate;
-	private Date updatedate;
+	private LocalDateTime regdate;
+	private LocalDateTime updatedate;
 
 	private Integer parRno;
 	private String password;

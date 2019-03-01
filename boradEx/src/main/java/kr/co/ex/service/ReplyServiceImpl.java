@@ -47,7 +47,7 @@ public class ReplyServiceImpl implements ReplyService {
 					.stream().map(r -> {
 						try {
 							r.setAddedCount(getAddedTotalCount(r.getRno()));
-							r.setDeleteFlag(true);
+							if(!"0".equals(r.getDeleteType())) r.setDeleteFlag(true);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -61,7 +61,7 @@ public class ReplyServiceImpl implements ReplyService {
 				r.setReplyer(null);
 				r.setReply(null);
 			}
-			else if(r.getReplyer().equals(currentUser)) r.setDeleteFlag(true);
+			if(!"0".equals(r.getDeleteType())) r.setDeleteFlag(true);
 			try {
 				r.setAddedCount(getAddedTotalCount(r.getRno()));
 			} catch (Exception e) {
@@ -71,6 +71,11 @@ public class ReplyServiceImpl implements ReplyService {
 		}).collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<ReplyVO> listReplyByWriter(String replyer) throws Exception {
+		return replyMapper.listReplyByReplyer(replyer);
+	}
+
 	private String getWriterName(int bno){
 		return boardMapper.readWriterName(bno);
 	}

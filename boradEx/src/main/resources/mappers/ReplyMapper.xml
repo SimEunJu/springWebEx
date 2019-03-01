@@ -30,6 +30,10 @@
 	limit #{cri.pageStart}, #{cri.perPageNum}   
   </select>
   
+  <select id="listReplyByReplyer" resultType="kr.co.ex.domain.ReplyVO">
+  	select * from tbl_reply where replyer=#{replyer}
+  </select>
+  
   <select id="totalCount" resultType="int">
   	select count(rno) from tbl_reply where bno=#{bno}
   </select>

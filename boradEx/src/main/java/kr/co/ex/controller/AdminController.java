@@ -27,9 +27,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Controller
 @Log4j
 @RequestMapping("/board/admin")
+@Controller
 //@PreAuthorize("hasRole(ADMIN)")
 @RequiredArgsConstructor
 public class AdminController {
@@ -72,7 +72,7 @@ public class AdminController {
 			PageMaker pm = null;
 			if(move != null) PaginationUtils.pagination(move, cri, notiServ.getNotiCntByUsername(auth.getName()));
 	
-			model.addAttribute("noti", noti);
+			model.addAttribute("noties", noti);
 			model.addAttribute("pagination", pm);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class AdminController {
 	public String showMsg(@RequestParam(required=false) String move, Criteria cri, Model model){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			model.addAttribute("msg", msgServ.getMsgList(auth.getName()));
+			model.addAttribute("msges", msgServ.getMsgList(auth.getName()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,7 +112,7 @@ public class AdminController {
 			PageMaker pm = PaginationUtils.pagination(move, cri, boardServ.getTotalCntByWriter(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("post", msgServ.getMsgList(auth.getName()));
+			model.addAttribute("posts", boardServ.listBoardByWriter(auth.getName()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -126,7 +126,7 @@ public class AdminController {
 			PageMaker pm = PaginationUtils.pagination(move, cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("reply", msgServ.getMsgList(auth.getName()));
+			model.addAttribute("replies", replyServ.listReplyByWriter(auth.getName()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

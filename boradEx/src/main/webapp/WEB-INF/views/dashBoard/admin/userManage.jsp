@@ -85,7 +85,7 @@
   		</ul>
 	</nav>
 </div>
-<div class="modal" id="modal" tabindex="-1" role="dialog">
+<div class="modal fade" id="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -123,12 +123,12 @@
 </script>
 <script id="receiver-list-hb" type="text/x-handlebars-template">
 <ul>
-	{{#forArr start, end, msgData}}
-	<li>{{this}}</li>
+	{{#forArr start end receiver}}
+		<li>{{this}}</li>
+	{{/forArr}}	
 	{{#if showMsg}}
-		<li>포함 {{msgNum}}명</li>
+		<li>포함 {{receiverNum}}명</li>
 	{{/if}}
-	{{/forArr}}
 </ul>
 </script>
 <script id="table-row" type="text/x-handlebars-template">
@@ -173,6 +173,7 @@ $("document").ready(function(){
 		for(let i=start; i<=end; i++){
 			acc += block.fn(i);
 		}
+		return acc;
 	});
 	
 	const receiverListSkeleton = document.getElementById("receiver-list-hb").innerHTML;
@@ -180,38 +181,46 @@ $("document").ready(function(){
 	Handlebars.registerHelper("forArr", function(start, end, item, block){
 		let acc = "";
 		for(let i=start; i<=end; i++){
-			acc += block.fn(item[i]);
+			acc += block.fn(item[i-1]);
 		}
+		return acc;
 	});
 	
-	$('#modal').on('shown.bs.modal', function () {
-		  $('textarea').trigger('focus')
+	$('#modal button[data-dismiss]').on("click", function(){
+		const modal = $('#modal');
+		$("body").toggleClass("modal-open");
+		modal.toggleClass("show");
+		modal.css("display", "none");
+		modal.attr("aria-hidden", "true");
 	});
 	
 	let checked = [];
 	let checkedPage = {};
-	$(".msg-btn").on("click", function(){
+	$(".btn-msg").on("click", function(){
+		
+		const modal = $("#modal");
+		$("body").toggleClass("modal-open");
+		modal.toggleClass("show");
+		modal.css("display", "block");
+		modal.attr("aria-hidden", "false");
+		modal.find('textarea').trigger('focus');
 		
 		appendChecked($(".pagination .active").find("a").attr("href"));
-		
-		const receiverList = "";
-		let msgData = checked;
-		
-		if($("input[value='all']").is(":checked")) receiverList =  $("input[type='radio']:checked").html();
+		let receiverList = "";
+
+		if($("input[value='all']").is(":checked")) receiverList = $("input[type='radio']:checked").html();
 		else{
-			const msgCnt = msgData.length;
+			const checkedCnt = checked.length;
 			receiverList = receiverListTemplate({
 				start: 1,
-				end: msgCnt>10 ? 10 : msgCnt,
-				showMsg: msgCnt>10,
-				msgNum: msgCnt,
-				msgData: msgData
+				end: checkedCnt>10 ? 10 : checkedCnt,
+				showMsg: checkedCnt>10,
+				receiverNum: checkedCnt,
+				receiver: checked
 			});
 		}
-		
-		$(".recevier").html(receiverList);
-		
-		msgData = msgData.concat(checked);
+		console.log(modal.find(".recevier"));
+		modal.find(".receiver").html(receiverList);
 	});
 	
 	$(".send").on("click", function(){
@@ -219,13 +228,19 @@ $("document").ready(function(){
 			alert("1명 이상 선택해주세요");
 			return;
 		}
-		const modal = $("modal");
+		const modal = $("#modal");
 		const envelope = {
 			receivers: checked,
 			title: modal.find(".title").val(),
 			content: modal.find(".msg").val()
 		}
-		$.post("/board/api/admin/user/msg", JSON.stringify(envelope))
+		
+		$.post({
+			url: "/board/api/admin/user/msg",
+			data: JSON.stringify(envelope),
+			contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+		})
 			.done(function(){
 				$(".msg").val("");
 				$(".recevier").html("");
@@ -252,21 +267,28 @@ $("document").ready(function(){
 	});
 	
 	$(".btn-find").on("click", function(e){
-		const keyword = this.sibilings("input[type='text']").val();
+		const keyword = $(this).siblings("input[type='text']").val();
 		if(keyword === "" || keyword.length === 0){
 			alert("사용자 이름을 입력해 주세요");
 			return;
 		}
+		$.getJSON("/board/api/admin/user/find?keyword="+encodeURIComponent(keyword))
+		.done(function(users){
+			checked = [];
+			checkedPage = {};
+			const tableRow = tableRowTemplate(users);
+			$("tbody").html(tableRow);
+		})
 	})
 	
 	$("input[type='radio']").on("click", function(e){
 		
 		checked = [];
+		checkedPage = {};
 		const userType = $(e.target).val();
 		
 		$.getJSON("/board/api/admin/user?type="+userType)
 			.done(function(users){
-				msgData = [];
 				const tableRow = tableRowTemplate(users);
 				$("tbody").html(tableRow);
 			})

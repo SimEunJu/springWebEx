@@ -8,7 +8,6 @@
 	<resultMap id="login" type="kr.co.ex.domain.MemberVO">
 		<id property="username" column="username" />
 		<result property="userpw" column="userpw" />
-		<result property="username" column="username"/>
 		<result property="enabled" column="enabled" />
 		<collection property="authList" ofType="kr.co.ex.domain.AuthVO">
 			<id property="username" column="username" />
@@ -36,16 +35,16 @@
 	</update>
 	
 	<select id="listMember" resultType="kr.co.ex.domain.MemberVO">
-		select * from tbl_member limit #{page}, #{perPageNum}
+		select * from tbl_member limit #{pageStart}, #{perPageNum}
 	</select>
 	
 	<select id="listReportMember" resultType="kr.co.ex.domain.MemberVO">
-		select * from tbl_member order by report_cnt desc limit #{page}, #{perPageNum}
+		select * from tbl_member order by report_cnt desc limit #{pageStart}, #{perPageNum}
 	</select>
 	
 	<select id="listStateMember" resultType="kr.co.ex.domain.MemberVO">
-		select * from tbl_member 
-		where state=#{state} limit #{page}, #{perPageNum}
+		select * from tbl_member
+		where state=#{state} limit #{cri.pageStart}, #{cri.perPageNum}
 	</select>
 
 	<select id="readMemberCnt" resultType="int">
@@ -53,13 +52,13 @@
 	</select>
 	
 	<insert id="updateState">
-		<foreach collection="members" item="m">
-			update tbl_member set state=#{state} where username=#{m};
+		<foreach collection="members" item="name">
+			update tbl_member set state=#{state} where username=#{name};
 		</foreach>
 	</insert>
 
-	<select id="readUserByKeyword">
-		select * from tbl_member where username like '%'||#{keyword}||'%'
+	<select id="readUserByKeyword" resultType="kr.co.ex.domain.MemberVO">
+		select * from tbl_member where username like '%#{keyword}%'
 	</select>
 
 </mapper>

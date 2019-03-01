@@ -3,6 +3,7 @@ package kr.co.ex.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.co.ex.domain.MsgVO;
 
@@ -13,5 +14,5 @@ public interface MsgMapper {
 	public void updateReceiverDeleteFlag(int msgNo) throws Exception;
 	
 	public void createMsg(MsgVO vo) throws Exception;
-	public void createMsgList(List<String> receivers, MsgVO vo) throws Exception;
+	public void createMsgList(@Param("receivers") List<String> receivers, @Param("msg") MsgVO msg) throws Exception;
 }

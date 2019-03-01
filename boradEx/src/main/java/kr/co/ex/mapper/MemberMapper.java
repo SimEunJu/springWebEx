@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.co.ex.domain.AuthVO;
+import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.MemberVO;
 import kr.co.ex.dto.LoginDto;
 
@@ -18,9 +19,9 @@ public interface MemberMapper {
 	public void createUser(LoginDto login);
 	public void createAuth(AuthVO auth);
 	
-	public List<MemberVO> listMember(@Param("page") int page, @Param("perPageNum") int perPageNum);
-	public List<MemberVO> listReportMember(@Param("page") int start, @Param("perPageNum") int perPageNum);
-	public List<MemberVO> listStateMember(@Param("page") int start, @Param("perPageNum") int perPageNum, @Param("state") String state);
+	public List<MemberVO> listMember(Criteria cri);
+	public List<MemberVO> listReportMember(Criteria cri);
+	public List<MemberVO> listStateMember(@Param("cri") Criteria cri, @Param("state") String state);
 
 	public void updateState(@Param("members") List<String> members, @Param("state") String state);
 

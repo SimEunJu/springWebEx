@@ -27,32 +27,32 @@ public class MemberServiceImpl implements MemberService {
 	public List<MemberVO> ListCategorizedMember(UserType type, Criteria cri) throws UndefinedMemberType{
 		switch (type) {
 		case ALL: 
-			return listMember(cri.getPage(), cri.getPerPageNum());
+			return listMember(cri);
 		case ACTIVE:
 		case BANNED:
 		case SLEEP:
 		case LEAVE:
-			return listStateMember(cri.getPage(), cri.getPerPageNum(), type.getTypeInitial());
+			return listStateMember(cri, type.getTypeInitial());
 		case REPORT:
-			return listReportMember(cri.getPage(), cri.getPerPageNum());
+			return listReportMember(cri);
 		default:
 			throw new UndefinedMemberType();
 		}
 	}
 	
 	@Override
-	public List<MemberVO> listMember(int page, int perPageNum) {
-		return memMapper.listMember(page, perPageNum);
+	public List<MemberVO> listMember(Criteria cri) {
+		return memMapper.listMember(cri);
 	}
 
 	@Override
-	public List<MemberVO> listReportMember(int page, int perPageNum) {
-		return memMapper.listReportMember(page, perPageNum);
+	public List<MemberVO> listReportMember(Criteria cri) {
+		return memMapper.listReportMember(cri);
 	}
 
 	@Override
-	public List<MemberVO> listStateMember(int page, int perPageNum, String state) {
-		return memMapper.listStateMember(page, perPageNum, state);
+	public List<MemberVO> listStateMember(Criteria cri, String state) {
+		return memMapper.listStateMember(cri, state);
 	}
 
 	@Override

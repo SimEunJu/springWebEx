@@ -1,6 +1,6 @@
 package kr.co.ex.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
@@ -14,8 +14,8 @@ public class BoardVO {
 	private String content;
 	private String writer;
 	private String password;
-	private Date regdate;
-	private Date updatedate;
+	private LocalDateTime regdate;
+	private LocalDateTime updatedate;
 	private Integer viewcnt;
 	private Integer userLike;
 	private char deleteType;

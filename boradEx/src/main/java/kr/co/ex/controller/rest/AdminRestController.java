@@ -70,11 +70,11 @@ public class AdminRestController {
 		
 		UserType userType = getMemberType(type);
 		Map<String, Object> ret = new HashMap<>();
-
+		
 		PageMaker pm = null;
 		if (move != null)
 			pm = PaginationUtils.pagination(move, cri, memServ.getMemberCnt());
-
+		log.info(memServ.ListCategorizedMember(userType, cri));
 		ret.put("users", memServ.ListCategorizedMember(userType, cri));
 		ret.put("pagination", pm);
 		return new ResponseEntity<>(ret, HttpStatus.OK);
@@ -106,9 +106,10 @@ public class AdminRestController {
 	}
 
 	@PostMapping(value = "/user/msg")
-	public ResponseEntity<Void> sendMsg(Map<String, Object> param) {
-
+	public ResponseEntity<Void> sendMsg(@RequestBody Map<String, Object> param) {
+		
 		List<String> receivers = (List<String>) param.get("receivers");
+	
 		MsgVO vo = new MsgVO();
 		vo.setContent((String) param.get("content"));
 		vo.setTitle((String) param.get("title"));
@@ -126,7 +127,7 @@ public class AdminRestController {
 	@GetMapping(value = "/user/find", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public ResponseEntity<Map<String, List<MemberVO>>> findMember(@RequestParam String keyword) {
 		Map<String, List<MemberVO>> ret = new HashMap<>();
-		ret.put("user", memServ.getMemberByKeyword(keyword));
+		ret.put("users", memServ.getMemberByKeyword(keyword));
 		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
 }

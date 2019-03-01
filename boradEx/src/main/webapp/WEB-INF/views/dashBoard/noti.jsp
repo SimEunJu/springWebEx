@@ -7,6 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>알림</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
 </head>
 <body>
 
@@ -21,19 +24,19 @@
   		</thead>
   		
  		<tbody>
-    			<c:forEach var="n" items="noti" varStatus="i">
+    			<c:forEach var="noti" items="${noties}" varStatus="i">
     				<tr>
-    				<th scope="row"><input type="checkbox" name="noti" value="${n.nno}" /></th>
+    				<th scope="row"><input type="checkbox" name="noti" value="${noti.nno}" /></th>
       				<c:choose>
-      					<c:when test="${not empty n.title}">
-      						<a href="/board/daily/${n.bno}?from=noti&rno=${n.rno}"><td class="noti" style="weight: ${n.read_flag ? 'bold' : ''}">[ ${title} ]에 댓글이 달렸습니다.</td></a>
+      					<c:when test="${not empty noti.title}">
+      						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}"><td class="noti" style="weight: ${noti.read_flag ? 'bold' : ''}">[ ${noti.title} ]에 댓글이 달렸습니다.</td></a>
       					</c:when>
       					<c:otherwise>
-      						<a href="/board/daily/${n.bno}?from=noti&rno=${n.rno}"><td class="noti" style="weight: ${n.read_flag ? 'bold' : ''}">[ ${reply} ]에 대댓글이 달렸습니다.</td></a>
+      						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}"><td class="noti" style="weight: ${noti.read_flag ? 'bold' : ''}">[ ${noti.reply} ]에 대댓글이 달렸습니다.</td></a>
       					</c:otherwise>
       				</c:choose>
       				<td>
-      					<fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${n.regdate}" />
+      					<fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${noti.regdate}" />
       				</td>
       				</tr>
     			</c:forEach>
@@ -41,15 +44,15 @@
 	</table>
 	<nav aria-label="Page navigation">
   		<ul class="pagination">
-  			<c:if test="${pageMaker.prev}">
+  			<c:if test="${pagination.prev}">
     		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
     		</c:if>
     		
-    		<c:forEach begin=1 end="${pageMaker.endPage>10 ? 10 : pageMaker.endPage}" varStatus="idx">
-    		<li class="page-item"><a class="page-link" href="${varStatus.count}">1</a></li>
+    		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
+    		<li class="page-item"><a class="page-link" href="${idx.count}">${idx.count}</a></li>
     		</c:forEach>
     		
-    		<c:if test="${pageMaker.next}">
+    		<c:if test="${pagination.next}">
     		<li class="page-item"><a class="page-link next" href="">&raquo;</a></li>
   			</c:if>
   		</ul>
@@ -68,13 +71,17 @@
 {{/each}}
 </script>
 
-<script src="/radioInputHandle.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
+<script src="/resources/js/checkboxHandle.js"></script>
 <script>
 $("document").ready(function(){
 	const tableRowSekeleton   = document.getElementById("table-row").innerHTML;
 	const template = Handlebars.compile(tableRowSekeleton);
 	Handlebars.registerHelper("dateFormat", function(date){
-		return new Date(date).toJSON().replace("z", " ").substring(0,16);
+		if(date === null) return;
+		return date.year+"-"+date.monthValue+"-"+date.dayOfMonth+" "+date.hour+":"+date.minute;
 	});
 	
 	const check = checkServInitiator("noti", "/board/api/admin/user", template);
