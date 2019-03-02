@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
 <body>
 
 <div class="container">
@@ -112,13 +113,13 @@
 
 <script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}
-<li class="page-item"><a class="page-link" href="">&laquo;</a></li>
+	<li class="page-item"><a class="page-link" href="">&laquo;</a></li>
 {{/if}}
 {{#for startPage endPage}}
-<li class="page-item"><a class="page-link" href="{{page}}">{{page}}</a></li>
-{{/each}]
-{{#for}}
-<li class="page-item"><a class="page-link" href="">&raquo;</a></li>
+	<li class="page-item"><a class="page-link" href="{{this}}">{{this}}</a></li>
+{{/for}}
+{{#if next}}
+	<li class="page-item"><a class="page-link" href="">&raquo;</a></li>
 {{/if}}
 </script>
 <script id="receiver-list-hb" type="text/x-handlebars-template">

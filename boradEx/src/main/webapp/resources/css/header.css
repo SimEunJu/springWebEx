@@ -1,0 +1,10 @@
+#home-icon{
+	width: 20%;
+}
+.home{
+	animation:  3s icon_hover;
+}
+@keyframe icon_hover{
+	from { box-shadow: 0 0 1px 1px gold;}
+	to { box-shadow:  0 0 10px 10px gold;}
+}

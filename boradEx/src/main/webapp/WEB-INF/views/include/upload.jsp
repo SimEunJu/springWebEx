@@ -2,12 +2,12 @@
     pageEncoding="UTF-8"%>
 
 <div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">File Attach</div>
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-title">첨부 파일</div>
 			
-			<div class="panel-body">
-				<div class="form-group upload-div">
+			<div class="card-body">
+				<div class="form-group upload">
 					<input type="file" name="uploadFile" multiple="multiple">
 				</div>
 				
@@ -21,17 +21,56 @@
 	</div>
 </div>
 
+<script id="pagination-hb" type="text/x-handlebars-template">
+<ul class='pagination pull-right'>
+{{#if prev}}
+
+{{/if}}
+</script>
+
+<script id="file-info" type="text/x-handlebars-template">
+{{#each files}}
+	<input type='hidden' name='files[{{idx}}].fileName' value='{{fileName}}'/>";
+	<input type='hidden' name='files[{{idx}}].uuid' value='{{uuid}}'/>";
+	<input type='hidden' name='files[{{idx}}].uploadPath' value='{{uploadPath}}'/>";
+	<input type='hidden' name='files[{{idx}}].fileType' value='{{fileType}}'/>";
+{{/each}}
+</script>
+<script id="upload-item" type="text/x-handlebars-template">
+<li data-path='{{uploadPath}}' data-uuid='{{uuid}}' data-filename='{{fileName}}' data-type='{{fileType}}'>
+	<div>
+		<span>{{fileName}}</span>
+		<button type='button' data-file='{{filePath}}' data-type='{{fileType}}' class='btn btn-warning btn-circle'>
+			<i class='fa fa-times'></i>
+		</button>
+		<br>
+		{{#if isImg}}
+			<img src='/board/daily/file?fileName={{filePath}}'>
+		{{else}}
+			<img src='/resources/img/attach.png'>
+		{{/if}}
+	</div>
+</li>
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/file.js"></script>
 
-<script>
+<script type="text/javascript">
 
-var csrfHeader = "${_csrf.headerName}";
-var csrfTokenVal = "${_csrf.token}";
+const csrfHeader = "${_csrf.headerName}";
+const csrfTokenVal = "${_csrf.token}";
 
-var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
-var maxSize = 5242880;
+const uploadItemSkeleton = document.getElementById("upload-item").innerHTML;
+const uploadItemTemplate = Handlebars.compile(uploadItemSkeleton);
 
-function checkExtension(fileName, fileSize){
+const fileInfoSkeleton = document.getElementById("file-info").innerHTML;
+const fileIntoTemplate = Handlebars.compile(fileInfoSkeleton);
+
+const regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+const maxSize = 5242880;
+
+function checkFile(fileName, fileSize){
 	if(fileSize >= maxSize){
 		alert("사이즈 초과");
 		return false;
@@ -44,16 +83,16 @@ function checkExtension(fileName, fileSize){
 }
 
 $("input[type='file']").change(function(e){
-	var formData = new FormData();
-	var inputFile = $("input[name='uploadFile']");
-	var files = inputFile[0].files;
-	for(var i=0; i<files.length; i++){
-		if(!checkExtension(files[i].name, files[i].size)) return false;
+	let formData = new FormData();
+	const inputFile = $("input[name='uploadFile']");
+	const files = inputFile[0].files;
+	for(let i=0; i<files.length; i++){
+		if(!checkFile(files[i].name, files[i].size)) return false;
 		formData.append("uploadFile", files[i]);
 	}
 	
 	$.ajax({
-		url: "/uploadAjax",
+		url: "/board/daily/file",
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
 		},
@@ -61,7 +100,7 @@ $("input[type='file']").change(function(e){
 		dataType: "json",
 		processData: false,
 		contentType: false,
-		type: "post",
+		method: "post",
 		success: function(data){
 			showUploadResult(data);
 		}
@@ -77,21 +116,21 @@ $(".upload-result").on("click", "button", function(e){
 	var fileName = $(this).data("file");
 	var type = $(this).data("type");
 	var li = $(this).closest("li");
+	
 	$.ajax({
-		url: "/deleteFile",
+		url: "/board/daily/file",
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
 		},
-		type: "post",
+		method: "delete",
 		dataType: "json",
-		data: {fileName: fileName, type: type},
-		success: function(){
-			console.log(li);
-			li.remove();
-		},
-		error: function(xhr, status, err){
-			console.dir(xhr, status, err);
-		}
+		data: {fileName: fileName, type: type}
+	}).done(function(){
+		li.remove();
+		
+	}).fail(function(xhr, status, err){
+		console.error(xhr, status, err);
+	
 	});
 });
 

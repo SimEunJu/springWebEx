@@ -77,7 +77,7 @@ public class BoardContoller {
 			}
 			
 			pageMaker.setTotalCount(totalCount);
-			model.addAttribute("pageMaker", pageMaker);
+			model.addAttribute("pagination", pageMaker);
 			model.addAttribute("boardList", boardList);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,20 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-    <div class="text-center">
-		<ul class="pagination">
-			<c:if test="${pageMaker.prev}">
-				<li><a href="/board/list${pageMaker.cri.makeSearch(pageMaker.startPage-1) }">&laquo;</a></li>
-			</c:if>
-			
-			<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="idx">
-				<li <c:out value="${pageMaker.cri.page eq idx ? 'class=actvie' : '' }" />>
-				<a href="/board/list${pageMaker.cri.makeSearch(idx) }">${idx }</a>
-				</li>
-			</c:forEach>
-			
-			<c:if test="${pageMaker.next }">
-				<li><a href="/board/list${pageMaker.cri.makeSearch(pageMaker.startPage+1) }">&raquo;</a></li>
-			</c:if>
-		</ul>
-	</div>
+<div class="row">
+	<ul class="pagination mx-auto">
+		<c:if test="${pagination.prev}">
+			<li class="page-item"><a class="page-link" href="/board/daily${pageMaker.cri.makeSearch(pageMaker.startPage-1) }">&laquo;</a></li>
+		</c:if>
+
+		<c:forEach begin="${pagination.startPage }" end="${pagination.endPage }" var="idx">
+			<li class="page-item ${pagination.cri.page eq idx ? 'actvie' : '' }">
+				<a class="page-link" href="/board/daily${pagination.cri.makeSearch(idx) }">${idx}</a>
+			</li>
+		</c:forEach>
+
+		<c:if test="${pagination.next}">
+			<li class="page-item"><a class="page-link" href="/board/daily${pageMaker.cri.makeSearch(pageMaker.startPage+1) }">&raquo;</a></li>
+		</c:if>
+	</ul>
+</div>

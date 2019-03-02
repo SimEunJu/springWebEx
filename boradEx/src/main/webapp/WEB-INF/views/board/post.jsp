@@ -1,22 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<head>
+<%@ include file="../common/header.jsp"%>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
- 	
-    <title>daily : ${boardVO.title}</title>    
-    
-	<%@include file="../include/cssFiles.jsp" %>
-
-</head>
-	
 <form role="form" method="post" >
-	<input type="hidden" name="bno" value="${boardVO.bno }">
+	<input type="hidden" name="bno" value="${board.bno }">
 	<input type="hidden" name="page" value="${cri.page }">
 	<input type="hidden" name="perPageNum" value="${cri.perPageNum }">
 	<input type="hidden" name="searchType" value="${cri.searchType }">
@@ -24,62 +12,52 @@
 </form>
 
 <div class="container">
-<div class="box-body">
-	<div class="form-group">
-		<label for="exampleInputEmail1">Title</label>
-		<input type="text" readonly="readonly" value="${boardVO.title }"name="title" class="form-control" placeholder="Enter Title">
+	<div>
+		<div class="form-group">
+			<label for="title">제목</label> 
+			<input type="text" readonly="readonly" value="${board.title }" name="title" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="content">내용</label>
+			<textarea class="form-control" readonly="readonly" row="3" name="content">${board.content }</textarea>
+		</div>
+		<div class="form-group">
+			<label class="wrtier">글쓴이</label> 
+			<input type="text" readonly="readonly" value="${board.writer }" name="writer" class="form-control">
+		</div>
 	</div>
-	<div class="form-group">
-		<label for="exampleInputPassword1">Content</label>
-		<textarea class="form-control" readonly="readonly" row="3" name="content" placeholder="Enter ...">${boardVO.content }</textarea>
-	</div>
-	<div class="form-group">
-		<label class="exampleInputEmail1">Writer</label>
-		<input type="text" readonly="readonly" value="${boardVO.writer }" name="writer" placeholder="Enter Writer" class="form-control">
-	</div>
-</div>
 
-<div class="box-footer">
-	<sec:authentication property="principal" var="loginUser" />
-	
-	<sec:authorize access="isAuthenticated()">
-		<c:if test="${loginUser.username eq boardVO.writer}">
-			<button type="submit" id="boardModBtn" class="btn btn-warning">Modify</button>
-			<button type="submit" id="boardRemBtn" class="btn btn-danger">Remove</button>
-		</c:if>
-	</sec:authorize>
-	<button type="submit" id="boardAllBtn" class="btn btn-primary">List All</button>
-	
-	<button class="like" class="btn btn-primary btn-sm" style="color: ${isUserLiked ? 'red' : 'black'}">
-		<span style="font-size: 20px; font-weight: bold;">♥</span>
-		좋아요 
-		<span class="like-num">${boardVO.userLike}</span>
-	</button>
-</div>
-	
-<p></p>
-	
-<div class="big-picture-wrapper">
-	<div class="big-picture">
-	
-	</div>
-</div>
+	<div>
+		<sec:authorize access="isAuthenticated()">
+			<sec:authentication property="principal" var="loginUser" />
+			<c:if test="${loginUser.username eq board.writer}">
+				<button type="submit" id="boardModBtn" class="btn btn-outline-warning">수정</button>
+				<button type="submit" id="boardRemBtn" class="btn btn-outline-danger">삭제</button>
+			</c:if>
+		</sec:authorize>
+		<button type="submit" id="boardAllBtn" class="btn btn-primary">목록으로</button>
 
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">File Attach</div>
-			
-			<div class="panel-body">
-				<div class="upload-result">
-					<ul>
-					
-					</ul>
+		<button class="like" class="btn btn-primary btn-sm" style="color: ${isUserLiked ? 'red' : 'black'}">
+			<span style="font-size: 20px; font-weight: bold;">♥</span> 좋아요 
+			<span class="like-num">${board.userLike}</span>
+		</button>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-head">첨부파일</div>
+
+				<div class="card-body">
+					<div class="upload-result">
+						<ul>
+
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 <div class="modal" tabindex="-1" role="dialog">
@@ -99,12 +77,61 @@
 
 <%@ include file="../reply/replyList.jsp" %>
 
-<%@ include file="../include/jsFiles.jsp" %>
+<%@ include file="../common/footer.jsp"%>
 
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
 <script type="text/javascript" src="/resources/js/file.js"></script>
 
+<script id="reply-hb" type="text/x-handlebars-template">
+{{#each replies}}
+<li class="left clearfix" data-rno="{{rno}}" data-secret="true">
+	<div>
+		{{#if isScret}}
+			<p>비밀글입니다.</p>
+			<small class="pull-right text-muted">{{#dateFormat regdate}}</small>
+		{{else}}
+			<div class="header">
+				<strong class="primary-font">{{replyer}}</strong>
+				<small class="pull-right text-muted">{{#dateFormat regdate}}</small>
+			</div>
+			<p>{{reply}}</p>
+		{{/if}}
+	</div>
+</li>
+{{/each}}
+{{#if isFirstPage}}
+	<div class="reply-btns">
+		<button style="display: {{displayMore}}" class="more btn btn-primary btn-sm">더보기</button>
+		<button class="fold btn btn-primary btn-sm pull-left">접기</button>
+</div>
+{{/if}}
+</script>
+
+<script id="upload-item" type="text/x-handlebars-template">
+<li data-path='{{uploadPath}}' data-uuid='{{uuid}}' data-filename='{{fileName}}' data-type='{{fileType}}'>
+	<div>
+		<span>{{fileName}}</span>
+		<br>
+		{{#if isImg}}
+			<img src='/board/daily/file?fileName={{filePath}}'>
+		{{else}}
+			<img src='/resources/img/attach.png'>
+		{{/if}}
+	</div>
+</li>
+</script>
+<script id="pagination-hb" type="text/x-handlebars-template">
+{{#if prev}}
+	<li class="page-item"><a class="page-link" href="">&laquo;</a></li>
+{{/if}}
+{{#for startPage endPage}}
+	<li class="page-item"><a class="page-link" href="{{this}}">{{this}}</a></li>
+{{/for}}
+{{#if next}}
+	<li class="page-item"><a class="page-link" href="">&raquo;</a></li>
+{{/if}}
+</script>
 <script type="text/javascript">
 	$(document).ready(function(){
 			
@@ -127,42 +154,34 @@
 		const name = nameTestAuth;
 		const isLogged = isLoggedTestAuth;
 		
+		const replySkeleton = document.getElementById("reply-hb").innerHTML;
+		const replyTemplate = Handlebars.compile(replySkeleton);
+		
+		const uploadItemSkeleton = document.getElementById("upload-item").innerHTML;
+		const uploadItemTemplate = Handlebars.compile(uploadItemSkeleton);
+		
 		// 첨부파일(이미지 등) 불러오기
 		(function(){
 			$.getJSON("/board/daily/"+bno+"/attach", function(res){
-				let str = "";
 				$(res).each(function(i, attach){
+					let filePath;
+					let isImg = false;
 					if(attach.fileType.includes("img")){
-						const filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
-						str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'><div>";
-						str += "<img src='/displayFile?fileName="+filePath+"'></div></li>";
-					}else{
-						str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'><div><span>"+attach.fileName+"</span><br>";
-						str += "<img src='/resources/img/attach.png'></div></li>";
+						filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
+						isImg = true;	
 					}
+					attach.filePath = filePath;
 				});
+				const str = uploadItemTemplate(res)
 				$(".upload-result ul").html(str);
 			});
 		})();
 		
 		// 댓글 불러오기
 		let pageNum = 1;
-		const replyFooter = $(".panel-footer");
+		const replyFooter = $(".card-footer");
 		function showReplyPagination(){
-			let str = "<ul class='pagination pull-right'>";
-			if("${pm.prev}"){ 
-				str += "<li class='page-item'><a class='page-link' href='"+"${pm.startPage-1}"+"'>Prev</a></li>";
-			}
-			const startPage = parseInt("${startPage}");
-			const endPage = parseInt("${endPage}");
-			for(let i=startPage; i<=endPage; i++){
-				const active = pageNum == i ? "active" : "";
-				str += "<li class='page-item "+active+"'><a class='page-link' href='"+i+"</a></li>";
-			}
-			if("${pm.next}"){ 
-				str += "<li class='page-item'><a class='page-link' href='"+"${pm.endPage+1}"+"'>Prev</a></li>";
-			}
-			str += "</ul></div>";
+			// ajax로 가져올때 pagination 정보도 같이 가져와야
 			replyFooter.html(str);
 		}
 		
@@ -372,23 +391,21 @@
 			var reqPage = parseInt(eachReplySection.get(0).dataset.page);
 			
 			$.getJSON('/board/daily/'+bno+'/reply/added/'+parRno+"/"+reqPage, function(replies){
-				var str = "";
 				
+				let replyHbData = {};
 				for(let i=0, len=replies.length||0; i<len; i++){
-					isSecret = replies[i].reply === null;
-					if(isSecret){
-						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'" data-secret="true"><div><p>'+"비밀글입니다."+'</p><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small></div></li>'; 
-					}
-					else{
-						str += '<li class="left clearfix" data-rno="'+replies[i].rno+'"><div><div class="header"><strong class="primary-font">'+replies[i].replyer+'</strong><small class="pull-right text-muted">'+replyService.displayTime(replies[i].regdate)+'</small>';
-						str += '</div><p>'+replies[i].reply+'</p></div></li>';
-					}
+					replies[i].isSecret = (replies[i].reply === null);
 				}
+				replyHbData.replies = replies;
 				
-				if(reqPage === 1) str += '<div class="reply-btns"><button class="more btn btn-primary btn-sm">더보기</button><button class="fold btn btn-primary btn-sm pull-left">접기</button></div>';
+				if(reqPage === 1) replyHbData.isFirstPage = true;
+				else replyHbData.isFirstPage = false;
+				
+				if(reqPage*10 >= totalNum) replyBbData.displayMore = "none";
+				else replyBbData.displayMore = "";
+				
+				const str = replyTemplate(replyHbData);
 				eachReplySection.append(str);
-				
-				if(reqPage*10 >= totalNum) eachReplySection.find(".more").hide();
 				
 			});
 		}
@@ -403,18 +420,18 @@
 		
 		$(".upload-result").on("click", "li", function(){
 			var file = $(this);
-			var path = encodeURIComponent(file.data("path")+"\\"+file.data("uuid")+"_"+file.data("filename"));
+			var path = encodeURIComponent(file.data("path")+"//"+file.data("uuid")+"_"+file.data("filename"));
 			
 			if(file.data("type")){
 				showImage(path);
 			}else {
-				self.location = "/download?fileName="+path;
+				self.location = "/board/daily/file/download?fileName="+path;
 			}
 		});
 		
 		
 		function showImage(path){
-			$(".modal-body p").html("<img src='/displayFile?fileName="+path+"'>");
+			$(".modal-body p").html("<img src='/board/daily/file?fileName="+path+"'>");
 		}
 	
 		var formObj = $("form[role='form']");
