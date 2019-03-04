@@ -130,7 +130,8 @@ public class BoardContoller {
 			if(from != null && from.equals("noti")) notiServ.markReadFlagNotification(rno);
 			model.addAttribute("isUserLiked", likeServ.isUserLiked());
 			model.addAttribute("replyCnt", boardServ.getReplyCnt(boardNo));
-			model.addAttribute(boardServ.read(boardNo));
+			model.addAttribute("board",boardServ.read(boardNo));
+			
 			log.info(boardServ.read(boardNo));
 		} catch (Exception e) {
 			e.printStackTrace();

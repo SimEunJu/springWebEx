@@ -47,6 +47,8 @@ public class ReplyServiceImpl implements ReplyService {
 					.stream().map(r -> {
 						try {
 							r.setAddedCount(getAddedTotalCount(r.getRno()));
+							r.setSecret(false);
+							// null°ª check·Î ¹Ù²ã¾ß
 							if(!"0".equals(r.getDeleteType())) r.setDeleteFlag(true);
 						} catch (Exception e) {
 							e.printStackTrace();

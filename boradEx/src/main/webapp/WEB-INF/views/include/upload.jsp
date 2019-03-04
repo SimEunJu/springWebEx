@@ -21,13 +21,6 @@
 	</div>
 </div>
 
-<script id="pagination-hb" type="text/x-handlebars-template">
-<ul class='pagination pull-right'>
-{{#if prev}}
-
-{{/if}}
-</script>
-
 <script id="file-info" type="text/x-handlebars-template">
 {{#each files}}
 	<input type='hidden' name='files[{{idx}}].fileName' value='{{fileName}}'/>";

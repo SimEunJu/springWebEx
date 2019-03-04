@@ -10,7 +10,7 @@
 </select>
 
 <select id="getLeaveUserCount" resultType="int">
-	select count(username) from tbl_member where leave_date > #{date} and leave_flag = '1'
+	select count(username) from tbl_member where leave_date > #{date} and state = 'L'
 </select>
 
 <select id="getPostCount" resultType="int">

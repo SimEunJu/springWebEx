@@ -3,7 +3,7 @@ const replyService = (function(){
 	function add(reply, callback, error){
 		$.ajax({
 			type: 'post',
-			url: '/board/daily/'+reply.bno+"/reply",
+			url: '/board/daily/'+reply.bno+"/reply?writer="+reply.writer,
 			data: JSON.stringify(reply),
 			contentType: 'application/json; charset=utf-8',
 			success: function(result, status, xhr){

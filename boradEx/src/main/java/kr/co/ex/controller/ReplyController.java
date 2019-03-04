@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,11 +45,11 @@ public class ReplyController {
 	private NotificationService notiServ;
 	
 	@PostMapping(value="", consumes="application/json", produces={MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> registerReply(ReplyVO vo, 
-			@RequestParam String writer, @PathVariable int bno){
+	public ResponseEntity<String> registerReply(@RequestParam String writer, @RequestBody ReplyVO vo, @PathVariable int bno){
 		try {
 			log.info(vo.toString());
 			serv.addReply(vo);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if(!writer.equals(vo.getReplyer())){
 				NotificationVO noti = NotificationVO.builder()
 						.rno(vo.getRno())
@@ -77,7 +79,7 @@ public class ReplyController {
 			pm.setTotalCount(serv.getTotalCount(bno));
 			
 			Map<String, Object> map = new HashMap<>();
-			map.put("pageMaker", pm);
+			map.put("pagination", pm);
 			String currentUser = null;
 			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
 			

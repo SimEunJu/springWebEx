@@ -13,7 +13,7 @@ import kr.co.ex.util.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Component
+//@Component
 @Log4j
 @AllArgsConstructor
 public class AdminStatTask {
@@ -29,7 +29,9 @@ public class AdminStatTask {
 				.leaveCnt(mapper.getLeaveUserCount(today))
 				.postCnt(mapper.getPostCount(today))
 				.build();
-		log.info(vo.toString());
-		mapper.createUserStat(vo);
+			log.info(vo.toString());
+		
+			mapper.createUserStat(vo);
+		
 	}
 }

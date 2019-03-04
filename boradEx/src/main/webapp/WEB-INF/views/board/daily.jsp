@@ -6,9 +6,9 @@
 
 <div class="container">
 	<form role="form">
-		<input type="hidden" name="page" value="${pageMaker.cri.page }">
+		<input type="hidden" name="page" value="${pagination.cri.page }">
 		<input type="hidden" name="perPageNum"
-			value="${pageMaker.cri.perPageNum }">
+			value="${pagination.cri.perPageNum }">
 	</form>
 
 	<div class="modal fade" id="modal" tabindex="-1" role="dialog">
@@ -42,7 +42,7 @@
 						<tr>
 							<td>${board.bno}</td>
 							<td><a
-								href="/board/daily/${board.bno}/${pageMaker.cri.makeSearch()}">${board.title}</a></td>
+								href="/board/daily/${board.bno}/${pagination.cri.makeSearch()}">${board.title}</a></td>
 							<td>${board.writer}</td>
 							<td>${cf:formatLocalDateTime(board.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
 							<td>${board.viewcnt}</td>
@@ -87,7 +87,7 @@
 				return;
 			}
 			
-			window.location.href = "/board/daily"+"${pageMaker.cri.makeQuery()}"
+			window.location.href = "/board/daily"+"${pagination.cri.makeQuery()}"
 									+"&searchType=" + $("select option:selected").val()
 									+"&keyword=" + encodeURIComponent($("input[name='keyword']").val());
 		});
