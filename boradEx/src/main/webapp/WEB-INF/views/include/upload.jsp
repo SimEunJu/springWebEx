@@ -4,7 +4,7 @@
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
-			<div class="card-title">첨부 파일</div>
+			<div class="card-header">첨부 파일</div>
 			
 			<div class="card-body">
 				<div class="form-group upload">

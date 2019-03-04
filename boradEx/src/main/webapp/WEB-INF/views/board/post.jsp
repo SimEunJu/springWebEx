@@ -12,7 +12,17 @@
 </form>
 
 <div class="container">
-	<div>
+	<div class="row justify-content-end">
+		<sec:authorize access="isAuthenticated()">
+			<sec:authentication property="principal" var="loginUser" />
+			<c:if test="${loginUser.username eq board.writer}">
+				<button type="submit" id="boardModBtn" class="btn btn-outline-warning">수정</button>
+				<button type="submit" id="boardRemBtn" class="btn btn-outline-danger">삭제</button>
+			</c:if>
+		</sec:authorize>
+		<button type="submit" id="boardAllBtn" class="btn btn-outline-primary">목록으로</button>
+	</div>
+	<form>
 		<div class="form-group">
 			<label for="title">제목</label> 
 			<input type="text" readonly="readonly" value="${board.title }" name="title" class="form-control">
@@ -25,19 +35,10 @@
 			<label class="wrtier">글쓴이</label> 
 			<input type="text" readonly="readonly" value="${board.writer }" name="writer" class="form-control">
 		</div>
-	</div>
+	</form>
 
-	<div>
-		<sec:authorize access="isAuthenticated()">
-			<sec:authentication property="principal" var="loginUser" />
-			<c:if test="${loginUser.username eq board.writer}">
-				<button type="submit" id="boardModBtn" class="btn btn-outline-warning">수정</button>
-				<button type="submit" id="boardRemBtn" class="btn btn-outline-danger">삭제</button>
-			</c:if>
-		</sec:authorize>
-		<button type="submit" id="boardAllBtn" class="btn btn-outline-primary">목록으로</button>
-
-		<button class="like" class="btn btn-primary btn-sm" style="color: ${isUserLiked ? 'red' : 'black'}">
+	<div class="row justify-content-center">
+		<button class="btn btn-danger mb-4 like" class="btn btn-${isUserLiked ? '' : 'outline'}-primary btn-sm" style="color: ${isUserLiked ? 'white' : 'red'}">
 			<span style="font-size: 20px; font-weight: bold;">♥</span> 좋아요 
 			<span class="like-num">${board.userLike}</span>
 		</button>
@@ -86,16 +87,16 @@
 
 <script id="reply-hb" type="text/x-handlebars-template">
 {{#each this}}
-	<li class="reply" data-rno="{{rno}}" data-open="false" >
+	<li class="reply list-group-item" data-rno="{{rno}}" data-open="false" >
 		{{#if isNormal}}
 			<div>
 				<div class="header">
 					<strong class="primary-font">{{replyer}}</strong>
-					<small class="pull-right text-muted">{{dateFormat regdate}}</small>
-					<div>
-						<span class="pull-right report">|신고</span>
-						<span class="pull-right reply-del">|삭제</span>
-						<span class="pull-right reply-added">대댓글</span>
+					<small class="float-right">{{dateFormat regdate}}</small>
+					<div class="row justify-content-end mr-1">
+						<small><a class="reply-added">대댓글</a></small>
+						<small><a class="reply-del">|삭제</a></small>
+						<small><a class="report">|신고</a></small>
 					</div>
 				</div>
 				<p>{{reply}}<a href="{{rno}}"> [{{addedCount}}]</a></p>
@@ -110,7 +111,7 @@
 				{{else if isSecret}}
 					<p>비밀 댓글입니다.</p>
 				{{/if}}
-				<small class="pull-right text-muted">{{dateFormat regdate}}</small>
+				<small class="float-right">{{dateFormat regdate}}</small>
 		</div>
 		{{/if}}
 	</li>
@@ -118,7 +119,7 @@
 </script>
 <script id="added-reply-hb" type="text/x-handlebars-template">
 {{#each replies}}
-<li class="added-reply" data-rno="{{rno}}">
+<li class="added-reply list-group-item" data-rno="{{rno}}">
 	<div>
 		{{#if secret}}
 			<p>비밀글입니다.</p>
@@ -232,16 +233,14 @@
 				reportBtn: $(".reply-report"),
 				
 				form: $(".reply-form"),
-				page: 1
-		}
+				page: 1,
+				addedForm: $(".reply-form").clone()
+		};
+		replyObj.addedForm.find("button").removeClass("reply-reg").addClass("added-reply-reg");
 		
+		showReplyList();
 		
-			replyObj.addedForm = $(".reply-form").clone();
-			replyObj.addedForm.find("button").removeClass("reply-reg").addClass("added-reply-reg");
-		
-		
-		showReplyList(1);
-		function showReplyList(page){
+		function showReplyList(){
 			replyService.getList({bno: board.bno, page: replyObj.page}, function(res){
 				
 				const {replies, pagination} = res;
@@ -250,6 +249,9 @@
 					
 					replies[i].isNormal = false;
 					
+					if(replies[i].secret === false){
+						replies[i].isNormal = true;
+					}
 					// 삭제된 메시지라면
 					if(replies[i].deleteFlag){
 						let deleteMsg = "";
@@ -269,11 +271,6 @@
 							break;
 						}
 						replies[i].deleteMsg = deleteMsg;
-					}
-					// 비밀 댓글인 경우의 처리
-					// 그 외에
-					else{
-						replies[i].isNormal = true;
 					}
 				};
 				// 문자열 생성해 적용
@@ -418,7 +415,7 @@
 			return true;
 		}
 	
-		replyObj.listSec.on("click", ".reply-reg",function(){
+		replyObj.listSec.on("click", ".reply-reg",function(){		
 			addReply(replyObj.form);		
 		});
 		

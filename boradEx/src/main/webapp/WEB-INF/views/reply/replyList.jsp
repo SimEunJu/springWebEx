@@ -2,14 +2,14 @@
     pageEncoding="UTF-8"%>
 
 <div class="container">
-	<div class="col-lg-12">
+	
 		<div class="card">
-			<div class="card-head">
+			<div class="card-header">
 				<i class="fa fa-comments fa-fw"></i>댓글
 			</div>
 			
 			<div class="card-body">
-				<div class="row reply-form">
+				<div class="row card-body reply-form">
 					<div class="col-sm-2">
 						<sec:authorize access="isAuthenticated()">
 							<div class="reply-secret">
@@ -26,24 +26,24 @@
 							</div>
 						</sec:authorize>	
 					</div>
-					<div class="col-sm-9">
+					<div class="col-sm-8">
 						<div class="reply">
 							<textarea style="width: 100%;" name="reply"></textarea>
 						</div>
 					</div>
-					<div class="col-sm-1">
+					<div class="col-sm-2">
 						<button class="btn btn-primary btn-xs reply-reg">입력</button>
 					</div>
 				<hr>
 				</div>
-				<ul class="reply-list">
+				<ul class="reply-list list-group">
 					
 				</ul>
 			</div>
 			
-			<div class="card-footer pagination">
+			<div class="card-footer pagination justify-content-center">
 			
 			</div>
 		</div>
-	</div>
+	
 </div>
