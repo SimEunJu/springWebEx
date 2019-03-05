@@ -35,7 +35,12 @@
   </select>
   
   <select id="totalCount" resultType="int">
-  	select count(rno) from tbl_reply where bno=#{bno}
+  	select count(rno) from tbl_reply 
+  	where bno=#{bno} 
+  	<if test="notIncludeAdded">
+  		and par_rno is null
+  	</if>
+  	
   </select>
   
   <select id="addedTotalCount" resultType="int">
@@ -60,6 +65,10 @@
   </update>
   
   <update id="delete">
-  	update tbl_reply set delete_flag="1" where rno=#{rno}
+  	update tbl_reply set delete_type=#{deleteType}, reply="" where rno=#{rno};
+  </update>
+  
+  <update id="updateReport">
+  	update tbl_reply set report_cnt = report_cnt+1 where rno=#{rno}
   </update>
 </mapper>

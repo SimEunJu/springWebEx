@@ -38,7 +38,7 @@
 	</form>
 
 	<div class="row justify-content-center">
-		<button class="btn btn-danger mb-4 like" class="btn btn-${isUserLiked ? '' : 'outline'}-primary btn-sm" style="color: ${isUserLiked ? 'white' : 'red'}">
+		<button class="btn btn-${isUserLiked? '' : 'outline-'}danger mb-4 like" style="color: ${isUserLiked ? 'white' : 'red'}">
 			<span style="font-size: 20px; font-weight: bold;">♥</span> 좋아요 
 			<span class="like-num">${board.userLike}</span>
 		</button>
@@ -47,7 +47,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="card">
-				<div class="card-head">첨부파일</div>
+				<div class="card-header">첨부파일</div>
 
 				<div class="card-body">
 					<div class="upload-result">
@@ -96,10 +96,10 @@
 					<div class="row justify-content-end mr-1">
 						<small><a class="reply-added">대댓글</a></small>
 						<small><a class="reply-del">|삭제</a></small>
-						<small><a class="report">|신고</a></small>
+						<small><a class="reply-report">|신고</a></small>
 					</div>
 				</div>
-				<p>{{reply}}<a href="{{rno}}"> [{{addedCount}}]</a></p>
+				<p>{{reply}}<a href="{{rno}}" class="added-cnt"> [{{addedCount}}]</a></p>
 			</div>
 			<div class="added-form-sec"></div>
 			<div class="added-replies" data-page="1">
@@ -108,7 +108,7 @@
 			<div>
 				{{#if deleteFlag}}
 					<p>{{deleteMsg}}</p>
-				{{else if isSecret}}
+				{{else if secret}}
 					<p>비밀 댓글입니다.</p>
 				{{/if}}
 				<small class="float-right">{{dateFormat regdate}}</small>
@@ -249,28 +249,28 @@
 					
 					replies[i].isNormal = false;
 					
-					if(replies[i].secret === false){
-						replies[i].isNormal = true;
-					}
 					// 삭제된 메시지라면
 					if(replies[i].deleteFlag){
 						let deleteMsg = "";
 						
-						switch(replies[i].deleteFlag){
-						case('R'):
+						switch(replies[i].deleteType){
+						case 'R':
 							deleteMsg = "댓글 작성자가 삭제한 댓글입니다.";
 							break;
-						case('B'):
+						case 'B':
 							deleteMsg = "게시글 작성자가 삭제한 댓글입니다.";
 							break;
-						case('A'):
+						case 'A':
 							deleteMsg = "관리자가 삭제한 댓글입니다.";
 							break;
 						default:
-							deletMsg = "삭제된 댓글입니다.";
+							deleteMsg = "삭제된 댓글입니다.";
 							break;
 						}
 						replies[i].deleteMsg = deleteMsg;
+					}
+					else if(replies[i].secret === false){
+						replies[i].isNormal = true;
 					}
 				};
 				// 문자열 생성해 적용
@@ -297,17 +297,28 @@
 		replyObj.listSec.on("click", ".reply-del", handleReplyDelEvt);
 
 		function handleReplyDelEvt(){
-			const rno = $(this).parents(".reply").data("rno");
-			// 해당 댓글 삭제하고
-			replyService.remove({rno : rno, bno: board.bno}, 
-				function(){
-					// 댓글 목록 갱신
-					showReplyList(replyObj.page);
-			});
+			if(confirm("정말 삭제하시겠습니다?")){
+				const rno = $(this).parents(".reply").data("rno");
+				// 해당 댓글 삭제하고
+				replyService.remove({rno : rno, bno: board.bno}, 
+					function(){
+						// 댓글 목록 갱신
+						showReplyList(replyObj.page);
+				});
+			}
 		}
 		
+		replyObj.listSec.on("click", ".reply-report", function(e){
+			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
+				const rno = $(this).parents(".reply").data("rno");
+				replyService.report({bno: board.bno, rno: rno}, function(){
+					alert("신고가 접수되었습니다.")
+				});
+			}
+		});
+		
 		// 대댓글 입력 없이 대댓글만 보고 싶을 때
-		replyObj.listSec.on("click", "a", function(e){
+		replyObj.listSec.on("click", ".added-cnt", function(e){
 			e.preventDefault();
 			toggleAddedReplySec($(this).parents(".reply"));
 		});
@@ -419,7 +430,8 @@
 			addReply(replyObj.form);		
 		});
 		
-		replyObj.listSec.on("click", ".added-reply-reg", function(){
+		replyObj.listSec.on("click", ".added-reply-reg", function(e){
+			e.stopPropagation();
 			const reply = $(this).parents(".reply");
 			const addedForm = $(this).find(".reply-form");
 			addedForm.attr("data-parrno", reply.data("rno"));

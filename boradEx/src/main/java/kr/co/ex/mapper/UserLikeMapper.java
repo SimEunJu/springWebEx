@@ -8,5 +8,7 @@ public interface UserLikeMapper {
 	
 	public void addLike(@Param("bno") int bno, @Param("username") String username);
 	public void subLike(@Param("bno") int bno, @Param("username") String username);
-	public int isUserLiked(String username);
+	
+	public boolean isUserLiked(@Param("username") String username, @Param("bno") int bno);
+	public int readLikeCnt(int bno);
 }

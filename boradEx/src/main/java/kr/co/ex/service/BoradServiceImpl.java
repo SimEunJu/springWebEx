@@ -1,7 +1,6 @@
 package kr.co.ex.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +13,7 @@ import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.mapper.BoardMapper;
+import kr.co.ex.mapper.ReplyMapper;
 import kr.co.ex.mapper.UserLikeMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,8 @@ public class BoradServiceImpl implements BoardService {
 
 	@NonNull
 	private BoardMapper mapper;
-	
+	@NonNull
+	private ReplyMapper replyMapper;
 	@NonNull
 	private UserLikeMapper likeMapper;
 	
@@ -42,7 +43,9 @@ public class BoradServiceImpl implements BoardService {
 	
 	@Override
 	public BoardVO read(Integer bno) throws Exception {
-		return mapper.read(bno);
+		BoardVO board = mapper.read(bno);
+		board.setReplyCnt(likeMapper.readLikeCnt(bno));
+		return board;
 	}
 
 	@Override
@@ -94,7 +97,7 @@ public class BoradServiceImpl implements BoardService {
 		return mapper.listCriteria(cri).stream()
 				.map(l -> {
 					try {
-						l.setReplyCnt(mapper.readReplyCnt(l.getBno()));
+						l.setReplyCnt(replyMapper.totalCount(l.getBno(), false));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -115,7 +118,16 @@ public class BoradServiceImpl implements BoardService {
 
 	@Override
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception {
-		return mapper.listSearch(cri);
+		return mapper.listSearch(cri).stream()
+				.map(l -> {
+					try {
+						l.setReplyCnt(replyMapper.totalCount(l.getBno(), false));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return l;
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override

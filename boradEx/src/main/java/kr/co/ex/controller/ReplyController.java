@@ -3,6 +3,7 @@ package kr.co.ex.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +27,7 @@ import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.NotificationVO;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
+import kr.co.ex.service.BoardService;
 import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.ReplyService;
 import lombok.NonNull;
@@ -40,7 +42,8 @@ public class ReplyController {
 
 	@NonNull
 	private ReplyService serv;
-	
+	@NonNull
+	private BoardService boardServ;
 	@NonNull
 	private NotificationService notiServ;
 	
@@ -76,7 +79,7 @@ public class ReplyController {
 			
 			PageMaker pm = new PageMaker();
 			pm.setCri(cri);
-			pm.setTotalCount(serv.getTotalCount(bno));
+			pm.setTotalCount(serv.getTotalCount(bno, true));
 			
 			Map<String, Object> map = new HashMap<>();
 			map.put("pagination", pm);
@@ -112,18 +115,19 @@ public class ReplyController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	/*@GetMapping(value="/{rno}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReplyVO> getReply(@PathVariable int rno){
-		ResponseEntity<ReplyVO> res = null;
+
+	@GetMapping(value="/report/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<String> reportReply(@PathVariable int rno, ReplyVO vo){
 		try {
-			res = new ResponseEntity<>(serv.getReply(rno), HttpStatus.OK);
+			serv.reportReply(rno);
+			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return res;
-	}*/
- 	
+	}
+	
 	@PutMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	@PreAuthorize("principal.username == #vo.replyer")
 	public ResponseEntity<String> update(@PathVariable Integer rno, ReplyVO vo){
@@ -137,10 +141,18 @@ public class ReplyController {
 	}
 	
 	@DeleteMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
-	@PreAuthorize("principal.username == #vo.replyer")
-	public ResponseEntity<String> remove(@PathVariable Integer rno, @RequestParam String name, ReplyVO vo){
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<String> remove(@PathVariable int bno, @PathVariable int rno, ReplyVO vo){
 		try {
-			serv.removeReply(rno);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			List<String> roles = auth.getAuthorities().stream()
+					.map(a -> a.getAuthority()).collect(Collectors.toList());
+			String curUser = auth.getName();
+		
+			if(roles.contains("ROLE_ADMIN")) curUser = "ADMIN";
+			else if(!roles.contains("ROLE_USER")) return new ResponseEntity<String>("fail", HttpStatus.UNAUTHORIZED);
+			
+			serv.removeReply(curUser, rno, bno);
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

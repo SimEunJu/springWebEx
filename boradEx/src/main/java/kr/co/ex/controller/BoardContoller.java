@@ -128,11 +128,11 @@ public class BoardContoller {
 		try {
 			boardServ.updateViewCnt(boardNo);
 			if(from != null && from.equals("noti")) notiServ.markReadFlagNotification(rno);
-			model.addAttribute("isUserLiked", likeServ.isUserLiked());
-			model.addAttribute("replyCnt", boardServ.getReplyCnt(boardNo));
-			model.addAttribute("board",boardServ.read(boardNo));
 			
-			log.info(boardServ.read(boardNo));
+			model.addAttribute("isUserLiked", likeServ.isUserLiked(boardNo));
+			model.addAttribute("replyCnt", boardServ.getReplyCnt(boardNo));
+			model.addAttribute("board", boardServ.read(boardNo));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

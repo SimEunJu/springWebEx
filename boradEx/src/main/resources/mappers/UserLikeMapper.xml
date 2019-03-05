@@ -13,8 +13,12 @@
 	delete from tbl_user_like where bno=#{bno} and username=#{username}
 </delete>  
 
-<select id="isUserLiked" resultType="int">
-	select count(username) from tbl_user_like where username=#{username}
+<select id="readLikeCnt" resultType="int">
+	select count(lno) from tbl_user_like where bno=#{bno}
+</select>
+
+<select id="isUserLiked" resultType="boolean">
+	select exists ( select lno from tbl_user_like where username=#{username} and bno=#{bno} limit 1 )
 </select>
   
 </mapper>

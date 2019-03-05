@@ -41,8 +41,10 @@
 					<c:forEach var="board" items="${boardList}">
 						<tr>
 							<td>${board.bno}</td>
-							<td><a
-								href="/board/daily/${board.bno}/${pagination.cri.makeSearch()}">${board.title}</a></td>
+							<td>
+								<a href="/board/daily/${board.bno}/${pagination.cri.makeSearch()}">${board.title}</a>
+								[<a href="javascript:void(0)">${board.replyCnt}</a>]
+							</td>
 							<td>${board.writer}</td>
 							<td>${cf:formatLocalDateTime(board.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
 							<td>${board.viewcnt}</td>

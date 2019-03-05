@@ -93,8 +93,8 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public int getTotalCount(Integer bno) throws Exception {
-		return replyMapper.totalCount(bno);
+	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception {
+		return replyMapper.totalCount(bno, notIncludeAdded);
 	}
 
 	@Override
@@ -118,8 +118,16 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public void removeReply(Integer rno) throws Exception {
-		replyMapper.delete(rno);
+	@Transactional
+	public void removeReply(String curUser, int rno, int bno) throws Exception {
+		if(curUser.equals(getWriterName(bno))) replyMapper.delete("B", rno);
+		else if(curUser.equals(getReplyer(rno))) replyMapper.delete("R", rno);
+		else if(curUser.equals("ADMIN")) replyMapper.delete("A", rno);
 	}
-	
+
+	@Override
+	public void reportReply(int rno) throws Exception {
+		replyMapper.updateReport(rno);
+	}
+
 }

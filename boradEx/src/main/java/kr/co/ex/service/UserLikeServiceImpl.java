@@ -14,12 +14,15 @@ public class UserLikeServiceImpl implements UserLikeService {
 	UserLikeMapper likeMapper;
 
 	@Override
-	public boolean isUserLiked() throws Exception {
+	public boolean isUserLiked(int bno) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth == null) return false;
-		int likeCnt = likeMapper.isUserLiked(auth.getName());
-		if(likeCnt > 0) return true;
-		return false;
+		return likeMapper.isUserLiked(auth.getName(), bno);
+	}
+
+	@Override
+	public int getLikeCnt(int bno) throws Exception {
+		return likeMapper.readLikeCnt(bno);
 	}
 
 	@Override

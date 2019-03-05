@@ -14,12 +14,14 @@ public interface ReplyService {
 	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) throws Exception;
 	public List<ReplyVO> listReplyByWriter(String replyer) throws Exception;
 	
-	public int getTotalCount(Integer bno) throws Exception;
+	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception;
 	public int getAddedTotalCount(int parRno) throws Exception;
 	public int getTotalCntByReplyer(String username) throws Exception;
 	
 	public String getReplyer(int parBno) throws Exception;
 	public ReplyVO getReply(int rno) throws Exception; 
 	public void modifyReply(ReplyVO vo) throws Exception;
-	public void removeReply(Integer rno) throws Exception;
+	public void removeReply(String deleteType, int rno, int bno) throws Exception;
+	
+	public void reportReply(int rno) throws Exception;
 }

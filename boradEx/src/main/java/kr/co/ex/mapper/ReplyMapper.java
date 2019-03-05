@@ -17,12 +17,15 @@ public interface ReplyMapper {
 	public List<ReplyVO> listCriteriaAdded(@Param("parRno") Integer parRno, @Param("cri") Criteria cri) throws Exception;
 	public List<ReplyVO> listReplyByReplyer(String replyer) throws Exception;
 
-	public int totalCount(Integer bno) throws Exception;
+	public int totalCount(@Param("bno") int bno, @Param("notIncludeAdded") boolean notIncludeAdded) throws Exception;
 	public int addedTotalCount(int parRno) throws Exception;
 	public int readTotalCntByReplyer(String username);
 	
 	public String getReplyer(int parRno) throws Exception;
 	public ReplyVO get(int rno) throws Exception;
+	
 	public void update(ReplyVO vo) throws Exception;
-	public void delete(Integer rno) throws Exception;
+	public void updateReport(int rno) throws Exception;
+	
+	public void delete(@Param("deleteType") String deleteType, @Param("rno") Integer rno) throws Exception;
 }
