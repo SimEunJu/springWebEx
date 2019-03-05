@@ -66,11 +66,12 @@ public class AdminController {
 	@GetMapping("/noti")
 	public String showNotification(@RequestParam(required=false) String move, Criteria cri, Model model){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
 		try {	
 			List<NotificationDto> noti = notiServ.getNotifications(auth.getName(), cri);
 			
 			PageMaker pm = null;
-			if(move != null) PaginationUtils.pagination(move, cri, notiServ.getNotiCntByUsername(auth.getName()));
+			if(move != null) pm = PaginationUtils.pagination(move, cri, notiServ.getNotiCntByUsername(auth.getName()));
 	
 			model.addAttribute("noties", noti);
 			model.addAttribute("pagination", pm);

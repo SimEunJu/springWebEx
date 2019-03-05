@@ -10,17 +10,17 @@
 </insert>
 
 <select id="readNotification" resultType="kr.co.ex.domain.NotificationVO">
-	select * as noti_cnt
+	select nno, tbl_notification.regdate, read_flag, delete_flag, tbl_board.bno, tbl_reply.rno, username, tbl_notification.type, title, reply
 	from tbl_notification, tbl_reply, tbl_board 
 	where tbl_notification.username=#{username} 
-	and tbl_notification.delete_flag='0'
-	and tbl_notification.rno=tbl_reply.rno
-	and tbl_notification.bno=tbl_board.bno
-	limit {startPage}, {perPageNum}
+		and tbl_notification.delete_flag='0'
+		and tbl_notification.rno=tbl_reply.rno
+		and tbl_notification.bno=tbl_board.bno
+	limit #{cri.pageStart}, #{cri.perPageNum}
 </select>
 
 <select id="readMemberNotiCnt" resultType="int">
-	select count(*) from tbl_notification where username=#{username}
+	select count(nno) from tbl_notification where username=#{username}
 </select>
 
 <update id="markNotification">

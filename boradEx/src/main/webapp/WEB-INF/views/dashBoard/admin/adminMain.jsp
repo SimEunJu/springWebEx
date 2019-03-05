@@ -34,8 +34,8 @@
 </nav>
 
 <div class="container">
-  <div class="row">
-    <div class="col-12 col-md-3">
+  <div class="row mt-2">
+    <div class="col-md-3">
 		<ul class="list-group">
 			<a href="/board/admin/noti"><li class="list-group-item">알림들</li></a>
 			<a href="/board/admin/msg"><li class="list-group-item">메시지함</li></a>
@@ -47,44 +47,41 @@
     </div>
     
     <div class="col">
-    	<div class="row">
-    		<div>
-    		<p>사용자 유입/유출 현황</p>
+    	<div class="row border rounded m-2 p-1">
+    		<header class="col-12 p-3 bg-light">사용자 현황</header>
+    		
+    		<div class="col-lg-6">
     		<canvas id="chart_user_inout" width="400" height="400"></canvas>
-    		<div class="range">
+    		<div class="range row justify-content-center m-1">
     			<input type="radio" name="inout-cri" value="d" checked>일</input>
     			<input type="radio" name="inout-cri" value="w">주</input>
     			<input type="radio" name="inout-cri" value="m">월</input>
     		</div>
     		</div>
     		
-    		<div>
-    		<p>사용자 방문 현황</p>
-			
+    		<div class="col-lg-6">
 			<canvas id="chart_user_visit" width="400" height="400"></canvas>
-			<div class="range">
+			<div class="range row justify-content-center m-1">
     			<input type="radio" name="visit-cri" value="d" checked>일</input>
     			<input type="radio" name="visit-cri" value="w">주</input>
     			<input type="radio" name="visit-cri" value="m">월</input>
     		</div>
     		</div>
     	</div>
-
-		<div class="row">
-			<p>게시글 현황</p>
+		
+		<div class="row border rounded m-2 p-1">
+			<header class="col-12 p-3 bg-light">게시글 현황</header>
 			
-			<div class="col">
-				<p>등록된 게시글 수</p>
-				
+			<div class="col-lg-6">			
 				<canvas id="chart_user_board" width="400" height="400"></canvas>
-				<div class="range">
+				<div class="range row justify-content-center m-1">
     			<input type="radio" name="board-cri" value="d" checked>일</input>
     			<input type="radio" name="board-cri" value="w">주</input>
     			<input type="radio" name="board-cri" value="m">월</input>
     		</div>
 			</div>
 			
-			<div class="col">
+			<div class="col-lg-6">
 				<p>인기 게시글</p>
 				<table class="table">
   					<thead class="thead-dark">

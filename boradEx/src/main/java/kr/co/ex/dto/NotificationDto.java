@@ -10,7 +10,6 @@ import lombok.ToString;
 public class NotificationDto {
 	private Integer nno;
 	private LocalDateTime regdate;
-	private LocalDateTime readdate;
 	private boolean readFlag;
 	private boolean deleteFlag;
 	private Integer bno;
