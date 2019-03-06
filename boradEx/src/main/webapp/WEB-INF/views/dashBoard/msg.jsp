@@ -1,18 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://ex.co.kr/format_local_datetime" prefix="cf" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>메시지</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-</head>
-<body>
+    
+<%@ include file="../common/header.jsp"%>
 
 <div class="container">
 	<button type="button" class="btn btn-outline-warning pull-right">메시지 보내기</button>
@@ -27,18 +16,21 @@
   		</thead>
   		
   		<tbody>
-    		<tr>
-    			<c:forEach var="msg" items="${msges}" varStatus="i">
-      				<th scope="row"><input type="checkbox" name="msg" value="${msg.msgNo}" /></th>
-      				<td>${msg.sender}</td>
-      				<td>${msg.title}</td>
-      				<td>
-      					<td>${cf:formatLocalDateTime(msg.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
-      				</td>
-    			</c:forEach>
-    		</tr>
+  			<c:forEach var="msg" items="${msges}" varStatus="i">
+    			<tr>
+      				<th scope="row-1"><input type="checkbox" name="msg" value="${msg.msgNo}" /></th>
+      				<td class="row-2">${msg.sender}</td>
+      				<td class="row-6">${msg.title}</td>
+      				<td class="row-3">${cf:formatLocalDateTime(msg.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
+    			</tr>
+			</c:forEach>
   		</tbody>
 	</table>
+	
+	<c:if test="${empty msges}">
+    	<div class="row-12 p-2 border text-center">등록된 알림이 없습니다.</div>
+    </c:if>	
+	
 </div>
 <div class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -65,6 +57,8 @@
   </div>
 </div>
 
+<%@ include file="../common/footer.jsp"%>
+
 <script src="table-row" type="text/x-handlebars-template">
 {{#each msg}}	
 	<tr>
@@ -75,8 +69,7 @@
      </tr>
 {{/each}}
 </script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/checkboxHandle.js"></script>
 </body>

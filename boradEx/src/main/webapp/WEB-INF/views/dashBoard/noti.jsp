@@ -1,20 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>알림</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-</head>
-<body>
+
+<%@ include file="../common/header.jsp"%>
 
 <div class="container">
-	<table class="table">
+	<table class="table mt-2">
   		<thead class="thead-dark">
     		<tr>
       			<th scope="col"><input type="checkbox" name="noti" value="all" /></th>
@@ -26,22 +16,33 @@
  		<tbody>
     			<c:forEach var="noti" items="${noties}" varStatus="i">
     				<tr>
-    				<th scope="row"><input type="checkbox" name="noti" value="${noti.nno}" /></th>
-      				<c:choose>
-      					<c:when test="${not empty noti.title}">
-      						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}"><td class="noti" style="weight: ${noti.read_flag ? 'bold' : ''}">[ ${noti.title} ]에 댓글이 달렸습니다.</td></a>
-      					</c:when>
-      					<c:otherwise>
-      						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}"><td class="noti" style="weight: ${noti.read_flag ? 'bold' : ''}">[ ${noti.reply} ]에 대댓글이 달렸습니다.</td></a>
-      					</c:otherwise>
-      				</c:choose>
-      				<td>
-      					<fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${noti.regdate}" />
+    				<th scope="row" class="row-1"><input type="checkbox" name="noti" value="${noti.nno}" /></th>
+
+					<td class="noti row-8" style="weight: ${noti.read_flag ? 'bold' : ''}">
+						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}">
+							<c:choose>
+								<c:when test="${not empty noti.title}">
+      								[ ${noti.title} ]에 댓글이 달렸습니다.
+      							</c:when>
+								<c:otherwise>
+									[ ${noti.reply} ]에 대댓글이 달렸습니다.
+      							</c:otherwise>
+							</c:choose>
+						</a>
+					</td>
+
+					<td class="row-3">
+      					${cf:formatLocalDateTime(noti.regdate, 'yyyy-MM-dd HH:mm:ss')}
       				</td>
       				</tr>
     			</c:forEach>
   		</tbody>
 	</table>
+	
+	<c:if test="${empty noties}">
+    	<div class="row-12 p-2 border text-center">등록된 알림이 없습니다.</div>
+    </c:if>	
+    			
 	<nav aria-label="Page navigation">
   		<ul class="pagination">
   			<c:if test="${pagination.prev}">
@@ -59,6 +60,8 @@
 	</nav>
 </div>
 
+<%@ include file="../common/footer.jsp"%>
+
 <script id="table-row" type="text/x-handlebars-template">
 {{#each users}}	
 	<tr>
@@ -71,8 +74,6 @@
 {{/each}}
 </script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/checkboxHandle.js"></script>
 <script>

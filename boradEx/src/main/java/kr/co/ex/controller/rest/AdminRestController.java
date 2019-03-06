@@ -1,5 +1,6 @@
 package kr.co.ex.controller.rest;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class AdminRestController {
 
 	@GetMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public ResponseEntity<Map<String, Object>> listCriMember(@RequestParam(required = false) String move,
-			@RequestParam(defaultValue = "all-type") String type, Criteria cri) {
+			@RequestParam(defaultValue = "all") String type, Criteria cri) {
 		
 		UserType userType = getMemberType(type);
 		Map<String, Object> ret = new HashMap<>();
@@ -97,16 +98,17 @@ public class AdminRestController {
 			throw new UndefinedMemberType();
 		}
 	}
-	@PostMapping(value = "/user/ban")
-	public ResponseEntity<Void> banMember(@RequestBody List<String> members) {
+	@PostMapping(value = "/usertype")
+	public ResponseEntity<Void> changeUserType(@RequestParam String type, @RequestBody List<String> members) {
 		
 		log.info(members);
-		memServ.updateState(members, "B");
+		UserType userType = getMemberType(type);
+		memServ.updateState(members, userType.getTypeInitial());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/user/msg")
-	public ResponseEntity<Void> sendMsg(@RequestBody Map<String, Object> param) {
+	public ResponseEntity<Map<String,String>> sendMsg(@RequestBody Map<String, Object> param) {
 		
 		List<String> receivers = (List<String>) param.get("receivers");
 	
@@ -121,7 +123,7 @@ public class AdminRestController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(Collections.singletonMap("result", "success"), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/user/find", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })

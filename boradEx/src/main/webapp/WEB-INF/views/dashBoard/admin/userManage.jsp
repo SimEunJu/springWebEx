@@ -1,50 +1,57 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://ex.co.kr/format_local_datetime" prefix="cf" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>회원 관리</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
 
-<body>
+<%@ include file="../../common/header.jsp"%>
 
 <div class="container">
-	<div class="user_cri">
-		<input type="radio" id="user-all" name="userType" value="all-type" checked>
-  		<label for="user-sleep">전체 회원</label>
+	<div class="row border my-2 p-2">
+		<div class="user_cri col-12">
+
+			<label>회원 종류</label> 
+			
+			<input type="radio" id="user-all" name="userType" value="all-type" checked> 
+			<label for="user-sleep">전체</label> 
+			
+			<input type="radio" id="user-active" name="userType" value="active"> 
+			<label for="user-active">활동</label>
+			
+			<input type="radio" id="user-banned" name="userType" value="banned">
+			<label for="user-banned">정지</label> 
+			
+			<input type="radio" id="user-banned" name="userType" value="report"> 
+			<label for="user-banned">경고</label> 
+			
+			<input type="radio" id="user-sleep" name="userType" value="sleep"> 
+			<label for="user-sleep">휴면</label>
+			
+			<input type="radio" id="user-leave" name="userType" value="leave">
+			<label for="user-leave">탈퇴</label>
+			
+		</div>
 		
-		<input type="radio" id="user-active" name="userType" value="active">
-  		<label for="user-active">활동 회원</label>
-		
-		<input type="radio" id="user-banned" name="userType" value="banned">
-  		<label for="user-banned">정지 회원</label>
-		
-		<input type="radio" id="user-banned" name="userType" value="report">
-  		<label for="user-banned">경고 회원</label>
-		
-		<input type="radio" id="user-sleep" name="userType" value="sleep">
-  		<label for="user-sleep">휴면 회원</label>
-  		
-		<input type="radio" id="user-leave" name="userType" value="leave">
-  		<label for="user-leave">탈퇴 회원</label>
+		<div class="col-12">
+			<button type="button" class="btn btn-outline-danger btn-usertype">회원 상태 변경</button>
+			
+			<div class="float-right">
+				<input type="text" name="name" placeholder="회원명" for="#mem-search"/>
+				<button type="button" class="btn btn-outline-primary btn-find" id="mem-search">찾기</button>
+			</div>
+		</div>
 	</div>
-	<div class="option">
-		<label>전체 선택 선택</label>
-		<input type="checkbox" name="user" value="all" /> 
+	
+	<div class="option row my-2 p-2 border">	
 		
-		<label>회원 검색</label>
-		<input type="text" name="name" />
-		<button type="button" class="btn btn-outline-primary btn-find">찾기</button>
+			<div class="col">
+				<input type="checkbox" id="all-mem" name="user" value="all" /> 
+				<label for="all-mem">전체 회원</label>
+			</div>
+	
+			<div class="align-self-end">
+				<button type="button" class="btn btn-outline-warning btn-msg">메시지 전송</button>
+			</div>
 		
-		<button type="button" class="btn btn-outline-warning btn-msg">메시지 보내기</button>
-		
-		<button type="button" class="btn btn-outline-danger btn-ban">정지 회원으로 설정</button>
 	</div>
+	
 	<table class="table">
   		<thead class="thead-dark">
     		<tr>
@@ -63,6 +70,7 @@
       			<th scope="row"><input type="checkbox" name="user" value="${u.username}" /></th>
       			<td>${u.username}</td>
       			<td>${u.state }</td>
+      			<td>visitdate</td>
       			<%-- <td>${u.visitdate }</td> --%>
       			<td>${cf:formatLocalDateTime(u.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
       			<td>${u.reportCnt }</td>
@@ -100,8 +108,8 @@
         	<p>보내는 이 : <span class="sender">관리자</span></p>
         	<p>받는 이 : <div class="receiver"></div></p>
         </div>
-        <input type="text" class="title" placeholder="제목을 입력해주세요"/>
-        <textarea class="msg"></textarea>
+        <input type="text" class="title col-12 mb-2" placeholder="제목을 입력해주세요"/>
+        <textarea class="msg col-12"></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -145,9 +153,11 @@
 {{/each}}
 </script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<%@ include file="../../common/footer.jsp"%>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="/resources/js/checkboxHandle.js"></script>
 <script>
 $("document").ready(function(){
@@ -186,27 +196,27 @@ $("document").ready(function(){
 		}
 		return acc;
 	});
-	
-	$('#modal button[data-dismiss]').on("click", function(){
-		const modal = $('#modal');
-		$("body").toggleClass("modal-open");
-		modal.toggleClass("show");
-		modal.css("display", "none");
-		modal.attr("aria-hidden", "true");
+
+	$('#modal').modal({
+		keyboard: false,
+		focus: false,
+		show: false
 	});
 	
 	let checked = [];
-	let checkedPage = {};
+	let checkedRepo = {};
 	$(".btn-msg").on("click", function(){
 		
-		const modal = $("#modal");
-		$("body").toggleClass("modal-open");
-		modal.toggleClass("show");
-		modal.css("display", "block");
-		modal.attr("aria-hidden", "false");
-		modal.find('textarea').trigger('focus');
-		
 		appendChecked($(".pagination .active").find("a").attr("href"));
+		flat();
+		
+		if(checked.length === 0){
+			alert("회원을 1명 이상 선택해 주세요.");
+			return;
+		}
+		
+		$('#modal').modal('toggle');
+		
 		let receiverList = "";
 
 		if($("input[value='all']").is(":checked")) receiverList = $("input[type='radio']:checked").html();
@@ -220,7 +230,14 @@ $("document").ready(function(){
 				receiver: checked
 			});
 		}
-		console.log(modal.find(".recevier"));
+		
+		const modal = $("#modal");
+		$("body").toggleClass("modal-open");
+		modal.toggleClass("show");
+		modal.css("display", "block");
+		modal.attr("aria-hidden", "false");
+		modal.find('textarea').trigger('focus');
+		
 		modal.find(".receiver").html(receiverList);
 	});
 	
@@ -241,28 +258,33 @@ $("document").ready(function(){
 			data: JSON.stringify(envelope),
 			contentType: "application/json; charset=utf-8",
 	        dataType: "json",
-		})
-			.done(function(){
+			
+			}).done(function(){
 				$(".msg").val("");
-				$(".recevier").html("");
+				$("#modal").modal("toggle");
 				checked = [];
-				checkedPage = {};
+				checkedRepo = {};
 				alert("메시지가 성공적으로 발송되었습니다.");
-			});
+			
+			}).fail(function(jqXHR, textStatus, errorThrown){
+				console.error(jqXHR, textStatus, errorThrown);
+			})
 	});
 	
-	$(".btn-ban").on("click", function(e){
+	$(".btn-usertype").on("click", function(e){
 		appendChecked($(".pagination .active").find("a").attr("href"));
-	
+		const type = $("input[type='radio']:checked").val();
+		if(type === "user-all") return;
+		if(!confirm("선택하신 회원의 상태를 정말 변경하시겠습니까?")) return;
 		$.post({
-			url: "/board/api/admin/user/ban",
+			url: "/board/api/admin/usertype?type="+type,
 			data: JSON.stringify(checked),
 			contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 		})
 		.done(function(){
 			checked = [];
-			checkedPage = {};
+			checkedRepo = {};
 			alert("선택된 회원을 정지 처리 하였습니다.");
 		});
 	});
@@ -276,7 +298,7 @@ $("document").ready(function(){
 		$.getJSON("/board/api/admin/user/find?keyword="+encodeURIComponent(keyword))
 		.done(function(users){
 			checked = [];
-			checkedPage = {};
+			checkedRepo = {};
 			const tableRow = tableRowTemplate(users);
 			$("tbody").html(tableRow);
 		})
@@ -285,7 +307,7 @@ $("document").ready(function(){
 	$("input[type='radio']").on("click", function(e){
 		
 		checked = [];
-		checkedPage = {};
+		checkedRepo = {};
 		const userType = $(e.target).val();
 		
 		$.getJSON("/board/api/admin/user?type="+userType)
@@ -306,10 +328,13 @@ $("document").ready(function(){
 	}
 	
 	function appendChecked(page){
-		if(!checkedPage.hasOwnProperty(page)){
-			checkedPage[page] = page;
-			checked = checked.concat(collectCheckVal());
-			
+		checkedRepo[page] = collectCheckVal();
+	}
+	
+	function flat(){
+		checked = [];
+		for(let page in checkedRepo){
+			checked = checked.concat(checkedRepo[page]);
 		}
 	}
 	
