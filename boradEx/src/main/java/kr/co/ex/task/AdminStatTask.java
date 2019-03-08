@@ -1,8 +1,6 @@
 package kr.co.ex.task;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,18 +18,21 @@ public class AdminStatTask {
 	
 	private AdminStatTaskMapper mapper;
 	
-	@Scheduled(cron="* * * 3 * *")
+	// second/ minute/ hour/ day of month/ month/ day of week
+	@Scheduled(cron="0 0/1 * * * *")
 	public void makeUserStatForAdmin(){
-		LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+		LocalDateTime today = DateUtils.getToday();
+		log.info(today.toString());
+		
 		UserStatVO vo = UserStatVO.builder()
 				.today(DateUtils.getToday())
 				.joinCnt(mapper.getJoinUserCount(today))
 				.leaveCnt(mapper.getLeaveUserCount(today))
 				.postCnt(mapper.getPostCount(today))
 				.build();
-			log.info(vo.toString());
+		log.info(vo.toString());
 		
-			mapper.createUserStat(vo);
+		mapper.createUserStat(vo);
 		
 	}
 }

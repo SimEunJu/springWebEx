@@ -12,7 +12,7 @@
 	<!-- <typeAliases>
 		<package name="kr.co.ex.mapper"></package>
 	</typeAliases> -->  
-  
+ 
   	<typeHandlers>	
   		<typeHandler handler="org.apache.ibatis.type.InstantTypeHandler" />
   		<typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler" />

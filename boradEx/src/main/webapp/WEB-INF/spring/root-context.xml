@@ -46,6 +46,7 @@
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 
 	<context:component-scan base-package="kr.co.ex.persistence, kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
+	
 	<mybatis:scan base-package="kr.co.ex.mapper" /> 
 	
 </beans>

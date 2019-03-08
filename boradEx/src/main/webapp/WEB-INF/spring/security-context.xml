@@ -13,25 +13,9 @@
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
 	<bean id="customUserDetailsService" class="kr.co.ex.security.CustomUserDetailsService"></bean>
 	
-	<import resource="./root-context.xml"></import>
+	<import resource="./root-context.xml" />
 	
-	<context:annotation-config></context:annotation-config>
-	<context:component-scan base-package="kr.co.ex.security.oauth"></context:component-scan>
-	
- 	<!-- <security:http name="defaultHttp" pattern="/board/form**"
-		authentication-manager-ref="defaultAuthenticationManager">
-		<security:headers>
-			<security:hsts disabled="true" />
-			<security:cache-control disabled="true" />
-			<security:frame-options policy="SAMEORIGIN" />
-			<security:content-type-options disabled="true" />
-		</security:headers>
-		<security:form-login login-page="/board/form/login" />
-		<security:remember-me services-ref="rememberMeServices"/>
-		<security:logout invalidate-session="true"
-			delete-cookies="remember-me, SESSION, JSESSIONID"
-			logout-url="/board/form/logout" />
-	</security:http> -->
+	<context:component-scan base-package="kr.co.ex.security.oauth" />
 
 	<bean id="rememberMeServices" class="org.springframework.session.security.web.authentication.SpringSessionRememberMeServices">
 		<property name="alwaysRemember" value="true"/>
