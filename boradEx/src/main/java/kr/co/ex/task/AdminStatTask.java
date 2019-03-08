@@ -19,10 +19,9 @@ public class AdminStatTask {
 	private AdminStatTaskMapper mapper;
 	
 	// second/ minute/ hour/ day of month/ month/ day of week
-	@Scheduled(cron="0 0/1 * * * *")
+	@Scheduled(cron="* * 3 * * *")
 	public void makeUserStatForAdmin(){
 		LocalDateTime today = DateUtils.getToday();
-		log.info(today.toString());
 		
 		UserStatVO vo = UserStatVO.builder()
 				.today(DateUtils.getToday())

@@ -1,68 +1,76 @@
 package kr.co.ex.task;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.function.ToIntFunction;
+import java.util.TreeSet;
 
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-import kr.co.ex.domain.AttachVO;
 import kr.co.ex.util.DateUtils;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
 //@Component
 @Log4j
-//@AllArgsConstructor
+//@RequiredArgsConstructor
 public class FileDeleteTask {
 
+		@NonNull
 		private SqlSession sess;
+		@NonNull
 		private String uploadPath;
-		private String yesterdayIso;
+		
+		private TreeSet<String> fileTree = new TreeSet<>();
 	
-		// 1. db에서 한 폴더내의 파일 가져옴 이름 순으로
-		// 2. 한 폴더내의 파일 이름 순으로 정렬
-		// 3. row별로 파일 인덱스에 마크
-		// 4. 마크 안 된 것 삭제
+		// 1. db에서 하루 동안 저장된 파일 목록 불러오기
+		// 2. resultHandler를 사용해서 처리
+		// 3. db에 저장되지 않은 것만 골라내느냐/ 폴더 내의 모든 파일 이름의 목록 -> 비교 -> 삭제 loop 3번
 	
 		@Scheduled(cron="* * * 4 * *")
 		public void deleteFiles(){
+			// 한 폴더에 하루 동안 생성된 모든 파일을 저장한다고 가정 + 양 많음
+			
 			LocalDateTime yesterday = DateUtils.getADaysAgo(1);
-			yesterdayIso = yesterday.format(DateTimeFormatter.ISO_LOCAL_DATE);
+			String yesterdayPath = yesterday.format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", File.pathSeparator);
 			
-			String files[] = Paths.get(uploadPath, yesterdayIso).toFile().list();
-			Arrays.sort(files);
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("yesterday", yesterday);
+			map.put("uploadPath", Paths.get(uploadPath, yesterdayPath));
+			sess.select("select uuid, file_type from tbl_attach where regdate>=#{yesterday} and upload_path=#{uploadPath}", map, new CustomResultHandler());
 			
-			HashMap<String, String> map = new HashMap<>();
-			map.put("yesterday", yesterdayIso);
-			map.put("uploadPath", Paths.get(uploadPath, yesterdayIso).toString());
-			sess.select("select * from tbl_attach where regdate>#{yesterdayIso} and upload_path=#{uploadPath}", map, new CustomResultHandler());
-			
-			
+			String filePath = uploadPath + yesterdayPath;
+			String files[] = Paths.get(filePath).toFile().list();
+			for(String file : files){
+				String fileName;
+				
+				if(file.startsWith("s_")) fileName = file.substring(2);
+				else fileName = file;
+				
+				fileName = fileName.substring(0, fileName.lastIndexOf("_"));
+				if(!fileTree.contains(fileName))
+					try {
+						Files.deleteIfExists(Paths.get(filePath, file));
+					} catch (IOException e) {
+						e.printStackTrace();
+					} 
+			}
 		}
 		
-		// 한 폴더에 저장할 수 있는 최대 갯수 제한
-		// 한 파일당 최대 크기 측정
-		// 한 파일에 들어갈 수 잇는 최대 크기 초과하면 다음폴더애 저장
-		private class CustomResultHandler implements ResultHandler<AttachVO>{
+		private class CustomResultHandler implements ResultHandler<String>{
 			@Override
-			public void handleResult(ResultContext<? extends AttachVO> resultContext) {
-				AttachVO vo = resultContext.getResultObject();
-				
-				
+			public void handleResult(ResultContext<? extends String> resultContext) {
+				fileTree.add(resultContext.getResultObject());
 			}
-			
 		}
 }
