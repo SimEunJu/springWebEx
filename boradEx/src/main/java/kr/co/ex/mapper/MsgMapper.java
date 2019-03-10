@@ -13,8 +13,8 @@ public interface MsgMapper {
 	public List<MsgVO> readMsgList(@Param("receiver")String receiver, @Param("cri") Criteria cri) throws Exception;
 	public MsgVO readMsg(int msgNo) throws Exception;
 	
-	public void updateSenderDeleteFlag(List<Integer> msgNo) throws Exception;
-	public void updateReceiverDeleteFlag(List<Integer> msgNo) throws Exception;
+	public void updateSenderDeleteFlag(@Param("msgNo")List<Integer> msgNo) throws Exception;
+	public void updateReceiverDeleteFlag(@Param("msgNo")List<Integer> msgNo) throws Exception;
 	
 	public void createMsg(MsgVO vo) throws Exception;
 	public void createMsgList(@Param("receivers") List<String> receivers, @Param("msg") MsgVO msg) throws Exception;

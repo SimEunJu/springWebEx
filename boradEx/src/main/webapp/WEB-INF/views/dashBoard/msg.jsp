@@ -90,8 +90,8 @@
 	<tr>
 		<th scope="row-1"><input type="checkbox" name="msg" value="{{msgNo}}" /></th>
       	<td class="row-2">{{sender}}</td>
-      	<td class="row-6" style="font-weight: {{#if receiverReadFlag}} '' {{else}} 'bold' {{/if}}}">{{title}}</td>
-      	<td class="row-3">{{#formatDate regdate}}</td>
+      	<td class="row-6" style="font-weight: {{#if receiverReadFlag}} '' {{else}} 'bold' {{/if}}">{{title}}</td>
+      	<td class="row-3">{{#dateFormat regdate}}</td>
      </tr>
 {{/each}}
 </script>
@@ -112,6 +112,8 @@
 <script>
 // 1. send msg 2. delete msg 3. read msg 4. pagination
 $("document").ready(function(){
+	
+	// 리팩토링, 읽음 표시, 삭제
 	
 	const csrfToken = "${_csrf.token }";
 	const csrfHeader = "${_csrf.headerName }";
@@ -181,21 +183,21 @@ $("document").ready(function(){
 			method: "get",
 			
 		}, function(res){
+			msgModal.toggleModal();
 			
 			msgModal.title.val(res.title);
-			msgModal.msg.html(res.content);
+			msgModal.msg.val(res.content)
 			msgModal.sender.html(res.sender);
 			msgModal.receiver.html(res.receiver);
 			
 			target.css("font-weight","inherit");
-			target.attr("data-read", true);
-			
-			msgModal.toggleModal();
+			target.attr("data-read", true);			
 		})
 	});
 	
 	
-	$(".btn-del").on("click", function(e){
+	$("#btn-del").on("click", function(e){
+		check.appendCheckVal(pagination.page);
 		const msgNoList = flatObjToListOpt(check.repo, 'msgNo');
 		ajax({
 			url: "/board/user/msg/del",
@@ -213,7 +215,7 @@ $("document").ready(function(){
 			method: setting.method,
 			data: setting.data,
 			dataType: "text",
-			contentType: "json/application; charset=UTF-8"
+			contentType: setting.contentType
 		}).done(function(res){
 			callback(JSON.parse(res));
 		}).fail(showAjaxError);

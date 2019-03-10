@@ -77,11 +77,14 @@ public class MsgController {
 	
 	@PostMapping(value = "/board/user/msg/del", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<MsgVO>> deleteMsges(@RequestBody List<Integer> msgNo){
+	public ResponseEntity<List<MsgVO>> deleteMsges(@RequestBody ArrayList<Integer> msgNo){
 		try {
+			log.info(msgNo);
 			msgServ.setReceiverDeleteFlag(msgNo);
 			String curUser = SecurityContextHolder.getContext().getAuthentication().getName();
+			log.info(curUser);
 			List<MsgVO> msgList = msgServ.getMsgList(curUser, new Criteria());
+			log.info(msgList);
 			return new ResponseEntity<>(msgList, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

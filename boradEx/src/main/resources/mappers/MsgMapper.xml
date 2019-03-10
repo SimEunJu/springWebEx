@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.ex.mapper.MsgMapper">
 	
 	<select id="readMsgList" resultType="kr.co.ex.domain.MsgVO">
-		select * from tbl_msg where receiver=#{receiver}
+		select * from tbl_msg where receiver=#{receiver} and receiver_delete_flag="0"
 		limit #{cri.pageStart}, #{cri.perPageNum}
 	</select>
 	
@@ -16,13 +16,13 @@
 	
 	<update id="updateSenderDeleteFlag">
 		<foreach item="m" collection="msgNo">
-			update table tbl_msg set sender_delete_flag='1' where msg_no=#{m};
+			update tbl_msg set sender_delete_flag='1' where msg_no=#{m};
 		</foreach>	
 	</update>
-	
+		
 	<update id="updateReceiverDeleteFlag">
-		<foreach collection="msgNo" item="m">
-			update table tbl_msg set receiver_delete_flag='1' where msg_no=#{m};
+		<foreach item="m" collection="msgNo">
+			update tbl_msg set receiver_delete_flag='1' where msg_no=#{m};
 		</foreach>
 	</update>
 	
