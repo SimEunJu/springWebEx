@@ -5,16 +5,25 @@
 
 <mapper namespace="kr.co.ex.mapper.MsgMapper">
 	
-	<select id="readMsg" resultType="kr.co.ex.domain.MsgVO">
+	<select id="readMsgList" resultType="kr.co.ex.domain.MsgVO">
 		select * from tbl_msg where receiver=#{receiver}
+		limit #{cri.pageStart}, #{cri.perPageNum}
+	</select>
+	
+	<select id="readMsg" resultType="kr.co.ex.domain.MsgVO">
+		select * from tbl_msg where msg_no=#{msgNo}
 	</select>
 	
 	<update id="updateSenderDeleteFlag">
-		update table tbl_msg set sender_delete_flag='1' where msg_no=#{msgNo}
+		<foreach item="m" collection="msgNo">
+			update table tbl_msg set sender_delete_flag='1' where msg_no=#{m};
+		</foreach>	
 	</update>
 	
 	<update id="updateReceiverDeleteFlag">
-		update table tbl_msg set receiver_delete_flag='1' where msg_no=#{msgNo}
+		<foreach collection="msgNo" item="m">
+			update table tbl_msg set receiver_delete_flag='1' where msg_no=#{m};
+		</foreach>
 	</update>
 	
 	<insert id="createMsg">
@@ -31,4 +40,13 @@
 		</foreach>
 		</trim>
 	</insert>
+	
+	<select id="getReceiverTotalCnt" resultType="int">
+		select count(msg_no) from tbl_msg where receiver=#{receiver}
+	</select>
+	
+	<select id="getSenderTotalCnt" resultType="int">
+		select count(msg_no) from tbl_msg where sender=#{sender}
+	</select>
+	
 </mapper>

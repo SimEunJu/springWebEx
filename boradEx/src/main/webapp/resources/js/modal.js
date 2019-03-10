@@ -32,11 +32,11 @@ function isListEmpty(){
 }
 function collectCheckVal(){
 	let data = [];
-	if(this.allCheck.is(":checked")) data.push($("input[type='radio']:checked").get(0).nextElementSibling.innerText);
+	if(this.allCheck.is(":checked")) data.push("all-check");
 	else{
 		this.tbody.find($("input[type='checkbox']")).each(function(idx, c){
-		const check = $(c);
-		if(check.is(":checked") && check.val() !== "all-showed") data.push(check.val());
+			const check = $(c);
+			if(check.is(":checked") && check.val() !== "all-showed") data.push(check.val());
 		});
 	}
 	
@@ -85,6 +85,7 @@ function Modal(){
 	this.title = this.modal.find(".title")
 	this.msg = this.modal.find(".msg");
 	this.receiver = this.modal.find(".receiver");
+	this.sender = this.modal.find(".sender");
 	
 	this.modal.modal({
 		keyboard: false,
@@ -100,6 +101,68 @@ function toggleModal(){
 
 function showAjaxError(jqXHR, textStatus, errorThrown){
 	console.error(jqXHR, textStatus, errorThrown);
+}
+
+function MsgModal(){
+	Modal.call(this);
+	console.dir(this);
+}
+MsgModal.prototype = Object.create(Modal.prototype);
+MsgModal.prototype.constructor = MsgModal;
+MsgModal.prototype.openMsgModal = openMsgModal;
+MsgModal.prototype.sendMsg = sendMsg;
+
+function openMsgModal(check, page, template){
+
+	// 선택된 회원 리스트 생성   
+	check.appendCheckVal(page);
+	const list = check.flatObjToList(check.repo);
+	
+	// 회원이 한 명도 선택되지 않았다면
+	if(check.isListEmpty()){
+		alert("회원을 1명 이상 선택해 주세요.");
+		return;
+	}
+	
+	// 메시지를 작성할 모달을 활성화
+	this.toggleModal();
+	
+	let receiverList = "";
+
+	// 모든 회원 선택이라면
+	if(check.allCheck.is(":checked")) receiverList = $("input[type='radio']:checked").get(0).nextElementSibling.innerText+" 회원";
+	else{
+		const checkedCnt = list.length;
+		receiverList = template({
+			start: 1,
+			end: checkedCnt>10 ? 10 : checkedCnt,
+			showMsg: checkedCnt>10,
+			receiverNum: checkedCnt,
+			receiver: list
+		});
+	}
+	
+	// 메시지 모달에 수신자 목록 생성
+	this.receiver.html(receiverList);
+}
+function sendMsg(receivers, url){
+	const envelope = {
+		receivers: receivers,
+		title: this.title.val(),
+		content: this.msg.val()
+	};
+		
+	$.post({
+		url: url,
+		data: JSON.stringify(envelope),
+		contentType: "application/json; charset=utf-8"
+			
+		}).done(function(){
+			// 메시지 전송 후 모달 닫기
+			this.toggleModal();
+			alert("메시지가 성공적으로 발송되었습니다.");
+		
+		}).fail(showAjaxError);
 }
 
 function addHandlebarHelper(){

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.ex.exception.UndefinedStatDateTypeException;
+import kr.co.ex.exception.UndefinedDateTypeException;
 import kr.co.ex.mapper.AdminStatMapper;
 import kr.co.ex.util.DateUtils;
 import lombok.NonNull;
@@ -25,7 +25,7 @@ public class AdminStatServiceImpl implements AdminStatService {
 	private AdminStatMapper statMapper;
 	
 	@Transactional
-	public List<Long> getUserJoinCount(char type){
+	public List<Long> getUserJoinCount(String type){
 		List<LocalDateTime> cri = getCriteriaDate(type);
 	
 		List<Long> data = new ArrayList<>();
@@ -40,7 +40,7 @@ public class AdminStatServiceImpl implements AdminStatService {
 	}
 	
 	@Transactional
-	public List<Long> getUserLeaveCount(char type){
+	public List<Long> getUserLeaveCount(String type){
 		List<LocalDateTime> cri = getCriteriaDate(type);
 		List<Long> data = new ArrayList<>();
 		int len = cri.size();
@@ -54,7 +54,7 @@ public class AdminStatServiceImpl implements AdminStatService {
 	}
 	
 	@Transactional
-	public List<Long> getPostCount(char type){
+	public List<Long> getPostCount(String type){
 		List<LocalDateTime> cri = getCriteriaDate(type);
 		List<Long> data = new ArrayList<>();
 		int len = cri.size();
@@ -67,29 +67,29 @@ public class AdminStatServiceImpl implements AdminStatService {
 		return data;
 	}
 
-	private List<LocalDateTime> getCriteriaDate(char type){
+	private List<LocalDateTime> getCriteriaDate(String type){
 		List<LocalDateTime> timeCris = new ArrayList<>();
 		switch(type){
-		case 'd':
+		case "d":
 			LocalDateTime today = DateUtils.getADaysAgo(0);
 			for(int i=5; i>=0; i--){
 				timeCris.add(today.minusDays(i));
 			}
 			break;
-		case 'w':
+		case "w":
 			LocalDateTime thisWeek = DateUtils.getAFewWeeksAgo(0);
 			for(int i=5; i>=0; i--){
 				timeCris.add(thisWeek.minusWeeks(i));
 			}
 			break;
-		case 'm':
+		case "m":
 			LocalDateTime thisMonth = DateUtils.getAFewMonthAgo(0);
 			for(int i=5; i>=0; i--){
 				timeCris.add(thisMonth.minusMonths(i));
 			}
 			break;
 		default:
-			throw new UndefinedStatDateTypeException();
+			throw new UndefinedDateTypeException(type);
 		}
 		return timeCris;
 	}

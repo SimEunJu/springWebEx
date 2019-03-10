@@ -44,7 +44,7 @@ public class AdminRestController {
 	private MsgService msgServ;
 
 	@GetMapping(value = "/inout", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<Map<String, List<Long>>> listInout(@RequestParam char type) {
+	public ResponseEntity<Map<String, List<Long>>> listInout(@RequestParam String type) {
 		Map<String, List<Long>> res = new HashMap<>();
 		res.put("leave", statServ.getUserLeaveCount(type));
 		res.put("join", statServ.getUserJoinCount(type));
@@ -59,7 +59,7 @@ public class AdminRestController {
 	}
 
 	@GetMapping(value = "/board", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<Map<String, List<Long>>> listBoard(@RequestParam char type) {
+	public ResponseEntity<Map<String, List<Long>>> listBoard(@RequestParam String type) {
 		Map<String, List<Long>> res = new HashMap<>();
 		res.put("board", statServ.getPostCount(type));
 		return new ResponseEntity<>(res, HttpStatus.OK);
@@ -95,37 +95,21 @@ public class AdminRestController {
 		case "leave":
 			return UserType.LEAVE;
 		default:
-			throw new UndefinedMemberType();
+			throw new UndefinedMemberType(type);
 		}
 	}
-	@PostMapping(value = "/usertype")
-	public ResponseEntity<Void> changeUserType(@RequestParam String type, @RequestBody List<String> members) {
+	@PostMapping(value = "/usertype", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<MemberVO>> changeUserType(@RequestParam String type, @RequestParam String showType, @RequestBody List<String> members) {
 		
 		log.info(members);
 		UserType userType = getMemberType(type);
 		memServ.updateState(members, userType.getTypeInitial());
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@PostMapping(value = "/user/msg")
-	public ResponseEntity<Map<String,String>> sendMsg(@RequestBody Map<String, Object> param) {
 		
-		List<String> receivers = (List<String>) param.get("receivers");
-	
-		MsgVO vo = new MsgVO();
-		vo.setContent((String) param.get("content"));
-		vo.setTitle((String) param.get("title"));
-		vo.setSender(SecurityContextHolder.getContext().getAuthentication().getName());
-
-		try {
-			msgServ.registerMsgList(receivers, vo);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity<>(Collections.singletonMap("result", "success"), HttpStatus.OK);
+		UserType showedType = getMemberType(showType);
+		
+		return new ResponseEntity<>(memServ.ListCategorizedMember(showedType, new Criteria()),HttpStatus.OK);
 	}
-
+	
 	@GetMapping(value = "/user/find", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public ResponseEntity<Map<String, List<MemberVO>>> findMember(@RequestParam String keyword) {
 		Map<String, List<MemberVO>> ret = new HashMap<>();

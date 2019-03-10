@@ -36,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
 		case REPORT:
 			return listReportMember(cri);
 		default:
-			throw new UndefinedMemberType();
+			throw new UndefinedMemberType(type.toString());
 		}
 	}
 	

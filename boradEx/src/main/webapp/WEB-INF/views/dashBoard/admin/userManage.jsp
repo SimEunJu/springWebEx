@@ -121,7 +121,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary send">보내기</button>
+        <button type="button" class="btn btn-primary modal-send">보내기</button>
       </div>
     </div>
   </div>
@@ -188,64 +188,17 @@ $("document").ready(function(){
 	addHandlebarHelper();
 	
 	const check	= new Check("user");
-	const modal = new Modal();
+	const msgModal = new MsgModal();
 	const pagination = new Pagination();
 	
 	// 선택한 회원에게 메시지 보내기
 	$(".btn-msg").on("click", function(){
-		
-		// 선택된 회원 리스트 생성
-		check.appendCheckVal(pagination.page);
-		check.flatObjToList(check.repo);
-		
-		// 회원이 한 명도 선택되지 않았다면
-		if(check.isListEmpty()){
-			alert("회원을 1명 이상 선택해 주세요.");
-			return;
-		}
-		
-		// 메시지를 작성할 모달을 활성화
-		modal.toggleModal();
-		
-		let receiverList = "";
-
-		// 모든 회원 선택이라면
-		if(check.allCheck.is(":checked")) receiverList = check.list+" 회원";
-		else{
-			const checkedCnt = check.list.length;
-			receiverList = receiverListTemplate({
-				start: 1,
-				end: checkedCnt>10 ? 10 : checkedCnt,
-				showMsg: checkedCnt>10,
-				receiverNum: checkedCnt,
-				receiver: check.list
-			});
-		}
-		
-		// 메시지 모달에 수신자 목록 생성
-		modal.receiver.html(receiverList);
+		msgModal.openMsgModal(check);
 	});
 	
 	// 메시지 모달의 메시지 전송 버큰 클릭 시
-	$(".send").on("click", function(){
-
-		const envelope = {
-			receivers: check.list,
-			title: modal.title.val(),
-			content: modal.msg.val()
-		}
-		
-		$.post({
-			url: "/board/api/admin/user/msg",
-			data: JSON.stringify(envelope),
-			contentType: "application/json; charset=utf-8"
-			
-			}).done(function(){
-				// 메시지 전송 후 모달 닫기
-				modal.toggleModal();
-				alert("메시지가 성공적으로 발송되었습니다.");
-			
-			}).fail(showAjaxError)
+	$(".modal-send").on("click", function(){
+		msgModal.sendMsg(check.list, "/board/user/msg");
 	});
 	
 	// 회원 상태 변경 버튼 클릭 시
@@ -259,12 +212,17 @@ $("document").ready(function(){
 		if(type === "") return;
 		if(!confirm("선택하신 회원의 상태를 정말 변경하시겠습니까?")) return;
 		
+		const showType = $("input[type='radio']:checked").val();
 		$.post({
-			url: "/board/api/admin/usertype?type="+type,
+			url: "/board/api/admin/usertype?type="+type+"&showType="+showType,
 			data: JSON.stringify(check.list),
 			contentType: "application/json; charset=utf-8"
 		})
-		.done(function(){
+		.done(function(users){
+			const tableRow = tableRowTemplate(users);
+			check.tbody.html(tableRow);
+
+			check.reset();
 			alert("선택된 회원의 상태를 변경 하였습니다.");
 	
 		}).fail(showAjaxError);
