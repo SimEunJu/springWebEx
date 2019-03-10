@@ -7,7 +7,7 @@
 
 <select id="getUserJoinCount" resultType="long">
 	<![CDATA[
-		select join_cnt from tbl_user_stat 
+		select sum(join_cnt) from tbl_user_stat 
 		where #{startDay} <= today and today < #{endDay}
 	]]>
 	
@@ -15,14 +15,14 @@
 
 <select id="getUserLeaveCount" resultType="long">
 	<![CDATA[
-		select leave_cnt from tbl_user_stat 
+		select sum(leave_cnt) from tbl_user_stat 
 		where #{startDay} <= today and today < #{endDay}
 	]]>
 </select>
 
 <select id="getPostCount" resultType="long">
 	<![CDATA[
-		select post_cnt from tbl_user_stat 
+		select sum(post_cnt) from tbl_user_stat 
 		where  #{startDay} <= today and today < #{endDay}
 	]]>
 </select>

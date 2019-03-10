@@ -13,6 +13,7 @@ public class MsgVO {
 	private String content;
 	private String sender;
 	private String receiver;
+	private boolean receiverReadFlag;
 	private boolean senderDeleteFlag;
 	private boolean receiverDeleteFlag;
 	private LocalDateTime regdate;

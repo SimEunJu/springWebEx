@@ -81,7 +81,7 @@
 	<nav aria-label="Page navigation">
   		<ul class="pagination">
   			<c:if test="${pagination.prev}">
-    		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
+    		<li class="page-item prev"><a class="page-link" href="">&laquo;</a></li>
     		</c:if>
     		
     		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
@@ -89,7 +89,7 @@
     		</c:forEach>
     		
     		<c:if test="${pagination.next}">
-    		<li class="page-item"><a class="page-link next" href="">&raquo;</a></li>
+    		<li class="page-item next"><a class="page-link" href="">&raquo;</a></li>
   			</c:if>
   		</ul>
 	</nav>
@@ -168,89 +168,63 @@ $("document").ready(function(){
         xhr.setRequestHeader(csrfHeader, csrfToken);
     });
 	
-	const check	= checkServInitiator("user", "/board/api/admin/user");
-	
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
 	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
-	Handlebars.registerHelper("dateFormat", function(date){
-		if(date === null) return;
-		return date.year+"-"+date.monthValue+"-"+date.dayOfMonth+" "+date.hour+":"+date.minute;
-	});
 	
 	const paginationSkeleton = document.getElementById("pagination-hb").innerHTML;
 	const paginationTemplate = Handlebars.compile(paginationSkeleton);
-	Handlebars.registerHelper("for", function(start, end, block){
-		let acc = "";
-		for(let i=start; i<=end; i++){
-			acc += block.fn(i);
-		}
-		return acc;
-	});
 	
 	const receiverListSkeleton = document.getElementById("receiver-list-hb").innerHTML;
 	const receiverListTemplate = Handlebars.compile(receiverListSkeleton);
-	Handlebars.registerHelper("forArr", function(start, end, item, block){
-		let acc = "";
-		for(let i=start; i<=end; i++){
-			acc += block.fn(item[i-1]);
-		}
-		return acc;
-	});
-
-	$('#modal').modal({
-		keyboard: false,
-		focus: false,
-		show: false
-	});
 	
-	let checked = [];
-	let checkedRepo = {};
+	addHandlebarHelper();
+	
+	const check	= new Check("user");
+	const modal = new Modal();
+	const pagination = new Pagination();
+	
+	// 선택한 회원에게 메시지 보내기
 	$(".btn-msg").on("click", function(){
 		
-		appendChecked($(".pagination .active").find("a").attr("href"));
-		flat();
+		// 선택된 회원 리스트 생성
+		check.appendChecked(pagination.page);
+		check.flatObjToList();
 		
-		if(checked.length === 0){
+		// 회원이 한 명도 선택되지 않았다면
+		if(check.isListEmpty()){
 			alert("회원을 1명 이상 선택해 주세요.");
 			return;
 		}
 		
-		$('#modal').modal('toggle');
+		// 메시지를 작성할 모달을 활성화
+		modal.toggleModal();
 		
 		let receiverList = "";
 
-		if($("input[value='all']").is(":checked")) receiverList = $("input[type='radio']:checked").html();
+		// 모든 회원 선택이라면
+		if(check.allCheck.is(":checked")) receiverList = $("input[type='radio']:checked").html();
 		else{
-			const checkedCnt = checked.length;
+			const checkedCnt = check.list.length;
 			receiverList = receiverListTemplate({
 				start: 1,
 				end: checkedCnt>10 ? 10 : checkedCnt,
 				showMsg: checkedCnt>10,
 				receiverNum: checkedCnt,
-				receiver: checked
+				receiver: check.list
 			});
 		}
 		
-		const modal = $("#modal");
-		$("body").toggleClass("modal-open");
-		modal.toggleClass("show");
-		modal.css("display", "block");
-		modal.attr("aria-hidden", "false");
-		modal.find('textarea').trigger('focus');
-		
-		modal.find(".receiver").html(receiverList);
+		// 메시지 모달에 수신자 목록 생성
+		modal.receiver.html(receiverList);
 	});
 	
+	// 메시지 모달의 메시지 전송 버큰 클릭 시
 	$(".send").on("click", function(){
-		if(checked === {}){
-			alert("1명 이상 선택해주세요");
-			return;
-		}
-		const modal = $("#modal");
+
 		const envelope = {
-			receivers: checked,
-			title: modal.find(".title").val(),
-			content: modal.find(".msg").val()
+			receivers: check.list,
+			title: modal.title.val(),
+			content: modal.msg.val()
 		}
 		
 		$.post({
@@ -260,22 +234,24 @@ $("document").ready(function(){
 	        dataType: "json",
 			
 			}).done(function(){
-				$(".msg").val("");
-				$("#modal").modal("toggle");
-				checked = [];
-				checkedRepo = {};
+				// 메시지 전송 후 모달 닫기
+				modal.toggleModal();
 				alert("메시지가 성공적으로 발송되었습니다.");
 			
-			}).fail(function(jqXHR, textStatus, errorThrown){
-				console.error(jqXHR, textStatus, errorThrown);
-			})
+			}).fail(showAjaxError)
 	});
 	
+	// 회원 상태 변경 버튼 클릭 시
 	$(".btn-usertype").on("click", function(e){
-		appendChecked($(".pagination .active").find("a").attr("href"));
+		
+		// 체크된 회원 목록 생성
+		check.appendChecked(pagination.page);
+		check.flatObjToList();
+		
 		const type = $("input[type='radio']:checked").val();
 		if(type === "user-all") return;
 		if(!confirm("선택하신 회원의 상태를 정말 변경하시겠습니까?")) return;
+		
 		$.post({
 			url: "/board/api/admin/usertype?type="+type,
 			data: JSON.stringify(checked),
@@ -283,89 +259,74 @@ $("document").ready(function(){
 	        dataType: "json",
 		})
 		.done(function(){
-			checked = [];
-			checkedRepo = {};
-			alert("선택된 회원을 정지 처리 하였습니다.");
-		});
+			alert("선택된 회원의 상태를 변경 하였습니다.");
+	
+		}).fail(showAjaxError);
 	});
 	
+	// 회원 찾기 버튼 클릭 시 
 	$(".btn-find").on("click", function(e){
+		
 		const keyword = $(this).siblings("input[type='text']").val();
 		if(keyword === "" || keyword.length === 0){
 			alert("사용자 이름을 입력해 주세요");
 			return;
 		}
+		
 		$.getJSON("/board/api/admin/user/find?keyword="+encodeURIComponent(keyword))
-		.done(function(users){
-			checked = [];
-			checkedRepo = {};
-			const tableRow = tableRowTemplate(users);
-			$("tbody").html(tableRow);
-		})
+			.done(function(users){
+			
+				check.resetRepo();
+				const tableRow = tableRowTemplate(users);
+				$("tbody").html(tableRow);
+			
+			}).fail(showAjaxError);
 	})
 	
+	// 회원 유형 변경 시
 	$("input[type='radio']").on("click", function(e){
 		
-		checked = [];
-		checkedRepo = {};
 		const userType = $(e.target).val();
 		
 		$.getJSON("/board/api/admin/user?type="+userType)
 			.done(function(users){
+				
+				check.resetRepo();
 				const tableRow = tableRowTemplate(users);
 				$("tbody").html(tableRow);
-			})
+			
+			}).fail(showAjaxError);
 	});
 	
-	const page = 1;
-	const perPage = 10;
-	function makeQuery(extra){
-		let userQuery = "";
-		for(let q in extra){
-			userQuery = "&"+q+"="+extra.q;
-		}
-		return "page="+page+"&perPageNum="+perPageNum+userQuery;
-	}
-	
-	function appendChecked(page){
-		checkedRepo[page] = collectCheckVal();
-	}
-	
-	function flat(){
-		checked = [];
-		for(let page in checkedRepo){
-			checked = checked.concat(checkedRepo[page]);
-		}
-	}
-	
+	// 페이징
 	$(".pagination").on("click", function(e){
 		e.preventDefault();
 		
-		const target = e.target;
+		const target = e.target.parent();
+	
+		let addedQuery = "";
+		if(target.hasClass("prev")) addedQuery = {move: "prev"}; 
+		else if(target.hasClass("next")) addedQuery = {move : "next"};
+		else pagination.chanePage(target);
+
+		check.appendChecked(pagination.page);
 		
-		e.currentTarget.find(".active").removeClass("active");
-		
-		page = target.attr("href");
-		target.parent().addClass("active");
-		
-		appendChecked(page);
-		
-		let userQuery;
-		if($(target).hasClass("prev")) userQuery = {move: "prev"};
-		else if($(target).hasClass("next")) userQuery = {move : "next"};
-		
-		const query = makeQuery(userQuery);
+		const query = makeQuery(addedQuery);
 		
 		$.getJSON("/board/api/user?"+query)
 			.done(function(res){
 				const tableRow = tableRowTemplate(res.users);
-				$("tbody").html(tableRow);
+				check.tbody.html(tableRow);
 				
-				const pagination = paginationTemplate(res.pagination);
-				const paginationSec = $(".pagination");
-				paginationSec.html(pagination);
-				paginationSec.find("a[href='"+page+"']").parent().addClass("active");
-			});
+				// next, prev 선택 시 pagination 재생성
+				if(addedQuery === ""){
+					const pagination = paginationTemplate(res.pagination);
+					pagination.ele.html(pagination);
+					
+					const startPage = res.pagination.match(/startPage=d+/)[0];
+					pagination.chagePage(pagination.ele.find("a[href='"+startPage+"']"));
+				}
+			}).fail(showAjaxError);
 	});
 });
 </script>

@@ -1,4 +1,5 @@
-function checkServInitiator(keyword, url){
+
+function checkServ(keyword, url){
 	const checkObj = {
 			checkes: $("input[name='"+keyword+"']"),
 			remBtn: $("#rem-btn")
@@ -45,10 +46,12 @@ function remBtnEvtHandler(url){
 		})
 	}
 }
+
+
 function collectCheckVal(){
 	let data = [];
 	
-	if(($("input[value='all']").is(":checked") === true) && (confirm("정말 모두 삭제하시겠습니가? 삭제 후 되돌릴 수 없습니다.")) === true) url += "?type=all";
+	if(($("input[value='all']").is(":checked") === true) && (confirm("모두 선택하시겠습니가?")) === true) url += "?type=all";
 	else{
 		$("input[type='checkbox']").each(function(idx, c){
 			const check = $(c);
@@ -56,4 +59,16 @@ function collectCheckVal(){
 		})
 	}
 	return data;
+}
+function appendChecked(repo, page){
+	repo[page] = collectCheckVal();
+	return repo;
+}
+
+function flatObjToList(obj){
+	let list = [];
+	for(let page in obj){
+		list = list.concat(obj[page]);
+	}
+	return list;
 }

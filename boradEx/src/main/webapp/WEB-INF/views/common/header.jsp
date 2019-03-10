@@ -50,7 +50,9 @@
 					<li class="nav-item">
 						<a class="nav-link" href="/board/noti">알림<span class="badge badge-warning">?</span></a>
 					</li>
-					<li class="nav-item"><a class="nav-link" href="/board/msg">메시지</a></li>
+					<li class="nav-item">
+						<a class="nav-link" href="/board/msg">메시지<span class="badge badge-warning">?</span></a>
+					</li>
 				</sec:authorize>
 				<sec:authorize access="isAnonymous()">
 					<li class="nav-item"><a class="nav-link" href="/board/login">로그인</a></li>
