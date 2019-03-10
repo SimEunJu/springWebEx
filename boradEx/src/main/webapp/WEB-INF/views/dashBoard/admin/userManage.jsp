@@ -30,15 +30,23 @@
 		</div>
 		
 		<div class="col-12">
-			<button type="button" class="btn btn-outline-danger btn-usertype">회원 상태 변경</button>
-			
 			<div class="float-right">
 				<input type="text" name="name" placeholder="회원명" for="#mem-search"/>
 				<button type="button" class="btn btn-outline-primary btn-find" id="mem-search">찾기</button>
 			</div>
 		</div>
 	</div>
-	
+	<div class="option row my-2 p-2 border">
+		<select name="select" class="ml-auto mr-2">
+  			<option value="" selected>--------</option> 
+ 			<option value="active">활동</option>
+  			<option value="banned">정지</option>
+  			<option value="report">경고</option>
+  			<option value="sleep">휴면</option>
+  			<option value="leave">탈퇴</option>
+		</select>
+		<button type="button" class="btn btn-outline-danger btn-usertype">회원 상태 변경</button>
+	</div>
 	<div class="option row my-2 p-2 border">	
 		
 			<div class="col">
@@ -158,7 +166,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="/resources/js/checkboxHandle.js"></script>
+<script src="/resources/js/modal.js"></script>
 <script>
 $("document").ready(function(){
 	
@@ -187,8 +195,8 @@ $("document").ready(function(){
 	$(".btn-msg").on("click", function(){
 		
 		// 선택된 회원 리스트 생성
-		check.appendChecked(pagination.page);
-		check.flatObjToList();
+		check.appendCheckVal(pagination.page);
+		check.flatObjToList(check.repo);
 		
 		// 회원이 한 명도 선택되지 않았다면
 		if(check.isListEmpty()){
@@ -202,7 +210,7 @@ $("document").ready(function(){
 		let receiverList = "";
 
 		// 모든 회원 선택이라면
-		if(check.allCheck.is(":checked")) receiverList = $("input[type='radio']:checked").html();
+		if(check.allCheck.is(":checked")) receiverList = check.list+" 회원";
 		else{
 			const checkedCnt = check.list.length;
 			receiverList = receiverListTemplate({
@@ -230,8 +238,7 @@ $("document").ready(function(){
 		$.post({
 			url: "/board/api/admin/user/msg",
 			data: JSON.stringify(envelope),
-			contentType: "application/json; charset=utf-8",
-	        dataType: "json",
+			contentType: "application/json; charset=utf-8"
 			
 			}).done(function(){
 				// 메시지 전송 후 모달 닫기
@@ -245,18 +252,17 @@ $("document").ready(function(){
 	$(".btn-usertype").on("click", function(e){
 		
 		// 체크된 회원 목록 생성
-		check.appendChecked(pagination.page);
-		check.flatObjToList();
+		check.appendCheckVal(pagination.page);
+		check.flatObjToList(check.repo);
 		
-		const type = $("input[type='radio']:checked").val();
-		if(type === "user-all") return;
+		const type = $("select option:selected").val();
+		if(type === "") return;
 		if(!confirm("선택하신 회원의 상태를 정말 변경하시겠습니까?")) return;
 		
 		$.post({
 			url: "/board/api/admin/usertype?type="+type,
-			data: JSON.stringify(checked),
-			contentType: "application/json; charset=utf-8",
-	        dataType: "json",
+			data: JSON.stringify(check.list),
+			contentType: "application/json; charset=utf-8"
 		})
 		.done(function(){
 			alert("선택된 회원의 상태를 변경 하였습니다.");
@@ -309,7 +315,7 @@ $("document").ready(function(){
 		else if(target.hasClass("next")) addedQuery = {move : "next"};
 		else pagination.chanePage(target);
 
-		check.appendChecked(pagination.page);
+		check.appendCheckVal(pagination.page);
 		
 		const query = makeQuery(addedQuery);
 		

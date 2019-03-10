@@ -2,37 +2,43 @@ function Check(keyword) {
 		this.tbody = $("tbody");
 		this.checkes = this.tbody.find("input[name='"+keyword+"']");
 		this.allCheck = $("input[value='all']");
-		this.allShowedCheck = $("input[value=''all-showed]");
+		this.allShowedCheck = $("input[value='all-showed']");
 		this.repo = {};
 		this.list = [];
 		
-		this.allCheck.on("click", function(){
+		this.allCheck.on("click", () => {
 			this.allShowedCheck.prop("checked", false);
 			this.checkes.prop("checked", false);
 			this.resetRepo();
 		});
-		this.allShowedCheck.on("click", function(){
-			if($(this).is(":checked")) this.checkes.prop("checked", true);
+		this.allShowedCheck.on("click", (e) => {
+			if($(e.target).is(":checked")) this.checkes.prop("checked", true);
 			else this.checkes.prop("checked", false);
 			
 			this.allCheck.prop("checked", false);
 		});
+		this.tbody.on("click", () => {
+			this.allCheck.prop("checked", false);
+		})
 }
 Check.prototype.collectCheckVal = collectCheckVal;
 Check.prototype.appendCheckVal = appendChecked;
 Check.prototype.flatObjToList = flatObjToList;
 Check.prototype.resetRepo = resetRepo;
+Check.prototype.isListEmpty = isListEmpty;
 
 function isListEmpty(){
-	return list.length === 0;
+	return this.list.length === 0;
 }
 function collectCheckVal(){
 	let data = [];
-	
-	this.tbody.find($("input[type='checkbox']")).each(function(idx, c){
+	if(this.allCheck.is(":checked")) data.push($("input[type='radio']:checked").get(0).nextElementSibling.innerText);
+	else{
+		this.tbody.find($("input[type='checkbox']")).each(function(idx, c){
 		const check = $(c);
 		if(check.is(":checked") && check.val() !== "all-showed") data.push(check.val());
-	});
+		});
+	}
 	
 	return data;
 }
@@ -53,11 +59,11 @@ function resetRepo(){
 
 function Pagination(){
 	this.ele= $(".pagination");
-	this.pageEle = this.pagination.find(".active");
+	this.pageEle = this.ele.find(".active");
 	this.page = this.pageEle.children("a").attr("href");
 	this.perPageNum = 10;
 }
-Pagination.prototype.makeQuery = makQuery;
+Pagination.prototype.makeQuery = makeQuery;
 function makeQuery(addition){
 	let query = "";
 	for(let q in addition){
@@ -80,7 +86,7 @@ function Modal(){
 	this.msg = this.modal.find(".msg");
 	this.receiver = this.modal.find(".receiver");
 	
-	this.modal({
+	this.modal.modal({
 		keyboard: false,
 		focus: false,
 		show: false
@@ -88,7 +94,7 @@ function Modal(){
 }
 Modal.prototype.toggleModal = toggleModal;
 function toggleModal(){
-	this.modal.msg.val("");
+	this.msg.val("");
 	this.modal.modal("toggle");
 }
 
