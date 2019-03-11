@@ -47,7 +47,7 @@ public class FileDeleteTask {
 			HashMap<String, Object> map = new HashMap<>();
 			map.put("yesterday", yesterday);
 			map.put("uploadPath", Paths.get(uploadPath, yesterdayPath));
-			sess.select("select uuid, file_type from tbl_attach where regdate>=#{yesterday} and upload_path=#{uploadPath}", map, new CustomResultHandler());
+			sess.select("select uuid from tbl_attach where regdate>=#{yesterday} and upload_path=#{uploadPath}", map, new CustomResultHandler());
 			
 			String filePath = uploadPath + yesterdayPath;
 			String files[] = Paths.get(filePath).toFile().list();

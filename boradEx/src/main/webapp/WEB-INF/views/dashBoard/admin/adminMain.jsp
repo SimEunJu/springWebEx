@@ -3,27 +3,6 @@
     
 <%@ include file="../../common/header.jsp"%>
 
-<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/board/daily">Daily</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbar">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/board/login">로그인/로그아웃</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/board/admin/info">내 정보</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/board/admin/noti">알림</a>
-      </li>
-    </ul>
-  </div>
-</nav> -->
-
 <div class="container">
   <div class="row mt-2">
     <div class="col-md-3">

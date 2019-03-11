@@ -1,30 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<%@ include file="../common/header.jsp"%>
 
-<div class="box-body">
-	<div>
-		<a href="/board/daily"><button style="margin-bottom: 15px;">HOME</button></a>
+<div class="container">
+	<div class="row border m-2 p-2">
+		<form method="post" action="/login" class="col-md">
+			<div class="form-group">
+				<input class="form-control" placeholder="아이디" type="text" name="username" /> 
+			</div>
+			<div class="form-group">
+				<input class="form-control" placeholder="비밀번호" type="password" name="password" />
+			</div>
+			<div class="form-group">
+				<div class="col-xs-8">
+					<label> 
+						<input type="checkbox" name="remember-me" /> Remember Me
+					</label>
+				</div>
+				<div class="col-xs-4 float-right">
+					<button type="submit" class="btn btn-outline-primary">Login</button>
+				</div>
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }">
+			</div>
+		</form>
+		<div class="col-md align-self-end text-align-center">
+			<a href="/board/oauth2/authorization/google">Google로 로그인</a>
+		</div>
 	</div>
-	<form method="post" action="/login" >
-		<div class="form-group has-feedback">
-			<input class="form-control" placeholder="user id" type="text" name="username" />
-			<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-		</div>
-		<div class="form-group has-feedback">
-			<input class="form-control" placeholder="user password" type="password" name="password" />
-			<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-		</div>
-		<div class="row">
-			<div class="col-xs-8">
-				<label>
-					<input type="checkbox" name="remember-me" /> Remember Me
-				</label>
-			</div>
-			<div class="col-xs-4">
-				<button type="submit" class="btn btn-primary btn-black btn-flat">Login</button>
-			</div>
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }">
-		</div>
-		<a href="/board/oauth2/authorization/google">Google</a>
-	</form>
 </div>
+<%@ include file="../common/footer.jsp"%>
