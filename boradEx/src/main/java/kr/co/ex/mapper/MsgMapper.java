@@ -15,6 +15,7 @@ public interface MsgMapper {
 	
 	public void updateSenderDeleteFlag(@Param("msgNo")List<Integer> msgNo) throws Exception;
 	public void updateReceiverDeleteFlag(@Param("msgNo")List<Integer> msgNo) throws Exception;
+	public void updateReceiverReadFlag(int msgNo) throws Exception;
 	
 	public void createMsg(MsgVO vo) throws Exception;
 	public void createMsgList(@Param("receivers") List<String> receivers, @Param("msg") MsgVO msg) throws Exception;

@@ -38,6 +38,11 @@ public class MsgServiceImpl implements MsgService {
 	}
 
 	@Override
+	public void setReceiverReadFlag(int msgNo) throws Exception {
+		msgMapper.updateReceiverReadFlag(msgNo);
+	}
+	
+	@Override
 	public void registerMsgList(List<String> receivers, MsgVO vo) throws Exception {
 		msgMapper.createMsgList(receivers, vo);
 	}

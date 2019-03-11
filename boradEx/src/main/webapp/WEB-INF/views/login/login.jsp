@@ -24,7 +24,7 @@
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }">
 			</div>
 		</form>
-		<div class="col-md align-self-end text-align-center">
+		<div class="col-md align-self-center text-center">
 			<a href="/board/oauth2/authorization/google">Google로 로그인</a>
 		</div>
 	</div>

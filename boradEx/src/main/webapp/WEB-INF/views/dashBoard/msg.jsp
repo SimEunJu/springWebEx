@@ -7,7 +7,7 @@
 	<div class="row my-2 p-2 border">
 		<div class="col">
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
-			<label for="all-mem">전체 회원</label>
+			<label for="all-mem">전체</label>
 		</div>
 		
 		<div class="float-right">
@@ -69,7 +69,9 @@
       </div>
       <div class="modal-body">
         <div class="msg-host">
-        	<p>보내는 이 : <span class="sender">${user.username}</span></p>
+        	<p>보내는 이 : <span class="sender">
+        		<sec:authentication property="principal.username"/></span>
+        	</p>
         	<p>받는 이 : <div class="receiver"></div></p>
         </div>
         <input type="text" class="title col-12 mb-2" placeholder="제목을 입력해주세요"/>
@@ -86,12 +88,12 @@
 <%@ include file="../common/footer.jsp"%>
 
 <script id="table-row" type="text/x-handlebars-template">
-{{#each msg}}	
+{{#each this}}	
 	<tr>
 		<th scope="row-1"><input type="checkbox" name="msg" value="{{msgNo}}" /></th>
       	<td class="row-2">{{sender}}</td>
       	<td class="row-6" style="font-weight: {{#if receiverReadFlag}} '' {{else}} 'bold' {{/if}}">{{title}}</td>
-      	<td class="row-3">{{#dateFormat regdate}}</td>
+      	<td class="row-3">{{dateFormat regdate}}</td>
      </tr>
 {{/each}}
 </script>
@@ -113,8 +115,6 @@
 // 1. send msg 2. delete msg 3. read msg 4. pagination
 $("document").ready(function(){
 	
-	// 리팩토링, 읽음 표시, 삭제
-	
 	const csrfToken = "${_csrf.token }";
 	const csrfHeader = "${_csrf.headerName }";
 	$(document).ajaxSend(function(e, xhr, options) {
@@ -132,9 +132,13 @@ $("document").ready(function(){
 	const check = new Check("msg");
 	const msgModal = new MsgModal();
 	const pagination = new Pagination();
+	const username = "<sec:authentication property="principal.username"/>";
 	
 	$("#btn-msg").on("click", function(){
 		msgModal.openMsgModal(check, pagination.page, receiverListTemplate);
+		msgModal.modal.find(".modal-footer .modal-send").show();
+		msgModal.modal.find(".modal-header .modal-title").html("메시지 보내기");
+		msgModal.sender.html(username);
 	});
 
 	$(".modal-send").on("click", function(){
@@ -163,14 +167,22 @@ $("document").ready(function(){
 		return {msgNo, user};
 	}
 	
-	check.flatObjToList = function(obj){
-		return flatObjToListOpt(obj, 'user');
-	}
+	check.flatToList = flatSetToList;
+	check.flatObjToList = flatObjToList;
 
-	function flatObjToListOpt(obj, opt){
+	function flatSetToList(obj){
+		let data = new Set();
+		for(let prop in obj){
+			for(let user of obj[prop].user) data.add(user);
+		}
+		check.list = Array.from(data);
+		return check.list;
+	}
+	
+	function flatObjToList(obj){
 		let data = [];
 		for(let prop in obj){
-			data = data.concat(obj[prop][opt]);
+			data = data.concat(obj[prop].msgNo);
 		}
 		check.list = data;
 		return data;
@@ -178,8 +190,14 @@ $("document").ready(function(){
 	
 	check.tbody.on("click", "tr .title", function(e){
 		const target = $(e.target);
+		// 방법1. 클라이언트에서 체크 
+		// 방법2. 서버에서 체크 
+		// 한번에 처리 req || 두 번에 걸쳐 처리 req
+		// 가장 비싼 처리는 무엇? 네트워크 -> 한번에 req -> 파라미터 추가
+		let isRead = false;
+		if(target.get(0).dataset.read === true) isRead = true; 
 		ajax({
-			url: "/board/user/msg/"+target.siblings("th").children("input").val(),
+			url: "/board/user/msg/"+target.siblings("th").children("input").val()+"?isRead="+isRead,
 			method: "get",
 			
 		}, function(res){
@@ -190,21 +208,25 @@ $("document").ready(function(){
 			msgModal.sender.html(res.sender);
 			msgModal.receiver.html(res.receiver);
 			
+			msgModal.modal.find(".modal-footer .modal-send").hide();
+			msgModal.modal.find(".modal-header .modal-title").html("받은 메시지");
+			
 			target.css("font-weight","inherit");
-			target.attr("data-read", true);			
+			target.attr("data-read", true);		
 		})
 	});
 	
 	
 	$("#btn-del").on("click", function(e){
 		check.appendCheckVal(pagination.page);
-		const msgNoList = flatObjToListOpt(check.repo, 'msgNo');
+		const msgNoList = flatObjToList(check.repo, 'msgNo');
 		ajax({
 			url: "/board/user/msg/del",
 			method: "post",
 			data: JSON.stringify(msgNoList),
 			contentType: "application/json; charset=utf-8"
 		}, function(res){
+			console.log(res);
 			check.tbody.html(tableRowTemplate(res));
 		});
 	});

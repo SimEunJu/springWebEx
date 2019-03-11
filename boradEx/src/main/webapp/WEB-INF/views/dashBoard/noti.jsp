@@ -75,7 +75,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
-<script src="/resources/js/checkboxHandle.js"></script>
+<script src="/resources/js/modal.js"></script>
 <script>
 $("document").ready(function(){
 	const tableRowSekeleton   = document.getElementById("table-row").innerHTML;
@@ -85,7 +85,7 @@ $("document").ready(function(){
 		return date.year+"-"+date.monthValue+"-"+date.dayOfMonth+" "+date.hour+":"+date.minute;
 	});
 	
-	const check = checkServInitiator("noti", "/board/api/admin/user", template);
+	
 	
 });
 </script>

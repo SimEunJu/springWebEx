@@ -23,7 +23,7 @@ function Check(keyword) {
 }
 Check.prototype.collectCheckVal = collectCheckVal;
 Check.prototype.appendCheckVal = appendChecked;
-Check.prototype.flatObjToList = flatObjToList;
+Check.prototype.flatToList = flatToList;
 Check.prototype.resetRepo = resetRepo;
 Check.prototype.isListEmpty = isListEmpty;
 
@@ -46,10 +46,12 @@ function appendChecked(prop){
 	this.repo[prop] = this.collectCheckVal();
 	return this.repo;
 }
-function flatObjToList(obj){
+function flatToList(obj){
+	let list = [];
 	for(let prop in obj){
-		this.list = this.list.concat(obj[prop]);
+		list = list.concat(obj[prop]);
 	}
+	this.list = list;
 	return this.list;
 }
 function resetRepo(){
@@ -105,7 +107,6 @@ function showAjaxError(jqXHR, textStatus, errorThrown){
 
 function MsgModal(){
 	Modal.call(this);
-	console.dir(this);
 }
 MsgModal.prototype = Object.create(Modal.prototype);
 MsgModal.prototype.constructor = MsgModal;
@@ -116,7 +117,7 @@ function openMsgModal(check, page, template){
 
 	// 선택된 회원 리스트 생성   
 	check.appendCheckVal(page);
-	const list = check.flatObjToList(check.repo);
+	const list = check.flatToList(check.repo);
 	
 	// 회원이 한 명도 선택되지 않았다면
 	if(check.isListEmpty()){
@@ -130,7 +131,11 @@ function openMsgModal(check, page, template){
 	let receiverList = "";
 
 	// 모든 회원 선택이라면
-	if(check.allCheck.is(":checked")) receiverList = $("input[type='radio']:checked").get(0).nextElementSibling.innerText+" 회원";
+	if(check.allCheck.is(":checked")){
+		const userType = $("input[type='radio']:checked");
+		if(userType.length !== 0) receiverList = userType.get(0).nextElementSibling.innerText+" 회원";
+		else receiverType = "전체 회원";
+	}
 	else{
 		const checkedCnt = list.length;
 		receiverList = template({

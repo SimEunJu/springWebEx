@@ -11,6 +11,7 @@ public interface MsgService {
 	
 	public void setSenderDeleteFlag(List<Integer> msgNo) throws Exception;
 	public void setReceiverDeleteFlag(List<Integer> msgNo) throws Exception;
+	public void setReceiverReadFlag(int msgNo) throws Exception;
 	
 	public void registerMsg(MsgVO vo) throws Exception;
 	public void registerMsgList(List<String> receivers, MsgVO vo) throws Exception;

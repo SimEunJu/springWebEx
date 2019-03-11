@@ -131,7 +131,7 @@
 {{#if prev}}
 	<li class="page-item"><a class="page-link" href="">&laquo;</a></li>
 {{/if}}
-{{#for startPage endPage}}
+{{for startPage endPage}}
 	<li class="page-item"><a class="page-link" href="{{this}}">{{this}}</a></li>
 {{/for}}
 {{#if next}}
@@ -193,7 +193,7 @@ $("document").ready(function(){
 	
 	// 선택한 회원에게 메시지 보내기
 	$(".btn-msg").on("click", function(){
-		msgModal.openMsgModal(check);
+		msgModal.openMsgModal(check, pagination.page, receiverListTemplate);
 	});
 	
 	// 메시지 모달의 메시지 전송 버큰 클릭 시
@@ -206,7 +206,7 @@ $("document").ready(function(){
 		
 		// 체크된 회원 목록 생성
 		check.appendCheckVal(pagination.page);
-		check.flatObjToList(check.repo);
+		check.flatToList(check.repo);
 		
 		const type = $("select option:selected").val();
 		if(type === "") return;

@@ -26,6 +26,10 @@
 		</foreach>
 	</update>
 	
+	<update id="updateReceiverReadFlag">
+		update tbl_msg set receiver_read_flag='1' where msg_no=#{msgNo}
+	</update>
+	
 	<insert id="createMsg">
 		insert into tbl_msg(title, content, sender, receiver)
 		values (#{title}, #{content}, #{sender}, #{receiver})
