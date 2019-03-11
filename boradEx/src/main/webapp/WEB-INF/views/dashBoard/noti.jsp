@@ -4,7 +4,19 @@
 <%@ include file="../common/header.jsp"%>
 
 <div class="container">
-	<table class="table mt-2">
+
+	<div class="row my-2 p-2 border">
+		<div class="col">
+			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
+			<label for="all-mem">전체</label>
+		</div>
+		
+		<div class="float-right">
+			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
+		</div>
+	</div>
+	
+	<table class="table table-hover">
   		<thead class="thead-dark">
     		<tr>
       			<th scope="col"><input type="checkbox" name="noti" value="all" /></th>
@@ -62,6 +74,17 @@
 
 <%@ include file="../common/footer.jsp"%>
 
+<script id="pagination-hb" type="text/x-handlebars-template">
+{{#if prev}}
+	<li class="page-item"><a class="page-link" href="">&laquo;</a></li>
+{{/if}}
+{{for startPage endPage}}
+	<li class="page-item"><a class="page-link" href="{{this}}">{{this}}</a></li>
+{{/for}}
+{{#if next}}
+	<li class="page-item"><a class="page-link" href="">&raquo;</a></li>
+{{/if}}
+</script>
 <script id="table-row" type="text/x-handlebars-template">
 {{#each users}}	
 	<tr>
@@ -78,15 +101,34 @@
 <script src="/resources/js/modal.js"></script>
 <script>
 $("document").ready(function(){
-	const tableRowSekeleton   = document.getElementById("table-row").innerHTML;
-	const template = Handlebars.compile(tableRowSekeleton);
-	Handlebars.registerHelper("dateFormat", function(date){
-		if(date === null) return;
-		return date.year+"-"+date.monthValue+"-"+date.dayOfMonth+" "+date.hour+":"+date.minute;
+	
+	const csrfToken = "${_csrf.token }";
+	const csrfHeader = "${_csrf.headerName }";
+	$(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(csrfHeader, csrfToken);
+    });
+	
+	addHandlebarHelper();
+	
+	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
+	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
+	
+	const check = new Check("msg");
+	const pagination = new Pagination();
+
+	$("#btn-del").on("click", function(e){
+		check.appendCheckVal(pagination.page);
+		const msgNoList = flatObjToList(check.repo, 'msgNo');
+		ajax({
+			url: "/board/user/msg/del",
+			method: "post",
+			data: JSON.stringify(msgNoList),
+			contentType: "application/json; charset=utf-8"
+		}, function(res){
+			console.log(res);
+			check.tbody.html(tableRowTemplate(res));
+		});
 	});
-	
-	
-	
 });
 </script>
 </body>

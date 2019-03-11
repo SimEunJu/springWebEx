@@ -125,6 +125,12 @@ public class ReplyServiceImpl implements ReplyService {
 		else if(curUser.equals("ADMIN")) replyMapper.delete("A", rno);
 	}
 
+	
+	@Override
+	public void removeReplies(String deleteType, List<Integer> rno) throws Exception {
+		replyMapper.deleteReplies(deleteType, rno);
+	}
+
 	@Override
 	public void reportReply(int rno) throws Exception {
 		replyMapper.updateReport(rno);

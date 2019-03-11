@@ -60,7 +60,7 @@
 		
 	</div>
 	
-	<table class="table">
+	<table class="table table-hover">
   		<thead class="thead-dark">
     		<tr>
       			<th scope="col"><input type="checkbox" name="user" value="all-showed" /></th>
@@ -126,7 +126,6 @@
     </div>
   </div>
 </div>
-
 <script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}
 	<li class="page-item"><a class="page-link" href="">&laquo;</a></li>

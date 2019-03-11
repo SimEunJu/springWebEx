@@ -21,7 +21,9 @@ public interface ReplyService {
 	public String getReplyer(int parBno) throws Exception;
 	public ReplyVO getReply(int rno) throws Exception; 
 	public void modifyReply(ReplyVO vo) throws Exception;
+	
 	public void removeReply(String deleteType, int rno, int bno) throws Exception;
+	public void removeReplies(String deletType, List<Integer> rno) throws Exception;
 	
 	public void reportReply(int rno) throws Exception;
 }

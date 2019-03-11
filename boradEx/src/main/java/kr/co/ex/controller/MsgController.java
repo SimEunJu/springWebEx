@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.MsgVO;
@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Controller
+@RestController
 @Log4j
 @RequiredArgsConstructor
 public class MsgController {
@@ -65,7 +65,6 @@ public class MsgController {
 	}
 	
 	@GetMapping(value="/board/user/msg/{msgNo}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
-	@ResponseBody
 	public ResponseEntity<MsgVO> getMsg(@PathVariable int msgNo, @RequestParam boolean isRead){
 		try {
 			if(isRead == false) msgServ.setReceiverReadFlag(msgNo);
@@ -77,7 +76,6 @@ public class MsgController {
 	}
 	
 	@PostMapping(value = "/board/user/msg/del", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
 	public ResponseEntity<List<MsgVO>> deleteMsges(@RequestBody ArrayList<Integer> msgNo){
 		try {
 			msgServ.setReceiverDeleteFlag(msgNo);

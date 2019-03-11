@@ -68,6 +68,12 @@
   	update tbl_reply set delete_type=#{deleteType}, reply="" where rno=#{rno};
   </update>
   
+  <update id="deleteReplies">
+  	<foreach collection="rno" item="r">
+  		update tbl_reply set delete_type=#{deleteType} where rno=#{r};
+  	</foreach>
+  </update>
+  
   <update id="updateReport">
   	update tbl_reply set report_cnt = report_cnt+1 where rno=#{rno}
   </update>

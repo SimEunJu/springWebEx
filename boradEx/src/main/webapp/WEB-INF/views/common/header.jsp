@@ -37,7 +37,7 @@
 
 		<div class="collapse navbar-collapse justify-content-end" id="navbar">
 			<ul class="navbar-nav">
-				<sec:authorize access="isAuthenticated()"><sec:authentication property="principal.username"/>
+				<sec:authorize access="isAuthenticated()">
 					<sec:authorize access="hasRole('ROLE_ADMIN')">
 						<c:set var="identity" value="admin" />
 					</sec:authorize>
