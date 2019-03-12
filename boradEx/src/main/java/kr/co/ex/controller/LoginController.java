@@ -34,7 +34,7 @@ public class LoginController {
 		
 	}
 
-	@GetMapping("/board/form/login")
+	@GetMapping("/board/login")
 	public String login(HttpServletRequest req){
 		return "login/login";	
 	}	

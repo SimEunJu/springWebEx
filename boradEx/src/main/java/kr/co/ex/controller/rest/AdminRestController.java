@@ -43,8 +43,8 @@ public class AdminRestController {
 	private MsgService msgServ;
 
 	@GetMapping(value = "/inout", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<Map<String, List<Long>>> listInout(@RequestParam String type) {
-		Map<String, List<Long>> res = new HashMap<>();
+	public ResponseEntity<Map<String, List<Integer>>> listInout(@RequestParam String type) {
+		Map<String, List<Integer>> res = new HashMap<>();
 		res.put("leave", statServ.getUserLeaveCount(type));
 		res.put("join", statServ.getUserJoinCount(type));
 		return new ResponseEntity<>(res, HttpStatus.OK);
@@ -58,8 +58,8 @@ public class AdminRestController {
 	}
 
 	@GetMapping(value = "/board", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<Map<String, List<Long>>> listBoard(@RequestParam String type) {
-		Map<String, List<Long>> res = new HashMap<>();
+	public ResponseEntity<Map<String, List<Integer>>> listBoard(@RequestParam String type) {
+		Map<String, List<Integer>> res = new HashMap<>();
 		res.put("board", statServ.getPostCount(type));
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}

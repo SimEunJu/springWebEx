@@ -89,7 +89,7 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	http
     		.formLogin()
-    			.loginPage("/board/form/login")
+    			.loginPage("/board/login")
     			.loginProcessingUrl("/login")
     			.and()
     		.rememberMe()
@@ -97,8 +97,7 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     			.and()
     		.logout()
     			.invalidateHttpSession(true)
-    			.deleteCookies("remember-me, SESSION, JSESSIONID")
-    			.logoutUrl("/board/form/logout")
+    			.deleteCookies("SESSION")
     			.and()
     		.oauth2Login()
     			.loginPage("/board/oauth2/login")

@@ -22,7 +22,7 @@
 	values(#{today}, #{joinCnt}, #{leaveCnt}, #{postCnt}, #{visitCnt})
 </insert>
 
-<select id="getVisitCnt">
+<select id="getVisitCnt" resultType="int">
 	<![CDATA[
 	select count(last_access_time) from spring_session
 	where last_access_time >= #{epochSecond}
