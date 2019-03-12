@@ -35,11 +35,10 @@
 	</form>
 </div>
 
+<%@ include file="../common/footer.jsp"%>
 <%@ include file="../include/upload.jsp" %>
 
 <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
-
-<%@ include file="../common/footer.jsp"%>
 
 <script>
     ClassicEditor
@@ -55,7 +54,7 @@ var form = $("#register-form");
 
 $("button[type='submit']").on("click", function(e){
 	e.preventDefault();
-	var str = fileService.getFilesInfo();
+	var str = fileService.getFilesInfo(fileinfoTemplate);
 	form.append(str).submit();
 });
 </script>

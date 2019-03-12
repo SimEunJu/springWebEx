@@ -120,12 +120,12 @@ public class UploadController {
 
 	@DeleteMapping(value="/board/daily/file", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<String[]> deleteOneFile(String fileName, String name, String type) throws Exception{
+	public ResponseEntity<String[]> deleteOneFile(String fileName, String type) throws Exception{
 		File file;
 		try{
 			file = new File(uploadPath, URLDecoder.decode(fileName, "UTF-8"));
 			file.delete();
-			if(type.equals("image")){
+			if(type.contains("image")){
 				String originalFile = file.getAbsolutePath().replace("s_", "");
 				file = new File(originalFile);
 				file.delete();

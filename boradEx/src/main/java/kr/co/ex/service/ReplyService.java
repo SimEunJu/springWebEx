@@ -12,7 +12,7 @@ public interface ReplyService {
 	public List<ReplyVO> listReply(Integer bno) throws Exception;
 	public List<ReplyDto> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception;
 	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) throws Exception;
-	public List<ReplyVO> listReplyByWriter(String replyer) throws Exception;
+	public List<ReplyVO> listReplyByWriter(String replyer, Criteria cri) throws Exception;
 	
 	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception;
 	public int getAddedTotalCount(int parRno) throws Exception;

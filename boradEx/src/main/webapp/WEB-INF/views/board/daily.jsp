@@ -24,7 +24,12 @@
   			</div>
 		</div>
 	</div>
-	<%@ include file="../include/searchBar.jsp"%><div class="row">
+	<%@ include file="../include/searchBar.jsp"%>
+	
+	<div class="row p-2 m-2 border justify-cotent-end">
+		<button id="newBtn" class="btn btn-outline-primary ml-auto">글쓰기</button>
+	</div>
+	
 		<div class="col-lg-12">
 			<table class="table table-hover">
 				<thead>

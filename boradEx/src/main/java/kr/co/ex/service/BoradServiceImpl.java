@@ -161,8 +161,18 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardVO> listBoardByWriter(String writer) throws Exception {
-		return mapper.listBoardByWriter(writer);
+	public List<BoardVO> listBoardByWriter(String writer, Criteria cri) throws Exception {
+		return mapper.listBoardByWriter(writer, cri)
+				.stream()
+				.map(p -> {
+					try {
+						p.setReplyCnt(replyMapper.totalCount(p.getBno(), false));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return p;
+				})
+				.collect(Collectors.toList());
 	}
 	
 }

@@ -117,7 +117,7 @@ public class AdminController {
 			PageMaker pm = PaginationUtils.pagination(move, new Criteria(), boardServ.getTotalCntByWriter(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("posts", boardServ.listBoardByWriter(auth.getName()));
+			model.addAttribute("posts", boardServ.listBoardByWriter(auth.getName(), pm.getCri()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -131,7 +131,7 @@ public class AdminController {
 			PageMaker pm = PaginationUtils.pagination(move, new Criteria(), replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("replies", replyServ.listReplyByWriter(auth.getName()));
+			model.addAttribute("replies", replyServ.listReplyByWriter(auth.getName(), pm.getCri()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

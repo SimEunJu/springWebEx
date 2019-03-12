@@ -23,7 +23,7 @@ public class UploadFileUtils {
 	
 	public static String calcFolder(){
 		String date = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		return date.replaceAll("-", File.pathSeparator);
+		return date.replaceAll("-", "\\\\");
 	}
 	
 	public static String makePath(String path){

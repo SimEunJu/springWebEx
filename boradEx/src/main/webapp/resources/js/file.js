@@ -1,19 +1,19 @@
 
 
 const fileService = (function(){
-	function getFilesInfo(){
+	function getFilesInfo(template){
 		let files = [];
 		$(".upload-result ul li").each(function(i, obj){
-			const fileObj = $(obj);
+			const fileObj = obj;
 			files.push({
 				idx: i,
-				fileName: fileObj.data(filename),
-				uuid: fileObj.data(uuid),
-				uploadPath: fileObj.data(path),
-				fileType: fileObj.data(type)
+				fileName: fileObj.dataset.filname,
+				uuid: fileObj.dataset.uuid,
+				uploadPath: fileObj.dataset.path,
+				fileType: fileObj.dataset.type
 			})
 		});
-		str = fileIntoTemplate(files);
+		str = template(files);
 		return str;
 	}
 	function showFiles(res){
@@ -30,7 +30,7 @@ const fileService = (function(){
 			}
 			obj.filePath = filePath;
 		});
-		return uploadItemTemplate(res);
+		return uploadItemTemplate(res[0]);
 	}
 	return {
 		getFilesInfo: getFilesInfo,

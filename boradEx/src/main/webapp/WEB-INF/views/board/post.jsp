@@ -29,7 +29,7 @@
 		</div>
 		<div class="form-group">
 			<label for="content">내용</label>
-			<textarea class="form-control" readonly="readonly" row="3" name="content">${board.content }</textarea>
+			<textarea class="form-control" id="editor" readonly="readonly" row="3" name="content"></textarea>
 		</div>
 		<div class="form-group">
 			<label class="wrtier">글쓴이</label> 
@@ -166,6 +166,17 @@
 {{#if next}}
 	<li class="page-item"><a class="page-link" href="">&raquo;</a></li>
 {{/if}}
+</script>
+<script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector( '#editor' ))
+        .then(
+        	editor => {editor.setData("${board.content}"); editor.isReadOnly = true;}
+        ).catch( 
+        	error => {console.error( error );}
+        );
 </script>
 <script src="/resources/js/handlebarHelper.js"></script>
 <script type="text/javascript">
@@ -462,9 +473,9 @@
 			}
 			$.ajax({
 				method: "get",
-				url: "/board/daily/"+bno+"/like",
+				url: "/board/daily/"+board.bno+"/like",
 				data: {
-					bno: bno,
+					bno: board.bno,
 					likeCnt: likeCnt,
 					username: encodeURIComponent(name)
 					},
@@ -507,7 +518,7 @@
 		
 		$("#boardModBtn").on("click",function(e){
 			e.preventDefault();
-			formObj.attr("action", "/board/daily/"+bno+"/mod");
+			formObj.attr("action", "/board/daily/"+board.bno+"/mod");
 			formObj.attr("method", "get");
 			formObj.submit()
 		});
@@ -520,14 +531,14 @@
 				alert("댓글이 있는 게시물은 삭제할 수 없습니다.");
 				return;
 			}
-			var files = chatService.getFilesInfo();
+			var files = fileService.getFilesInfo();
 		
 			if(files !== ""){
 				$.post("/board/delete", 
 						{files : files, name: name});
 			}
 			
-			formObj.attr("action", "/board/daily/"+bno);
+			formObj.attr("action", "/board/daily/"+board.bno);
 			formObj.attr("method", "DELETE");
 			formObj.submit();
 		});

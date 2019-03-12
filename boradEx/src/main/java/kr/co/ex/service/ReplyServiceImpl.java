@@ -74,8 +74,8 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 	
 	@Override
-	public List<ReplyVO> listReplyByWriter(String replyer) throws Exception {
-		return replyMapper.listReplyByReplyer(replyer);
+	public List<ReplyVO> listReplyByWriter(String replyer, Criteria cri) throws Exception {
+		return replyMapper.listReplyByReplyer(replyer, cri);
 	}
 
 	private String getWriterName(int bno){

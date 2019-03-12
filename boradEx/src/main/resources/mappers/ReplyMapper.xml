@@ -4,7 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="kr.co.ex.mapper.ReplyMapper">
- 
+
+<sql id="limit">
+	limit #{cri.pageStart}, #{cri.perPageNum} 
+</sql> 
+
 <insert id="create" useGeneratedKeys="true" 
   	keyColumn="rno" parameterType="kr.co.ex.domain.ReplyVO"
   	keyProperty="kr.co.ex.domain.ReplyVO.rno">
@@ -20,18 +24,19 @@
   	select * from tbl_reply 
   	where bno=#{bno} and isnull(par_rno)
   	order by rno desc
-  	limit #{cri.pageStart}, #{cri.perPageNum} 
+  	<include refid="limit" />
   </select>
   
   <select id="listCriteriaAdded" resultType="kr.co.ex.domain.ReplyVO">
 	select * from tbl_reply
 	where par_rno=#{parRno}
 	order by rno
-	limit #{cri.pageStart}, #{cri.perPageNum}   
+	<include refid="limit" />
   </select>
   
   <select id="listReplyByReplyer" resultType="kr.co.ex.domain.ReplyVO">
   	select * from tbl_reply where replyer=#{replyer}
+  	<include refid="limit" />
   </select>
   
   <select id="totalCount" resultType="int">

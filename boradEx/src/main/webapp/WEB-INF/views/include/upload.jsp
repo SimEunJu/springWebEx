@@ -33,8 +33,8 @@
 <li data-path='{{uploadPath}}' data-uuid='{{uuid}}' data-filename='{{fileName}}' data-type='{{fileType}}'>
 	<div>
 		<span>{{fileName}}</span>
-		<button type='button' data-file='{{filePath}}' data-type='{{fileType}}' class='btn btn-warning btn-circle'>
-			<i class='fa fa-times'></i>
+		<button type='button' data-file='{{filePath}}' data-type='{{fileType}}' class='btn btn-sm btn-warning'>
+			&times;
 		</button>
 		<br>
 		{{#if isImg}}
@@ -48,7 +48,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/file.js"></script>
-
 <script type="text/javascript">
 
 const csrfHeader = "${_csrf.headerName}";
@@ -58,7 +57,7 @@ const uploadItemSkeleton = document.getElementById("upload-item").innerHTML;
 const uploadItemTemplate = Handlebars.compile(uploadItemSkeleton);
 
 const fileInfoSkeleton = document.getElementById("file-info").innerHTML;
-const fileIntoTemplate = Handlebars.compile(fileInfoSkeleton);
+const fileinfoTemplate = Handlebars.compile(fileInfoSkeleton);
 
 const regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 const maxSize = 5242880;
@@ -106,8 +105,8 @@ function showUploadResult(res){
 }
 
 $(".upload-result").on("click", "button", function(e){
-	var fileName = $(this).data("file");
-	var type = $(this).data("type");
+	var fileName = this.dataset.file;
+	var type = this.dataset.type;
 	var li = $(this).closest("li");
 	
 	$.ajax({

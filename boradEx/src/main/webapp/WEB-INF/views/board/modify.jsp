@@ -16,9 +16,9 @@
 			<label for="title">제목</label> 
 			<input type="text" value="${board.title }" name="title" class="form-control" placeholder="제목을 입력해주세요">
 		</div>
-		<div class="form-group">
+		<div class="form-group content">
 			<label for="content">내용</label>
-			<textarea class="form-control" row="3" name="content" placeholder="내용을 입력해주세요">${board.content }</textarea>
+			<textarea name="content" id="editor" name="content"></textarea>
 		</div>
 		<div class="form-group">
 			<label class="writer">글쓴이</label> <input type="text" value="${board.writer}" name="writer" class="form-control" readonly>
@@ -37,9 +37,21 @@
 	</form>
 </div>
 
+<%@ include file="../common/footer.jsp"%>
+
 <%@ include file="../include/upload.jsp"%>
 
-<%@ include file="../common/footer.jsp"%>
+<script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector( '#editor' ))
+        .then(
+        	editor => {editor.setData("${board.content}");}
+        ).catch( 
+        	error => {console.error( error );}
+        );
+</script>
 
 <script type="text/javascript">
 
@@ -69,7 +81,7 @@ $("document").ready(function(){
 			formObj.attr("action", "/board/daily/"+bno);;
 			
 		}else if(role === "modify"){
-			formObj.attr("method", "PUT");
+			formObj.attr("method", 'post');
 			formObj.attr("action", "/board/daily/"+bno);
 			
 		}else{

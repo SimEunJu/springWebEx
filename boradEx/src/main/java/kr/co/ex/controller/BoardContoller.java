@@ -151,16 +151,17 @@ public class BoardContoller {
 	@PreAuthorize("isAuthenticated()")
 	public String modifyPost(@PathVariable Integer boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
-			model.addAttribute(boardServ.read(boardNo));
+			log.info(boardServ.read(boardNo));
+			model.addAttribute("board", boardServ.read(boardNo));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return "/board/modify";
 	}
 	
-	@PutMapping("/{boardNo}")
+	@PostMapping("/{boardNo}")
 	@PreAuthorize("isAuthenticated()")
-	public String modifyPost(@PathVariable Integer bno, BoardVO board, SearchCriteria cri, RedirectAttributes attrs){
+	public String modifyPost(@PathVariable Integer boardNo, BoardVO board, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			log.info(board.toString());
 			boardServ.modify(board);
@@ -169,7 +170,7 @@ public class BoardContoller {
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
 		}
-		return "redirect:/board/list"+cri.makeSearch();
+		return "redirect:/board/daily"+cri.makeSearch();
 	}
 	
 	@DeleteMapping("/{boardNo}")
@@ -183,7 +184,7 @@ public class BoardContoller {
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
 		}
-		return "redirect:/board/list"+cri.makeSearch();
+		return "redirect:/board/daily"+cri.makeSearch();
 	}
 	
 	private void deleteFile(List<AttachVO> attaches){

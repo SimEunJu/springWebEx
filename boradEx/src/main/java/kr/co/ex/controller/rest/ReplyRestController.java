@@ -8,10 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.service.ReplyService;
 import lombok.NonNull;
@@ -30,6 +32,18 @@ public class ReplyRestController {
 	private final String ADMIN = "A";
 	private final String REPLY_WRITER = "R";
 	
+	@GetMapping(value="", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<ReplyVO>> getReplies(Criteria cri){
+		List<ReplyVO> replies = null;
+		try {
+			replies = replyServ.listReplyByWriter(SecurityContextHolder.getContext().getAuthentication().getName(), cri);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(replies, HttpStatus.OK);
+	}
+	
 	@DeleteMapping(value="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<ReplyVO>> deleteReplies(@RequestBody List<Integer> rno){
 		String deleteType = REPLY_WRITER;
@@ -39,7 +53,7 @@ public class ReplyRestController {
 			deleteType = ADMIN;
 		try {
 			replyServ.removeReplies(deleteType, rno);
-			replies = replyServ.listReplyByWriter(auth.getName());
+			replies = replyServ.listReplyByWriter(auth.getName(), new Criteria());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
