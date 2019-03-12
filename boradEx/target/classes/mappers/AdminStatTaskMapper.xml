@@ -18,8 +18,15 @@
 </select>
 	
 <insert id="createUserStat">
-	insert into tbl_user_stat(today, join_cnt, leave_cnt, post_cnt) 
-	values(#{today}, #{joinCnt}, #{leaveCnt}, #{postCnt})
+	insert into tbl_user_stat(today, join_cnt, leave_cnt, post_cnt, visit_cnt) 
+	values(#{today}, #{joinCnt}, #{leaveCnt}, #{postCnt}, #{visitCnt})
 </insert>
+
+<select id="getVisitCnt">
+	<![CDATA[
+	select count(last_access_time) from spring_session
+	where last_access_time >= #{epochSecond}
+	]]>
+</select>
 
 </mapper>

@@ -25,10 +25,10 @@ public class AdminStatServiceImpl implements AdminStatService {
 	private AdminStatMapper statMapper;
 	
 	@Transactional
-	public List<Long> getUserJoinCount(String type){
+	public List<Integer> getUserJoinCount(String type){
 		List<LocalDateTime> cri = getCriteriaDate(type);
 	
-		List<Long> data = new ArrayList<>();
+		List<Integer> data = new ArrayList<>();
 		int len = cri.size();
 		for(int i=0; i<len; i++){
 			if(i == len-1){
@@ -40,9 +40,9 @@ public class AdminStatServiceImpl implements AdminStatService {
 	}
 	
 	@Transactional
-	public List<Long> getUserLeaveCount(String type){
+	public List<Integer> getUserLeaveCount(String type){
 		List<LocalDateTime> cri = getCriteriaDate(type);
-		List<Long> data = new ArrayList<>();
+		List<Integer> data = new ArrayList<>();
 		int len = cri.size();
 		for(int i=0; i<len; i++){
 			if(i == len-1){
@@ -54,9 +54,9 @@ public class AdminStatServiceImpl implements AdminStatService {
 	}
 	
 	@Transactional
-	public List<Long> getPostCount(String type){
+	public List<Integer> getPostCount(String type){
 		List<LocalDateTime> cri = getCriteriaDate(type);
-		List<Long> data = new ArrayList<>();
+		List<Integer> data = new ArrayList<>();
 		int len = cri.size();
 		for(int i=0; i<len; i++){
 			if(i == len-1){
@@ -66,7 +66,21 @@ public class AdminStatServiceImpl implements AdminStatService {
 		}
 		return data;
 	}
-
+	
+	@Override
+	public List<Integer> getVisitCount(String type) {
+		List<LocalDateTime> cri = getCriteriaDate(type);
+		List<Integer> data = new ArrayList<>();
+		int len = cri.size();
+		for(int i=0; i<len; i++){
+			if(i == len-1){
+				data.add(statMapper.getVisitCount(cri.get(i), LocalDateTime.now()));
+			}
+			else data.add(statMapper.getVisitCount(cri.get(i), cri.get(i+1)));
+		}
+		return data;
+	}
+	
 	private List<LocalDateTime> getCriteriaDate(String type){
 		List<LocalDateTime> timeCris = new ArrayList<>();
 		switch(type){
@@ -93,4 +107,6 @@ public class AdminStatServiceImpl implements AdminStatService {
 		}
 		return timeCris;
 	}
+
+	
 }

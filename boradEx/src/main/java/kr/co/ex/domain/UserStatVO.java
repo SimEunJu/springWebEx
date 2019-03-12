@@ -17,4 +17,5 @@ public class UserStatVO {
 	private int joinCnt;
 	private int leaveCnt;
 	private int postCnt;
+	private int visitCnt;
 }

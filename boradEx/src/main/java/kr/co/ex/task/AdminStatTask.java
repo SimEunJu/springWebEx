@@ -1,6 +1,7 @@
 package kr.co.ex.task;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class AdminStatTask {
 				.joinCnt(mapper.getJoinUserCount(today))
 				.leaveCnt(mapper.getLeaveUserCount(today))
 				.postCnt(mapper.getPostCount(today))
+				.visitCnt(mapper.getVisitCount(today.toEpochSecond(ZoneOffset.ofHours(+9))))
 				.build();
 		log.info(vo.toString());
 		

@@ -5,7 +5,7 @@
 
 <mapper namespace="kr.co.ex.mapper.AdminStatMapper">
 
-<select id="getUserJoinCount" resultType="long">
+<select id="getUserJoinCount" resultType="int">
 	<![CDATA[
 		select sum(join_cnt) from tbl_user_stat 
 		where #{startDay} <= today and today < #{endDay}
@@ -13,16 +13,23 @@
 	
 </select>
 
-<select id="getUserLeaveCount" resultType="long">
+<select id="getUserLeaveCount" resultType="int">
 	<![CDATA[
 		select sum(leave_cnt) from tbl_user_stat 
 		where #{startDay} <= today and today < #{endDay}
 	]]>
 </select>
 
-<select id="getPostCount" resultType="long">
+<select id="getPostCount" resultType="int">
 	<![CDATA[
 		select sum(post_cnt) from tbl_user_stat 
+		where  #{startDay} <= today and today < #{endDay}
+	]]>
+</select>
+
+<select id="getVisitCount" resultType="int">
+	<![CDATA[
+		select sum(visit_cnt) from tbl_user_stat 
 		where  #{startDay} <= today and today < #{endDay}
 	]]>
 </select>
