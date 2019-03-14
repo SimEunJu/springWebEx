@@ -60,7 +60,7 @@ public class AdminController {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return "dashBoard/admin/adminMain";
+		return "dashBoard/admin/adminMain.page";
 	}
 	
 	@GetMapping("/noti")
@@ -78,7 +78,7 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard/noti";
+		return "dashBoard/noti.page";
 	}
 	
 	@GetMapping("/user")
@@ -88,12 +88,12 @@ public class AdminController {
 		
 		model.addAttribute("pagination", pm);
 		model.addAttribute("users", memServ.ListCategorizedMember(UserType.ALL, cri));
-		return "dashBoard/admin/userManage";
+		return "dashBoard/admin/userManage.page";
 	}
 	
 	@GetMapping("/info")
 	public String showAdminInfo(Model model){
-		return "dashBoard/admin/adminInfo";
+		return "dashBoard/admin/adminInfo.page";
 	}
 
 	@GetMapping("/msg")
@@ -107,7 +107,7 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard/msg";
+		return "dashBoard/msg.page";
 	}
 	
 	@GetMapping("/post")
@@ -121,7 +121,7 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard/post";
+		return "dashBoard/post.page";
 	}
 
 	@GetMapping("/reply")
@@ -135,6 +135,6 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard/reply";
+		return "dashBoard/reply.page";
 	}
 }

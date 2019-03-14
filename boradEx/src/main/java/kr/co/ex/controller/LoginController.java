@@ -36,7 +36,7 @@ public class LoginController {
 
 	@GetMapping("/board/login")
 	public String login(HttpServletRequest req){
-		return "login/login";	
+		return "login/login.part";	
 	}	
 	
 	@GetMapping("/board/oauth2/login")
@@ -57,7 +57,7 @@ public class LoginController {
 	
 	@GetMapping("/board/logout")
 	public String logout(){
-		return "login/logout";
+		return "login/logout.page";
 	}
 	
 	/*

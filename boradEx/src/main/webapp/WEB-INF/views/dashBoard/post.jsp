@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
-<%@ include file="../common/header.jsp"%>
+<%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <div class="container">
 
@@ -44,8 +44,6 @@
 	
 </div>
 
-<%@ include file="../common/footer.jsp"%>
-
 <script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}
 	<li class="page-item"><a class="page-link" href="">&laquo;</a></li>
@@ -69,7 +67,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
-<script src="/resources/js/modal.js"></script>
+<script src="/resources/js/utils/modal.js"></script>
 <script>
 $("document").ready(function(){
 	

@@ -82,7 +82,7 @@ public class BoardContoller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "/board/daily";
+		return "board/daily.part";
 	}
 	
 	@GetMapping("/{boardNo}/like")
@@ -99,7 +99,7 @@ public class BoardContoller {
 	
 	@GetMapping("/new")
 	public String regist(){
-		return "/board/new";
+		return "board/new.part";
 	}
 	
 	@PostMapping("/new")
@@ -136,7 +136,7 @@ public class BoardContoller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "/board/post";
+		return "board/post.part";
 	}
 	
 	@GetMapping(value="/{boardNo}/attach", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -156,7 +156,7 @@ public class BoardContoller {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return "/board/modify";
+		return "board/modify";
 	}
 	
 	@PostMapping("/{boardNo}")
