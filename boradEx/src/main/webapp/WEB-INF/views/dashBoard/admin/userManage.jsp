@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
 
-<div class="container">
+<div class="col-md-9">
 	<div class="row border my-2 p-2">
 		<div class="user_cri col-12">
 
@@ -85,7 +85,7 @@
     		</c:forEach>
   		</tbody>
 	</table>
-	<nav aria-label="Page navigation">
+	<nav aria-label="Page navigation" class="row justify-content-center">
   		<ul class="pagination">
   			<c:if test="${pagination.prev}">
     		<li class="page-item prev"><a class="page-link" href="">&laquo;</a></li>
@@ -162,7 +162,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="/resources/js/modal.js"></script>
+<script src="/resources/js/utils/modal.js"></script>
 <script>
 	const csrfToken = "${_csrf.token }";
 	const csrfHeader = "${_csrf.headerName }";

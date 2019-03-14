@@ -52,9 +52,10 @@ public class AdminController {
 	@GetMapping("")
 	public String showAdminInfo(@RequestParam(required=false, defaultValue="d") String type, Model model){
 		try{
-			model.addAttribute("postCnt", statServ.getPostCount("m"));
+			model.addAttribute("postCnt", statServ.getPostCount(type));
 			model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount(type));
 			model.addAttribute("userJoinCnt", statServ.getUserJoinCount(type));
+			model.addAttribute("visitCnt", statServ.getVisitCount(type));
 			LocalDateTime defaultDate = DateUtils.getAFewWeeksAgo(1);
 			model.addAttribute("hotPost", boardServ.listRegdate(defaultDate));
 		}catch(Exception e){

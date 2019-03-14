@@ -74,7 +74,69 @@
   </div>
 </div>
 
-<%@ include file="../reply/replyList.jsp" %>
+<div class="card reply-list">
+	<div class="card-header">
+		<i></i>댓글
+	</div>
+
+	<div class="card-body">
+		<div class="row card-body reply-form">
+			<div class="col-sm-2">
+				<sec:authorize access="isAuthenticated()">
+					<div class="reply-secret">
+						<label>비밀글</label> <input type="checkbox" name="secret">
+					</div>
+					<sec:authentication var="user" property="principal" />
+					<div class="logged">
+						<input type="hidden" name="replyer" value=${user.username}>
+					</div>
+				</sec:authorize>
+				<sec:authorize access="isAnonymous()">
+					<div class="non-logged">
+						<input type="text" name="replyer" style="width: 100%;"
+							autocomplete="off" placeholder="이름"> <input
+							type="password" name="password" style="width: 100%;"
+							placeholder="비밀번호" autocomplete="off">
+					</div>
+				</sec:authorize>
+			</div>
+			<div class="col-sm-8">
+				<div class="reply">
+					<textarea style="width: 100%;" name="reply"></textarea>
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-primary btn-xs reply-reg">입력</button>
+			</div>
+			<hr>
+		</div>
+		<ul class="reply-list list-group">
+
+		</ul>
+	</div>
+
+	<div class="card-footer pagination justify-content-center"></div>
+</div>
+	
+<script type="text/javascript" >
+
+$(document).ajaxSend(function(e, xhr, options){
+	xhr.setRequestHeader("${_csrf.headerName}",  "${_csrf.token}");
+});
+
+let nameTestAuth = "";
+let isLoggedTestAuth = false;
+
+<sec:authorize access="isAuthenticated()">
+	nameTestAuth = "${loginUser.username}";
+	isLoggedTestAuth = true;
+</sec:authorize>
+
+const board = {
+		wrtier: "${board.writer}",
+		bno: "${board.bno}"
+};
+</script>
 
 <script type="text/javascript" src="/resources/js/utils/reply.js"></script>
 
@@ -176,23 +238,5 @@
         	error => {console.error( error );}
         );
 </script>
+
 <script src="/resources/js/utils/handlebarHelper.js"></script>
-<script>
-
-$(document).ajaxSend(function(e, xhr, options){
-	xhr.setRequestHeader("${_csrf.headerName}",  "${_csrf.token}");
-});
-
-let nameTestAuth = "";
-let isLoggedTestAuth = false;
-
-<sec:authorize access="isAuthenticated()">
-	nameTestAuth = "${loginUser.username}";
-	isLoggedTestAuth = true;
-</sec:authorize>
-
-const board = {
-		wrtier: "${board.writer}",
-		bno: "${board.bno}"
-};
-</script>

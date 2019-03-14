@@ -2,7 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-	
+
+<div class="col-md-9"> 
 	<div class="row my-2 p-2 border">
 		<div class="col">
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
@@ -37,7 +38,7 @@
 	<c:if test="${empty replies}">
     	<div class="row-12 p-2 border text-center">등록된 알림이 없습니다.</div>
     </c:if>	
-
+</div>
 
 <script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}

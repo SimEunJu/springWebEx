@@ -3,8 +3,7 @@
 <%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<div class="container">
-
+<div class="col-md-9">
 	<div class="row my-2 p-2 border">
 		<div class="col">
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 

@@ -2,7 +2,7 @@
 <%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
+<div class="col-md-9">
 	<div class="row my-2 p-2 border">
 		<div class="col">
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
@@ -68,7 +68,7 @@
   			</c:if>
   		</ul>
 	</nav>
-
+</div>
 
 <script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}
@@ -94,7 +94,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
-<script src="/resources/js/modal.js"></script>
+<script src="/resources/js/utils/modal.js"></script>
 <script>
 const csrfToken = "${_csrf.token }";
 const csrfHeader = "${_csrf.headerName }";

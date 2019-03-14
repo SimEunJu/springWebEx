@@ -156,7 +156,7 @@ public class BoardContoller {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return "board/modify";
+		return "board/modify.part";
 	}
 	
 	@PostMapping("/{boardNo}")

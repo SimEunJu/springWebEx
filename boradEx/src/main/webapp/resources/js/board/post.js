@@ -2,7 +2,7 @@ $(document).ready(function(){
 				
 		const name = nameTestAuth;
 		const isLogged = isLoggedTestAuth;
-
+	
 		// handlebar 정리
 		const handlebarTemplate = {};
 		

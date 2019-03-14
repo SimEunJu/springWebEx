@@ -2,8 +2,8 @@
 <%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<div class="row mt-2">
-	<div class="col">
+<div class="col-md-9 mt-2">
+	<div class="row">
 		<div class="row border rounded m-2 p-1">
 			<header class="col-12 p-3 bg-light">사용자 현황</header>
 

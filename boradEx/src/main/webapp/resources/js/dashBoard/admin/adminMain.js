@@ -18,7 +18,7 @@ $("document").ready(function(){
 	            fill: false,
 	            borderColor: 'rgb(66, 134, 244)',
 	            backgroundColor: 'rgb(66, 134, 244)',
-	            data: userLeavCnt,
+	            data: userLeaveCnt,
 	            yAxisId: "user-out",
 	        }],
 	    },

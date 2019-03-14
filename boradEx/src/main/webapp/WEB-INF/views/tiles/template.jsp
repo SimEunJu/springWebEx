@@ -22,22 +22,24 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
-
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
 </head>
 
 <body>
 <tiles:insertAttribute name="header" />
 
+
 <div class="container">
-	<tiles:insertAttribute name="left" />
-	<tiles:insertAttribute name="body" /> 
+	<div class="row">
+		<tiles:insertAttribute name="left" />
+		<tiles:insertAttribute name="body" /> 
+	</div>
 </div> 
 
 <tiles:insertAttribute name="footer" />
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-	crossorigin="anonymous"></script>
 <script type="text/javascript" src="/resources/js/${path}.js"></script>
 
 </body>
