@@ -39,7 +39,7 @@ public class MailRestController {
 		dto.setTitle((String) param.get("title"));
 		dto.setContent((String) param.get("content"));
 		dto.setFrom(GOOGLE_EMAIL_SENDER);
-		dto.setTo(receivers);
+		dto.setToList(receivers);
 				
 		boolean isMailSend = mailServ.send(dto);
 		

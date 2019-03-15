@@ -78,4 +78,9 @@ public class MemberServiceImpl implements MemberService {
 		return memMapper.readUserByKeyword(keyword);
 	}
 
+	@Override
+	public void updateAccessTime(long epochSecond) {
+		memMapper.updateAccessTimeProcedure(epochSecond);
+	}
+
 }

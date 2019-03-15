@@ -37,7 +37,7 @@ public class FileDeleteTask {
 		// 2. resultHandler를 사용해서 처리
 		// 3. db에 저장되지 않은 것만 골라내느냐/ 폴더 내의 모든 파일 이름의 목록 -> 비교 -> 삭제 loop 3번
 	
-		@Scheduled(cron="* * * 4 * *")
+		@Scheduled(cron="0 0 4 * * *")
 		public void deleteFiles(){
 			// 한 폴더에 하루 동안 생성된 모든 파일을 저장한다고 가정 + 양 많음
 			

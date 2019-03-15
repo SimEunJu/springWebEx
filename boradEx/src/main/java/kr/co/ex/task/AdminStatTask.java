@@ -20,7 +20,7 @@ public class AdminStatTask {
 	private AdminStatTaskMapper mapper;
 	
 	// second/ minute/ hour/ day of month/ month/ day of week
-	@Scheduled(cron="* * 3 * * *")
+	@Scheduled(cron="0 0 3 * * *")
 	public void makeUserStatForAdmin(){
 		LocalDateTime today = DateUtils.getToday();
 		
@@ -29,7 +29,7 @@ public class AdminStatTask {
 				.joinCnt(mapper.getJoinUserCount(today))
 				.leaveCnt(mapper.getLeaveUserCount(today))
 				.postCnt(mapper.getPostCount(today))
-				.visitCnt(mapper.getVisitCount(today.toEpochSecond(ZoneOffset.ofHours(+9))))
+				.visitCnt(mapper.getVisitCount(today.toEpochSecond(ZoneOffset.ofHours(+9))*1000))
 				.build();
 		log.info(vo.toString());
 		

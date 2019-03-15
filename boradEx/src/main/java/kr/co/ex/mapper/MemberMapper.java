@@ -25,6 +25,7 @@ public interface MemberMapper {
 
 	public void updateState(@Param("members") List<String> members, @Param("state") String state);
 	public void updateReportCnt(@Param("username") String username, @Param("diff") int diff);
+	public void updateAccessTimeProcedure(long epochSecond);
 	
 	public List<MemberVO> readUserByKeyword(String keyword);
 }

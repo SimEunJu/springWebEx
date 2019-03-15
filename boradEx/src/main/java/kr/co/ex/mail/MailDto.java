@@ -12,7 +12,8 @@ import lombok.ToString;
 @ToString
 public class MailDto {
 	private String from;
-	private List<String> to;
+	private List<String> toList;
+	private String to;
 	private String title;
 	private String content;
 }

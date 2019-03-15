@@ -64,5 +64,10 @@
 	<select id="readUserByKeyword" resultType="kr.co.ex.domain.MemberVO">
 		select * from tbl_member where username like '%#{keyword}%'
 	</select>
-
+	
+	<select id="updateAccessTimeProcedure" statementType="CALLABLE">
+		call update_access_time(#{epochSecond})
+	</select> 
+	
+	
 </mapper>
