@@ -130,23 +130,24 @@ $(document).ready(function(){
 			
 			if(replyer === "익명") return;
 			const rno = replyer.parents("li").data("rno");
-			
-			$.ajax("/board/user/report",{
+			report("/board/user/report", {
+				username: replyer.text(),
+				rno : rno,
+				diff : 1
+			});
+		});
+		
+		function report(url, data){
+			$.ajax(url,{
 				method: "post",
-				data: {
-					username: replyer.text(),
-					rno : rno,
-					diff : 1
-				},
+				data: data,
 				dataType: "text"
 			}).done(function(){
 				alert("신고가 완료되었습니다.")
 			}).fail(function(jqXHR, textStatus, errorThrown){
 				console.error(jqXHR, textStatus, errorThrown);
 			});
-			
-		})
-		
+		}
 		replyObj.listSec.on("click", ".reply-report", function(e){
 			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
 				const rno = $(this).parents(".reply").data("rno");
@@ -335,6 +336,12 @@ $(document).ready(function(){
 				return;
 			}
 		});
+		
+		$(".board-report").on("click", function(){
+			report("/board/"+board.bno+"/report", {
+				diff: 1
+			})
+		})
 		
 		$(".upload-result").on("click", "li", function(){
 			var file = $(this);

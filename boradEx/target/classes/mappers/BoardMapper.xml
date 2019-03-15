@@ -146,7 +146,11 @@
 </select>
 
 <update id="updateViewCnt">
-	update tbl_board set viewCnt = viewCnt+1 where bno=#{bno}
+	update tbl_board set viewcnt = viewcnt+1 where bno=#{bno}
+</update>
+
+<update id="updateReportCnt">
+	update tbl_board set report_cnt = report_cnt + #{diff} where bno=#{bno}
 </update>
 
 </mapper>

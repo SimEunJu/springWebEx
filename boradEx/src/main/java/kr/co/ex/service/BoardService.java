@@ -39,4 +39,5 @@ public interface BoardService {
 	public int getReplyCnt(int bno) throws Exception;
 	
 	public void updateViewCnt(int bno) throws Exception;
+	public void updateReportCnt(int bno, int diff) throws Exception;
 }

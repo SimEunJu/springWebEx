@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -95,6 +94,17 @@ public class BoardContoller {
 			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@PostMapping("/{boardNo}/report")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<String> updateReportCnt(@PathVariable int boardNo, @RequestParam int diff){
+		try{
+			boardServ.updateReportCnt(boardNo, diff);
+		}catch(Exception e){
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 	
 	@GetMapping("/new")

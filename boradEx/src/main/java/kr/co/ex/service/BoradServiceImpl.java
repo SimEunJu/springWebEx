@@ -156,6 +156,15 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
+	public void updateReportCnt(int bno, int diff) throws Exception {
+		if(diff > 1) diff = 1;
+		else if(diff < -1) diff = -1;
+		else if(diff == 0) return;
+		
+		mapper.updateReportCnt(bno, diff);
+	}	
+	
+	@Override
 	public int getTotalCntByWriter(String username) throws Exception {
 		return mapper.readTotalCntByWriter(username);
 	}

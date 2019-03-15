@@ -42,5 +42,6 @@ public interface BoardMapper {
 	
 	public int readReplyCnt(int bno) throws Exception;
 	public void updateViewCnt(int bno) throws Exception;
+	public void updateReportCnt(@Param("bno") int bno, @Param("diff") int diff);
 
 }

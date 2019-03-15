@@ -40,6 +40,7 @@
 			<span style="font-size: 20px; font-weight: bold;">♥</span> 좋아요 
 			<span class="like-num">${board.userLike}</span>
 		</button>
+		<button class="btn bnt-outline-waring mb-4 board-report">신고</button>
 	</div>
 
 	<div class="row">
