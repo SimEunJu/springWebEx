@@ -1,0 +1,18 @@
+package kr.co.ex.mail;
+
+import java.util.List;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+public class MailDto {
+	private String from;
+	private List<String> to;
+	private String title;
+	private String content;
+}

@@ -1,7 +1,5 @@
 $("document").ready(function(){
 	
-	
-	
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
 	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
 	
@@ -19,12 +17,28 @@ $("document").ready(function(){
 	
 	// 선택한 회원에게 메시지 보내기
 	$(".btn-msg").on("click", function(){
+		msgModal.title.innerHTML("메시지 전송");
+		msgModal.type = "msg";
 		msgModal.openMsgModal(check, pagination.page, receiverListTemplate);
 	});
 	
+	// 선택한 회원에게 메일 보내기
+	$(".btn-mail").on("click", function(){
+		msgModal.title.innserHTML("메일 전송")
+		msgModal.type = "mail";
+		msgModal.openMsgModal(check, pagination.page, receiverListTemplate);
+	})
+	
 	// 메시지 모달의 메시지 전송 버큰 클릭 시
 	$(".modal-send").on("click", function(){
-		msgModal.sendMsg(check.list, "/board/user/msg");
+		let url = "";
+		if(msgModal.type === "msg"){
+			url = "/board/user/msg";
+		}
+		else if(msgModal.type === "mail"){
+			url = "/board/api/admin/mail";
+		}
+		msgModal.sendMsg(check.list, url);
 	});
 	
 	// 회원 상태 변경 버튼 클릭 시

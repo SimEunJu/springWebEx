@@ -55,6 +55,7 @@
 	
 			<div class="align-self-end">
 				<button type="button" class="btn btn-outline-warning btn-msg">메시지 전송</button>
+				<button type="button" class="btn btn-outline-success bnt-mail">메일 전송</button>
 			</div>
 		
 	</div>
