@@ -24,6 +24,7 @@ public interface MemberMapper {
 	public List<MemberVO> listStateMember(@Param("cri") Criteria cri, @Param("state") String state);
 
 	public void updateState(@Param("members") List<String> members, @Param("state") String state);
-
+	public void updateReportCnt(@Param("username") String username, @Param("diff") int diff);
+	
 	public List<MemberVO> readUserByKeyword(String keyword);
 }

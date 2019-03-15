@@ -107,7 +107,7 @@ $(document).ready(function(){
 		});
 		
 		replyObj.listSec.on("click", ".reply-del", handleReplyDelEvt);
-
+		
 		function handleReplyDelEvt(){
 			if(confirm("정말 삭제하시겠습니다?")){
 				const rno = $(this).parents(".reply").data("rno");
@@ -119,6 +119,33 @@ $(document).ready(function(){
 				});
 			}
 		}
+		
+		// 회원 이름 클릭 시 신고 버튼 생성
+		replyObj.listSec.popover({selector: ".replyer"});
+		$("body").on("click", ".popover", function(e){
+			
+			const replyer = replyObj.listSec.find(".replyer").filter((idx,r) => 
+				{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
+			);
+			
+			if(replyer === "익명") return;
+			const rno = replyer.parents("li").data("rno");
+			
+			$.ajax("/board/user/report",{
+				method: "post",
+				data: {
+					username: replyer.text(),
+					rno : rno,
+					diff : 1
+				},
+				dataType: "text"
+			}).done(function(){
+				alert("신고가 완료되었습니다.")
+			}).fail(function(jqXHR, textStatus, errorThrown){
+				console.error(jqXHR, textStatus, errorThrown);
+			});
+			
+		})
 		
 		replyObj.listSec.on("click", ".reply-report", function(e){
 			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
@@ -281,7 +308,15 @@ $(document).ready(function(){
 					username: encodeURIComponent(name)
 					},
 				success: function(){
-					like.css("color", diff == 1 ? "red" : "black");
+					let diff = 1;
+					let color = "white";
+					let backgroundColor = "#dc3545";
+					if(like.css("background-color") !== "white"){
+						diff = -1;
+						color = "#dc3545";
+						backgroundColor = "white";
+					}
+					like.css("color", color).css("background-color", backgroundColor);
 					var likeNum = like.find(".like-num");
 					likeNum.text(parseInt(likeNum.text())+diff);
 				}
@@ -289,7 +324,9 @@ $(document).ready(function(){
 		}
 		
 		$(".like").on("click", function(){
-			if($(this).css("color") === "red"){ 
+		
+			if($(this).css("color") === "rgb(255, 255, 255)"){
+				console.log("dislike");
 				updateLike($(this), -1);
 				return;
 			}

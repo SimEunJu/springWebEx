@@ -15,6 +15,7 @@ public interface MemberService {
 	public List<MemberVO> listStateMember(Criteria cri, String state);
 	
 	public void updateState(List<String> members, String state);
+	public void updateReportCnt(String username, int diff);
 	
 	public List<MemberVO> getMemberByKeyword(String keyword);
 }

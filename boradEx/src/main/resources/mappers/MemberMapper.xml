@@ -51,11 +51,15 @@
 		select count(*) from tbl_member;
 	</select>
 	
-	<insert id="updateState">
+	<update id="updateState">
 		<foreach collection="members" item="name">
 			update tbl_member set state=#{state} where username=#{name};
 		</foreach>
-	</insert>
+	</update>
+	
+	<update id="updateReportCnt">
+		update tbl_member set report_cnt = report_cnt + #{diff} where username=#{username}
+	</update>
 
 	<select id="readUserByKeyword" resultType="kr.co.ex.domain.MemberVO">
 		select * from tbl_member where username like '%#{keyword}%'

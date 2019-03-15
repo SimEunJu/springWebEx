@@ -64,11 +64,18 @@ public class MemberServiceImpl implements MemberService {
 	public void updateState(List<String> members, String state) {
 		memMapper.updateState(members, state);
 	}
+	
+	@Override
+	public void updateReportCnt(String username, int diff) {
+		if(diff > 1) diff = 1;
+		else if(diff < -1) diff = -1;
+		else if(diff == 0) return;
+		memMapper.updateReportCnt(username, diff);
+	}
 
 	@Override
 	public List<MemberVO> getMemberByKeyword(String keyword) {
 		return memMapper.readUserByKeyword(keyword);
 	}
 
-	
 }

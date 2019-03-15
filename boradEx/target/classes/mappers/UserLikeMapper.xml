@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.ex.mapper.UserLikeMapper">
 
 <insert id="addLike">
-	insert into tbl_user_like(bno, username) values(#{bno}, #{username}) 
+	insert into tbl_user_like(bno, username) values(#{bno}, #{username}) on duplicate key update username=username
 </insert>
 
 <delete id="subLike">

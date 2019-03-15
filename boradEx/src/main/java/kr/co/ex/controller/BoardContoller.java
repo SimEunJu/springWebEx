@@ -131,7 +131,9 @@ public class BoardContoller {
 			
 			model.addAttribute("isUserLiked", likeServ.isUserLiked(boardNo));
 			model.addAttribute("replyCnt", boardServ.getReplyCnt(boardNo));
-			model.addAttribute("board", boardServ.read(boardNo));
+			BoardVO board =  boardServ.read(boardNo);
+			model.addAttribute("board", board);
+			model.addAttribute("specificTitle", board.getTitle());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -152,7 +154,9 @@ public class BoardContoller {
 	public String modifyPost(@PathVariable Integer boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			log.info(boardServ.read(boardNo));
-			model.addAttribute("board", boardServ.read(boardNo));
+			BoardVO board = boardServ.read(boardNo);
+			model.addAttribute("board", board);
+			model.addAttribute("specificTitle", board.getTitle());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

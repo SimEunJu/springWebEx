@@ -74,7 +74,7 @@
   </div>
 </div>
 
-<div class="card reply-list">
+<div class="card">
 	<div class="card-header">
 		<i></i>댓글
 	</div>
@@ -110,7 +110,7 @@
 			</div>
 			<hr>
 		</div>
-		<ul class="reply-list list-group">
+		<ul class="reply-list list-group" data-trigger="click" data-toggle="popover" data-content="신고">
 
 		</ul>
 	</div>
@@ -143,6 +143,10 @@ const board = {
 <script type="text/javascript" src="/resources/js/utils/file.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
+	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <script id="reply-hb" type="text/x-handlebars-template">
 {{#each this}}
@@ -150,7 +154,7 @@ const board = {
 		{{#if isNormal}}
 			<div>
 				<div class="header">
-					<strong class="primary-font">{{replyer}}</strong>
+					<span style="font-weight:bold" class="replyer" >{{replyer}}</span>
 					<small class="float-right">{{dateFormat regdate}}</small>
 					<div class="row justify-content-end mr-1">
 						<small><a class="reply-added">대댓글</a></small>
