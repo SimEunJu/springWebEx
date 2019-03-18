@@ -29,10 +29,10 @@
 					<li class="nav-item"><a class="nav-link"
 						href="/board/${identity}/info">내 정보</a></li>
 					<li class="nav-item">
-						<a class="nav-link" href="/board/noti">알림<span class="badge badge-warning">?</span></a>
+						<a class="nav-link" href="/board/noti">알림<span class="notibadge badge badge-warning">?</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/board/msg">메시지<span class="badge badge-warning">?</span></a>
+						<a class="nav-link" href="/board/msg">메시지<span class="msgbadge badge badge-warning">?</span></a>
 					</li>
 				</sec:authorize>
 				<sec:authorize access="isAnonymous()">

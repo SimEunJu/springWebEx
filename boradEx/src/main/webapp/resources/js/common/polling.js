@@ -1,22 +1,26 @@
 
 function longPoll(url, callback) {  
-	let term = 10*60*10;
+	// 기본 간격 10분
+	let term = 1000*60*10;
 	$.ajax({
         url: url,
         type: 'GET',
-        dataType: 'json',
         success: function() {
             term = callback()*60*10;
         },
         //timeout: 3000,
-        complete: setTimeout(function() { longPoll(); }, term)
+        complete: setTimeout(function() { longPoll(url, callback); }, term)
     });
 }
-const polled = {
-		msg, noti
-}
+
+const poll = {
+		msg: document.querySelector("nav .navbar-nav .msgbadge"),
+		noti: document.querySelector("nav .navbar-nav .notibadge")
+};
+
 longPoll("/board/polling/msg", function(){
-	const cookie = document.cookie.match(/msg=(\d+)z(\d+)z(\d+)/);
+	console.log(document.cookie);
+	const cookie = document.cookie.match(/msgPoll=(\d+)z(\d+)z(\d+)/);
 	const no = cookie[1];
 	const cnt = cookie[2];
 	const term = cookie[3];
@@ -25,6 +29,6 @@ longPoll("/board/polling/msg", function(){
 		msg.html("999+");
 		return false;
 	}
-	msg.html(cnt);
+	poll.msg.innerHTML = cnt;
 	return term;
 });

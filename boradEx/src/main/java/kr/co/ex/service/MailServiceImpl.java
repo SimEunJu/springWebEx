@@ -1,21 +1,20 @@
-package kr.co.ex.mail;
+package kr.co.ex.service;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import kr.co.ex.dto.MailDto;
 
 @Service
-@RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 	
-	@NonNull
+	@Resource(name="javaMailSender")
 	private JavaMailSender mailSender;
 	
 	@Override

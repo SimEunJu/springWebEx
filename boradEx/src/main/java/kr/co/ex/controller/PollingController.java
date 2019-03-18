@@ -1,11 +1,8 @@
 package kr.co.ex.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,15 +44,17 @@ public class PollingController {
 	@GetMapping("/msg")
 	public ResponseEntity<Void> pollingMsgCnt(@CookieValue(value="msgPoll", required=false) Cookie msgCk, 
 			HttpServletResponse res) throws Exception{
+		
 		PollingMsgDto msg = null;
 		int curCnt = 0;
+		int msgNo = 0;
 		int term = DEAFULT_TERM;
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
 		if(msgCk != null){
 			String ckVals[] = msgCk.getValue().split("z");
-			int msgNo = Integer.parseInt(ckVals[0]);
+			msgNo = Integer.parseInt(ckVals[0]);
 			curCnt = Integer.parseInt(ckVals[1]);
 			term = Integer.parseInt(ckVals[2]);
 			if(curCnt < LIMIT) msg = pollServ.getMsgCnt(new PollingMsgDto(msgNo, username, LIMIT-curCnt));
@@ -65,15 +64,17 @@ public class PollingController {
 		}
 		
 		int newTerm = calcTerm(curCnt, msg.getCnt(), term);
+		int newCnt = curCnt+msg.getCnt();
+		int	newMsgNo = msg.getMsgNo() == 0 ? msgNo : msg.getMsgNo();
 		
-		int totalCnt = curCnt+msg.getCnt();
-		String ckVal = msg.getMsgNo()+"z"+totalCnt+"z"+newTerm;
+		String ckVal = newMsgNo+"z"+newCnt+"z"+newTerm;
 		
 		Cookie msgCookie = new Cookie("msgPoll", ckVal);
 		msgCookie.setPath("/board");
 		msgCookie.setMaxAge(DAY);
 		res.addCookie(msgCookie);
 		
+		log.info(msg.toString());
 		return ResponseEntity.ok(null);
 	}
 	@GetMapping("/noti")

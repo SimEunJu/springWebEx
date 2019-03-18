@@ -57,5 +57,5 @@
 </div>
 
 <%@ include file="../include/pagination.jsp"%>
-
 <div id="data" data-msg="${msg}"></div>
+<script src="/resources/js/common/polling.js"></script>

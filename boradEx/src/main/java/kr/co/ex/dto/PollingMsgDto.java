@@ -1,12 +1,14 @@
 package kr.co.ex.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString @RequiredArgsConstructor
+@Getter @Setter @ToString 
+@RequiredArgsConstructor @NoArgsConstructor
 public class PollingMsgDto {
 	
 	@NonNull private int msgNo;

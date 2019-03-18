@@ -11,8 +11,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import kr.co.ex.mail.MailDto;
-import kr.co.ex.mail.MailService;
+import kr.co.ex.dto.MailDto;
+import kr.co.ex.service.MailService;
 import kr.co.ex.service.MemberService;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;

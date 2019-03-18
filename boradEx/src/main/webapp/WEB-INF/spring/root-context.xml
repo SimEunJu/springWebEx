@@ -48,6 +48,22 @@
 	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    	<property name="host" value="smtp.gmail.com" />
+    	<property name="port" value="587" />
+    	<property name="username" value="${mail.google.email}" />
+    	<property name="password" value="${mail.google.password}" />
+    	<property name="defaultEncoding" value="UTF-8" />
+    	<property name="javaMailProperties">
+    		<props>
+    			<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+    			<prop key="mail.smtp.starttls.enable">true</prop>
+    			<prop key="mail.smtp.auth">true</prop>
+    		</props>
+    	</property>
+    </bean>
+	
+	
 	<context:component-scan base-package="kr.co.ex.persistence, kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
 	
 	<mybatis:scan base-package="kr.co.ex.mapper" /> 

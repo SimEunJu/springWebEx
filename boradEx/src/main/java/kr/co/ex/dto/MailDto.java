@@ -1,4 +1,4 @@
-package kr.co.ex.mail;
+package kr.co.ex.dto;
 
 import java.util.List;
 
