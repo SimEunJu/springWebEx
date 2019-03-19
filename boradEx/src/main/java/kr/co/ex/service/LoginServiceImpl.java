@@ -41,10 +41,7 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
-	@Autowired
-	LoginDao dao;
-	
-	@Override
+/*	@Override
 	public UserVO login(LoginDto dto) throws Exception {	
 		return dao.login(dto);
 	}
@@ -58,5 +55,5 @@ public class LoginServiceImpl implements LoginService {
 	public UserVO checkUserWithSessionKey(String sessionId) throws Exception {
 		return dao.checkUserWithSessionKey(sessionId);
 	}
-	
+	*/
 }

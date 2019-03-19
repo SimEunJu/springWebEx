@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ex.annoation.Loggable;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.MemberVO;
 import kr.co.ex.exception.UndefinedMemberType;
@@ -61,6 +62,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	@Loggable
 	public void updateState(List<String> members, String state) {
 		memMapper.updateState(members, state);
 	}

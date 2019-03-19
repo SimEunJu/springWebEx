@@ -45,6 +45,7 @@ public class AdminRestController {
 	@GetMapping(value = "/inout", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<Map<String, List<Integer>>> listInout(@RequestParam String type) {
 		Map<String, List<Integer>> res = new HashMap<>();
+		log.info("inout");
 		res.put("leave", statServ.getUserLeaveCount(type));
 		res.put("join", statServ.getUserJoinCount(type));
 		return new ResponseEntity<>(res, HttpStatus.OK);

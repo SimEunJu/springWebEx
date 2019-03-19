@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ex.annoation.Loggable;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.dto.ReplyDto;
@@ -119,6 +120,7 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	@Transactional
+	@Loggable
 	public void removeReply(String curUser, int rno, int bno) throws Exception {
 		if(curUser.equals(getWriterName(bno))) replyMapper.delete("B", rno);
 		else if(curUser.equals(getReplyer(rno))) replyMapper.delete("R", rno);
@@ -127,6 +129,7 @@ public class ReplyServiceImpl implements ReplyService {
 
 	
 	@Override
+	@Loggable
 	public void removeReplies(String deleteType, List<Integer> rno) throws Exception {
 		replyMapper.deleteReplies(deleteType, rno);
 	}

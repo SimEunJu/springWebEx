@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import kr.co.ex.annoation.Loggable;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.MsgVO;
 import kr.co.ex.mapper.MsgMapper;
@@ -43,11 +44,13 @@ public class MsgServiceImpl implements MsgService {
 	}
 	
 	@Override
+	@Loggable
 	public void registerMsgList(List<String> receivers, MsgVO vo) throws Exception {
 		msgMapper.createMsgList(receivers, vo);
 	}
 
 	@Override
+	@Loggable
 	public void registerMsg(MsgVO vo) throws Exception {
 		msgMapper.createMsg(vo);
 	}

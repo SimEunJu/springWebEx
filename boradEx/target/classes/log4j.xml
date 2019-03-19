@@ -10,9 +10,26 @@
 		</layout>
 	</appender>
 	
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="FileNamePattern" value="target/log4j/admin-log.%d{YYYY-MM-dd}.%i.log.gz" />
+		</rollingPolicy>
+		<triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+			<param name="maxFile" value="10*1024*1024"/>
+		</triggeringPolicy>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{5}.%M - %m%n"/>
+		</layout>
+	</appender>
+	
 	<!-- Application Loggers -->
+	<logger name="kr.co.aop.AdminLoggin">
+		<level value="trace" />
+		<appender-ref ref="file" />
+	</logger>
+	
 	<logger name="kr.co.ex">
-		<level value="debug" />
+		<level value="info" />
         <appender-ref ref="console"/>
 	</logger>
 	

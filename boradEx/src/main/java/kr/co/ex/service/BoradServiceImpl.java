@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ex.annoation.Loggable;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
@@ -81,6 +82,7 @@ public class BoradServiceImpl implements BoardService {
 
 	@Override
 	@Transactional
+	@Loggable
 	public void remove(Integer bno) throws Exception {
 		mapper.deleteAllAttach(bno);
 		mapper.delete(bno);
@@ -141,6 +143,7 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Loggable
 	public void removeAttach(String fullName) throws Exception {
 		mapper.deleteAttach(fullName);
 	}
