@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,25 +16,28 @@ import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.dto.ReplyDto;
 import kr.co.ex.mapper.BoardMapper;
 import kr.co.ex.mapper.ReplyMapper;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class ReplyServiceImpl implements ReplyService {
 
-	@Autowired
-	private ReplyMapper replyMapper;
+	@NonNull private ReplyMapper replyMapper;
 	
-	@Autowired
-	private BoardMapper boardMapper;
+	@NonNull private BoardMapper boardMapper;
 	
 	@Override
 	public void addReply(ReplyVO vo) throws Exception {
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		vo.setReplyer(user);
 		replyMapper.create(vo);
 	}
 	
 	@Override
-	public List<ReplyVO> listReply(Integer bno) throws Exception {	
+	public List<ReplyVO> listReply(int bno) throws Exception {	
 		return replyMapper.list(bno).stream().map(r -> {
-			if(r.getSecret()){
+			if(r.isSecret()){
 				r.setReplyer(null);
 				r.setReply(null);
 			}
@@ -41,30 +47,38 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	@Transactional
-	public List<ReplyDto> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception {
-
-		if(getWriterName(bno).equals(currentUser)){
-			return replyMapper.listCriteria(bno, cri)
+	public List<ReplyDto> listCriteriaReply(int bno, Criteria cri) throws Exception {
+		return filterReplies(getWriterName(bno), replyMapper.listCriteria(bno, cri), true);
+	}
+	
+	private List<ReplyDto> filterReplies(String owner, List<ReplyDto> list, boolean setAddedCnt){
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		if(owner.equals(user)){
+			return list
 					.stream().map(r -> {
+						
+						r.setSecret(false);
+						if(r.getDeleteType() != null){
+							r.setDeleteFlag(true);
+							setReplyNull(r);
+						}
+						
 						try {
-							r.setAddedCount(getAddedTotalCount(r.getRno()));
-							r.setSecret(false);
-							// null값 check로 바꿔야
-							if(!"0".equals(r.getDeleteType())) r.setDeleteFlag(true);
+							if(setAddedCnt) r.setAddedCount(getAddedTotalCount(r.getRno()));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						return r;
 					}).collect(Collectors.toList());
 		}
-			
 		
-		return replyMapper.listCriteria(bno, cri).stream().map(r -> {
-			if(r.isSecret()){
-				r.setReplyer(null);
-				r.setReply(null);
+		return list.stream().map(r -> {
+			if(r.isSecret()) setReplyNull(r);
+			if(r.getDeleteType() !=  null){
+				r.setDeleteFlag(true);
+				setReplyNull(r);
 			}
-			if(!"0".equals(r.getDeleteType())) r.setDeleteFlag(true);
+			
 			try {
 				r.setAddedCount(getAddedTotalCount(r.getRno()));
 			} catch (Exception e) {
@@ -72,6 +86,16 @@ public class ReplyServiceImpl implements ReplyService {
 			}
 			return r;
 		}).collect(Collectors.toList());
+	}
+	
+	private void setReplyNull(ReplyVO reply){
+		reply.setReply(null);
+		reply.setReplyer(null);
+	}
+	
+	@Override
+	public List<ReplyDto> listCriteriaAddedReply(int bno, int parRno, Criteria cri) throws Exception {
+		return filterReplies(getWriterName(bno), replyMapper.listCriteriaAdded(parRno, cri), false);
 	}
 	
 	@Override
@@ -89,18 +113,13 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) throws Exception {
-		return replyMapper.listCriteriaAdded(parRno, cri);
-	}
-
-	@Override
 	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception {
-		return replyMapper.totalCount(bno, notIncludeAdded);
+		return replyMapper.readTotalCnt(bno, notIncludeAdded);
 	}
 
 	@Override
 	public int getAddedTotalCount(int parRno) throws Exception {
-		return replyMapper.addedTotalCount(parRno);
+		return replyMapper.readAddedTotalCnt(parRno);
 	}
 
 	@Override
@@ -110,7 +129,7 @@ public class ReplyServiceImpl implements ReplyService {
 	
 	@Override
 	public ReplyVO getReply(int rno) throws Exception {
-		return replyMapper.get(rno);
+		return replyMapper.read(rno);
 	}
 
 	@Override
@@ -121,19 +140,36 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	@Transactional
 	@Loggable
-	public void removeReply(String curUser, int rno, int bno) throws Exception {
-		if(curUser.equals(getWriterName(bno))) replyMapper.delete("B", rno);
-		else if(curUser.equals(getReplyer(rno))) replyMapper.delete("R", rno);
-		else if(curUser.equals("ADMIN")) replyMapper.delete("A", rno);
+	public void removeReply(int rno, int bno) throws Exception {
+		String deleteType = getDeleteType(rno, bno);
+		replyMapper.delete(deleteType, rno);
 	}
 
-	
 	@Override
 	@Loggable
-	public void removeReplies(String deleteType, List<Integer> rno) throws Exception {
+	public void removeReplies(List<Integer> rno, int bno) throws Exception {
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		String deleteType = getDeleteType(rno.get(0), bno);
 		replyMapper.deleteReplies(deleteType, rno);
 	}
 
+	private String getDeleteType(int rno, int bno) throws Exception{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		List<String> roles = auth.getAuthorities().stream()
+				.map(a -> a.getAuthority()).collect(Collectors.toList());
+		String user = auth.getName();
+	
+		if(roles.contains("ADMIN")) user = "ADMIN";
+		else if(!roles.contains("USER")) throw new AccessDeniedException("USER 권한 이상의 권한을 가지고 있지 않습니다.");
+		
+		String deleteType = "";
+		if(user.equals(getWriterName(bno))) deleteType = "B";
+		else if(user.equals(getReplyer(rno))) deleteType = "R";
+		else if(user.equals("ADMIN")) deleteType = "A";
+		
+		return deleteType;
+	}
+	
 	@Override
 	public void reportReply(int rno) throws Exception {
 		replyMapper.updateReport(rno);

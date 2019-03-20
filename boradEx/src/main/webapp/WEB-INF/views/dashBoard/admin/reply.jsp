@@ -11,6 +11,7 @@
 		</div>
 		
 		<div class="float-right">
+			<button type="button" class="btn btn-outline-info" id="btn-all">모든 댓글</button>
 			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
 		</div>
 	</div>

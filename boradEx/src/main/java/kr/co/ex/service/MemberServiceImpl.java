@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
 		case BANNED:
 		case SLEEP:
 		case LEAVE:
-			return listStateMember(cri, type.getTypeInitial());
+			return listStateMember(cri, type);
 		case REPORT:
 			return listReportMember(cri);
 		default:
@@ -52,8 +52,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberVO> listStateMember(Criteria cri, String state) {
-		return memMapper.listStateMember(cri, state);
+	public List<MemberVO> listStateMember(Criteria cri, UserType userType) {
+		return memMapper.listStateMember(cri, userType.getTypeInitial());
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Loggable
-	public void updateState(List<String> members, String state) {
-		memMapper.updateState(members, state);
+	public void updateState(List<String> members, UserType userType) {
+		memMapper.updateState(members, userType.getTypeInitial());
 	}
 	
 	@Override
