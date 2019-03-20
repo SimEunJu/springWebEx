@@ -14,14 +14,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Log4j
 @Controller
+@Log4j
 @RequiredArgsConstructor
 @RequestMapping("/board/user")
 @PreAuthorize("isAuthenticated()")
 public class UserController {
 
-	@NonNull private MemberService memServ;
+	@NonNull
+	private MemberService memServ;
 	
 	@PostMapping("/report")
 	public ResponseEntity<String> reportUser(@RequestParam String username, @RequestParam int diff){
@@ -37,11 +38,13 @@ public class UserController {
 	
 	@GetMapping("")
 	public String showUserInfo(){
+		
 		return "board/user";
 	}
 
 	@GetMapping("/info/auth")
 	public String showUserAuthInfo(){
+		
 		return "board/user/auth";
 	}
 

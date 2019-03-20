@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,16 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import kr.co.ex.domain.AuthVO;
 import kr.co.ex.dto.LoginDto;
 import kr.co.ex.service.LoginService;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
-@Log4j
 @Controller
-@RequiredArgsConstructor
+@Log4j
+@ToString
 public class LoginController {
-
-	@NonNull LoginService serv;
+	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	
+	@Autowired
+	LoginService serv;
+	
 	
 	@GetMapping("/accessError")
 	public void accessError(){
@@ -32,12 +38,19 @@ public class LoginController {
 	public String login(HttpServletRequest req){
 		return "login/login.part";	
 	}	
+	
+	@GetMapping("/board/oauth2/login")
+	public String getGoogleCode(HttpServletRequest req){
+		log.info(SecurityContextHolder.getContext().getAuthentication().getName());
+		return "login/google";
+	}
 
+	
 	@PostMapping("/board/signin")
 	public String signin(LoginDto user){
-		
 		List<AuthVO> auth = new ArrayList<>();
 		user.setAuths(auth);
+		log.info(user);
 		serv.signIn(user);
 		return "redirect:/";
 	}
@@ -48,12 +61,6 @@ public class LoginController {
 	}
 	
 	/*
-	@GetMapping("/board/oauth2/login")
-	public String getGoogleCode(HttpServletRequest req){
-		log.info(SecurityContextHolder.getContext().getAuthentication().getName());
-		return "login/google";
-	} 
-	 
 	@PostMapping("/login")
 	public String login(LoginDto dto, HttpSession sess, Model model) throws Exception{
 		UserVO user = serv.login(dto);

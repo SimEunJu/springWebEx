@@ -9,10 +9,9 @@ import kr.co.ex.dto.ReplyDto;
 
 public interface ReplyService {
 	public void addReply(ReplyVO vo) throws Exception;
-
-	public List<ReplyVO> listReply(int bno) throws Exception;
-	public List<ReplyDto> listCriteriaReply(int bno, Criteria cri) throws Exception;
-	public List<ReplyDto> listCriteriaAddedReply(int bno, int parRno, Criteria cri) throws Exception;
+	public List<ReplyVO> listReply(Integer bno) throws Exception;
+	public List<ReplyDto> listCriteriaReply(Integer bno, Criteria cri, String currentUser) throws Exception;
+	public List<ReplyVO> listCriteriaAddedReply(int parRno, Criteria cri) throws Exception;
 	public List<ReplyVO> listReplyByWriter(String replyer, Criteria cri) throws Exception;
 	
 	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception;
@@ -23,8 +22,8 @@ public interface ReplyService {
 	public ReplyVO getReply(int rno) throws Exception; 
 	public void modifyReply(ReplyVO vo) throws Exception;
 	
-	public void removeReply(int rno, int bno) throws Exception;
-	public void removeReplies(List<Integer> rno, int bno) throws Exception;
+	public void removeReply(String deleteType, int rno, int bno) throws Exception;
+	public void removeReplies(String deletType, List<Integer> rno) throws Exception;
 	
 	public void reportReply(int rno) throws Exception;
 }

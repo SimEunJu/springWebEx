@@ -36,7 +36,7 @@
 	</table>
 	
 	<c:if test="${empty replies}">
-    	<div class="row-12 p-2 border text-center">작성한 댓글이 없습니다.</div>
+    	<div class="row-12 p-2 border text-center">등록된 알림이 없습니다.</div>
     </c:if>	
 </div>
 
@@ -62,7 +62,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
-<script src="/resources/js/utils/modal.js"></script>
+<script src="/resources/js/modal.js"></script>
 <script>
 const csrfToken = "${_csrf.token }";
 const csrfHeader = "${_csrf.headerName }";
@@ -70,3 +70,5 @@ $(document).ajaxSend(function(e, xhr, options) {
     xhr.setRequestHeader(csrfHeader, csrfToken);
 });
 </script>
+</body>
+</html>

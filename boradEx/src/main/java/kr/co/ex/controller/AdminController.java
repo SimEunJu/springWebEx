@@ -3,7 +3,6 @@ package kr.co.ex.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -29,73 +28,67 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-@Controller
 @RequestMapping("/board/admin")
-@PreAuthorize("hasRole(ADMIN)")
+@Controller
+//@PreAuthorize("hasRole(ADMIN)")
 @RequiredArgsConstructor
 public class AdminController {
 	
-	@NonNull private AdminStatService statServ;
-	@NonNull private NotificationService notiServ;
-	@NonNull private MemberService memServ;
+	@NonNull
+	private AdminStatService statServ;
+	@NonNull
+	private NotificationService notiServ;
+	@NonNull
+	private MemberService memServ;
 	
-	@NonNull private MsgService msgServ;
-	@NonNull private BoardService boardServ;
-	@NonNull private ReplyService replyServ;
-	
-	private final String DAY = "d";
+	// 공통
+	@NonNull
+	private MsgService msgServ;
+	@NonNull
+	private BoardService boardServ;
+	@NonNull
+	private ReplyService replyServ;
 	
 	@GetMapping("")
-	public String showAdminMainStat(@RequestParam(required=false, defaultValue=DAY) String type, Model model){
-		
+	public String showAdminInfo(@RequestParam(required=false, defaultValue="d") String type, Model model){
 		try{
 			model.addAttribute("postCnt", statServ.getPostCount(type));
 			model.addAttribute("userLeaveCnt", statServ.getUserLeaveCount(type));
 			model.addAttribute("userJoinCnt", statServ.getUserJoinCount(type));
 			model.addAttribute("visitCnt", statServ.getVisitCount(type));
 			LocalDateTime defaultDate = DateUtils.getAFewWeeksAgo(1);
-			model.addAttribute("hotPost", boardServ.listByRegdate(defaultDate));
-			
+			model.addAttribute("hotPost", boardServ.listRegdate(defaultDate));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
 		return "dashBoard/admin/adminMain.page";
 	}
 	
-	/*
-	* @param move 페이징에서 이전/ 이후 버틍 클릭 시에만 활성화
-	*/
-	
 	@GetMapping("/noti")
 	public String showNotification(@RequestParam(required=false) String move, Criteria cri, Model model){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
 		try {	
-			// 서버에서 사용자 이름을 가져온다
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			List<NotificationDto> noti = notiServ.getNotifications(auth.getName(), cri);
 			
 			PageMaker pm = null;
 			if(move != null) pm = PaginationUtils.pagination(move, cri, notiServ.getNotiCntByUsername(auth.getName()));
 	
-			List<NotificationDto> noti = notiServ.getNotifications(auth.getName(), cri);
-			
 			model.addAttribute("noties", noti);
 			model.addAttribute("pagination", pm);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return "dashBoard/noti.page";
 	}
 	
 	@GetMapping("/user")
-	public String manageUser(@RequestParam(required=false) String move, Criteria cri, Model model){
-		
+	public String manageUser(@RequestParam(required=false) String move,Model model){
+		Criteria cri = new Criteria();
 		PageMaker pm = PaginationUtils.pagination(move, cri, memServ.getMemberCnt());
 		
 		model.addAttribute("pagination", pm);
 		model.addAttribute("users", memServ.ListCategorizedMember(UserType.ALL, cri));
-		
 		return "dashBoard/admin/userManage.page";
 	}
 	
@@ -105,13 +98,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/msg")
-	public String showMsg(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showMsg(@RequestParam(required=false) String move, Model model){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
+			Criteria cri = new Criteria();
 			PageMaker pm = PaginationUtils.pagination(move, cri, msgServ.getReceiverTotalCnt(auth.getName()));
-			
 			model.addAttribute("msges", msgServ.getMsgList(auth.getName(), cri));
 			model.addAttribute("pagination", pm);
 		} catch (Exception e) {
@@ -121,33 +112,30 @@ public class AdminController {
 	}
 	
 	@GetMapping("/post")
-	public String managePost(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String managePost(@RequestParam(required=false) String move, Model model){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
-			PageMaker pm = PaginationUtils.pagination(move, cri, boardServ.getTotalCntByWriter(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(move, new Criteria(), boardServ.getTotalCntByWriter(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("posts", boardServ.listByWriter(auth.getName(), cri));
+			model.addAttribute("posts", boardServ.listBoardByWriter(auth.getName(), pm.getCri()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard/admin/post.page";
+		return "dashBoard/post.page";
 	}
 
 	@GetMapping("/reply")
-	public String manageReply(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String manageReply(@RequestParam(required=false) String move, Model model){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		try {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
-			PageMaker pm = PaginationUtils.pagination(move, cri, replyServ.getTotalCntByReplyer(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(move, new Criteria(), replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("replies", replyServ.listReplyByWriter(auth.getName(), cri));
-			
+			model.addAttribute("replies", replyServ.listReplyByWriter(auth.getName(), pm.getCri()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard/admin/reply.page";
+		return "dashBoard/reply.page";
 	}
 }

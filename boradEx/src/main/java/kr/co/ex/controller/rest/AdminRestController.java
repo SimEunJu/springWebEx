@@ -1,7 +1,6 @@
 package kr.co.ex.controller.rest;
 
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,41 +29,39 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Log4j
 @RestController
+@Log4j
 @RequiredArgsConstructor
 @RequestMapping("/board/api/admin")
 public class AdminRestController {
 
-	@NonNull private AdminStatService statServ;
-	@NonNull private MemberService memServ;
-	@NonNull private MsgService msgServ;
+	@NonNull
+	private AdminStatService statServ;
+	@NonNull
+	private MemberService memServ;
+	@NonNull
+	private MsgService msgServ;
 
-	@GetMapping(value = "/inout", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	@GetMapping(value = "/inout", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<Map<String, List<Integer>>> listInout(@RequestParam String type) {
-		
 		Map<String, List<Integer>> res = new HashMap<>();
+		log.info("inout");
 		res.put("leave", statServ.getUserLeaveCount(type));
 		res.put("join", statServ.getUserJoinCount(type));
-		
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/visit", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public ResponseEntity<Map<String, List<Integer>>> listVisit(@RequestParam String type) {
-		
-		Map<String, List<Integer>> res = new HashMap<>();
-		res.put("visit", statServ.getVisitCount(type));
-		
+	@GetMapping(value = "/visit", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<Map<String, List<Long>>> listVisit(@RequestParam char type) {
+		Map<String, List<Long>> res = new HashMap<>();
+
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/board", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	@GetMapping(value = "/board", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<Map<String, List<Integer>>> listBoard(@RequestParam String type) {
-		
 		Map<String, List<Integer>> res = new HashMap<>();
 		res.put("board", statServ.getPostCount(type));
-		
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
@@ -77,13 +75,11 @@ public class AdminRestController {
 		PageMaker pm = null;
 		if (move != null)
 			pm = PaginationUtils.pagination(move, cri, memServ.getMemberCnt());
-		
+		log.info(memServ.ListCategorizedMember(userType, cri));
 		ret.put("users", memServ.ListCategorizedMember(userType, cri));
 		ret.put("pagination", pm);
-		
 		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
-	
 	private UserType getMemberType(String type){
 		switch (type) {
 		case "all-type":		
@@ -102,24 +98,22 @@ public class AdminRestController {
 			throw new UndefinedMemberType(type);
 		}
 	}
-	
 	@PostMapping(value = "/usertype", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Map<String, List<MemberVO>>> changeUserType(@RequestParam String prevType, @RequestParam String nextType, @RequestBody List<String> members) {
+	public ResponseEntity<List<MemberVO>> changeUserType(@RequestParam String type, @RequestParam String showType, @RequestBody List<String> members) {
 		
-		UserType prevUserType = getMemberType(prevType);
-		memServ.updateState(members, prevUserType);
+		log.info(members);
+		UserType userType = getMemberType(type);
+		memServ.updateState(members, userType.getTypeInitial());
 		
-		UserType nextUserType = getMemberType(nextType);
-		Map<String, List<MemberVO>> list = Collections.singletonMap("users", memServ.ListCategorizedMember(nextUserType, new Criteria()));
+		UserType showedType = getMemberType(showType);
 		
-		return new ResponseEntity<>(list, HttpStatus.OK);
+		return new ResponseEntity<>(memServ.ListCategorizedMember(showedType, new Criteria()),HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/user/find", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public ResponseEntity<Map<String, List<MemberVO>>> findMember(@RequestParam String keyword) {
-		
-		Map<String, List<MemberVO>> list = Collections.singletonMap("users", memServ.getMemberByKeyword(keyword));
-		
-		return new ResponseEntity<>(list, HttpStatus.OK);
+		Map<String, List<MemberVO>> ret = new HashMap<>();
+		ret.put("users", memServ.getMemberByKeyword(keyword));
+		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
 }

@@ -2,11 +2,9 @@ package kr.co.ex.domain;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Setter @Getter @ToString
+@Data
 public class ReplyVO {
 	private Integer rno;
 	private Integer bno;
@@ -18,5 +16,11 @@ public class ReplyVO {
 	private Integer parRno;
 	private String password;
 	private boolean secret;
-	private String deleteType;
+	private char deleteType;
+	
+	private int addedCount;
+	
+	public boolean getSecret(){
+		return secret;
+	}
 }

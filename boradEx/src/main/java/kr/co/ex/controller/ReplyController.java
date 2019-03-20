@@ -3,6 +3,9 @@ package kr.co.ex.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +27,6 @@ import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.NotificationVO;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
-import kr.co.ex.dto.ReplyDto;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.ReplyService;
@@ -32,55 +34,59 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Log4j
 @RestController
-@RequestMapping("/board/daily/{boardNo}/reply")
+@Log4j
+@RequestMapping("/board/daily/{bno}/reply")
 @RequiredArgsConstructor
 public class ReplyController {
 
-	@NonNull private ReplyService replyServ;
-	@NonNull private BoardService boardServ;
-	@NonNull private NotificationService notiServ;
+	@NonNull
+	private ReplyService serv;
+	@NonNull
+	private BoardService boardServ;
+	@NonNull
+	private NotificationService notiServ;
 	
-	@PostMapping(value="", consumes="application/json")
-	public ResponseEntity<String> registerReply(@PathVariable int boardNo, @RequestBody ReplyVO vo){
+	@PostMapping(value="", consumes="application/json", produces={MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> registerReply(@RequestParam String writer, @RequestBody ReplyVO vo, @PathVariable int bno){
 		try {
 			log.info(vo.toString());
-			replyServ.addReply(vo);
-			
-			String writer = boardServ.getWriterName(boardNo);
-			if(writer.equals(vo.getReplyer())){
+			serv.addReply(vo);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			if(!writer.equals(vo.getReplyer())){
 				NotificationVO noti = NotificationVO.builder()
 						.rno(vo.getRno())
-						.bno(boardNo)
+						.bno(bno)
 						.username(writer)
 						.build();
 				notiServ.registerNotification(noti);
 			}
 			return new ResponseEntity<String>("success", HttpStatus.OK);
-		
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@GetMapping(value = "/{page}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, @PathVariable int page){
+	@PreAuthorize("permitAll()")
+	public ResponseEntity<Map<String, Object>> getReplyList(
+			@PathVariable Integer bno, @PathVariable Integer page, HttpServletRequest req){
 		try {
-		
+			log.info("reply");
 			Criteria cri = new Criteria();
 			cri.setPage(page);
 			
 			PageMaker pm = new PageMaker();
 			pm.setCri(cri);
-			// ´ë´ñ±Û °¹¼ö´Â Á¦¿Ü
-			pm.setTotalCount(replyServ.getTotalCount(boardNo, true));
+			pm.setTotalCount(serv.getTotalCount(bno, true));
 			
 			Map<String, Object> map = new HashMap<>();
 			map.put("pagination", pm);
-		
-			map.put("replies", replyServ.listCriteriaReply(boardNo, cri));
+			String currentUser = null;
+			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
+			
+			map.put("replies", serv.listCriteriaReply(bno, cri, currentUser));
 		
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (Exception e) {
@@ -91,11 +97,16 @@ public class ReplyController {
 	
 	@GetMapping(value="/added/{parRno}/{page}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("permitAll()")
-	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int bno, @PathVariable int parRno, @PathVariable int page){
+	public ResponseEntity<List<ReplyVO>> addedList(@PathVariable int bno, @PathVariable int parRno, 
+			@PathVariable int page, HttpServletRequest req){
 		try{
 			Criteria cri = new Criteria();
 			cri.setPage(page);
-			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(bno, parRno, cri);
+			
+			String currentUser = null;
+			if(req.getUserPrincipal() != null) currentUser = req.getUserPrincipal().getName();
+			
+			List<ReplyVO> replies = serv.listCriteriaAddedReply(parRno, cri);
 			
 			return new ResponseEntity<>(replies, HttpStatus.OK);
 			
@@ -109,7 +120,7 @@ public class ReplyController {
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<String> reportReply(@PathVariable int rno, ReplyVO vo){
 		try {
-			replyServ.reportReply(rno);
+			serv.reportReply(rno);
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,10 +129,10 @@ public class ReplyController {
 	}
 	
 	@PutMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<String> update(@PathVariable int rno, ReplyVO vo){
+	@PreAuthorize("principal.username == #vo.replyer")
+	public ResponseEntity<String> update(@PathVariable Integer rno, ReplyVO vo){
 		try {
-			replyServ.modifyReply(vo);
+			serv.modifyReply(vo);
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,7 +144,15 @@ public class ReplyController {
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<String> remove(@PathVariable int bno, @PathVariable int rno, ReplyVO vo){
 		try {
-			replyServ.removeReply(rno, bno);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			List<String> roles = auth.getAuthorities().stream()
+					.map(a -> a.getAuthority()).collect(Collectors.toList());
+			String curUser = auth.getName();
+		
+			if(roles.contains("ROLE_ADMIN")) curUser = "ADMIN";
+			else if(!roles.contains("ROLE_USER")) return new ResponseEntity<String>("fail", HttpStatus.UNAUTHORIZED);
+			
+			serv.removeReply(curUser, rno, bno);
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

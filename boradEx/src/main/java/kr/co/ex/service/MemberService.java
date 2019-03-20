@@ -12,9 +12,9 @@ public interface MemberService {
 	public List<MemberVO> ListCategorizedMember(UserType type, Criteria cri);
 	public List<MemberVO> listMember(Criteria cri);
 	public List<MemberVO> listReportMember(Criteria cri);
-	public List<MemberVO> listStateMember(Criteria cri, UserType userType);
+	public List<MemberVO> listStateMember(Criteria cri, String state);
 	
-	public void updateState(List<String> members, UserType type);
+	public void updateState(List<String> members, String state);
 	public void updateReportCnt(String username, int diff);
 	public void updateAccessTime(long epochSecond);
 	

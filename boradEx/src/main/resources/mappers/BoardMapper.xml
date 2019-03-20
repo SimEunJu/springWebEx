@@ -26,8 +26,7 @@
 </select>
 
 <select id="listBoardByWriter" resultType="kr.co.ex.domain.BoardVO">
-	select * from tbl_board where writer=#{writer}
-	limit #{cri.pageStart}, #{cri.perPageNum}
+	select * from tbl_board where writer=#{wrtier}
 </select>
 
 <update id="update">

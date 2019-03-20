@@ -109,7 +109,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="/resources/js/utils/modal.js"></script>
+<script src="/resources/js/modal.js"></script>
 <script>
 const csrfToken = "${_csrf.token }";
 const csrfHeader = "${_csrf.headerName }";
@@ -118,3 +118,5 @@ $(document).ajaxSend(function(e, xhr, options) {
 });
 const username = "<sec:authentication property="principal.username"/>";
 </script>
+</body>
+</html>

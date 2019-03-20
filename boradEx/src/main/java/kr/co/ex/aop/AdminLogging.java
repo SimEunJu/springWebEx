@@ -16,19 +16,12 @@ public class AdminLogging {
 	private final String argsPrefix = "[args] : ";
 	private final String returnPrefix = "[return] : ";
 	
-	@Around("execution(* kr.co.ex.service.*.*(..)) && @annotation(loggable)")
+	@Around("execution(* kr.co.ex.service.*.*(..)) && annoation(loggable)")
 	public Object logArg(ProceedingJoinPoint pjp, Loggable loggable) throws Throwable{
-		Object[] args = pjp.getArgs();
 		
-		if(args != null){
-			log.trace(argsPrefix + pjp.getSignature());
-			for(Object obj : args){
-				log.trace(obj.toString());
-			}
-		}
-		
+		log.trace(pjp.getArgs().toString());
 		Object ret = pjp.proceed();
-		if(ret != null) log.trace(returnPrefix + ret.toString());
+		log.trace(returnPrefix + ret.toString());
 		
 		return ret;
 	}
