@@ -16,24 +16,24 @@ public interface BoardService {
 	
 	public void register(BoardVO board) throws Exception;
 	
-	public BoardVO read(Integer bno) throws Exception;
+	public BoardVO read(int bno) throws Exception;
 	
 	public void modify(BoardVO board) throws Exception;
 	public void updateLike(int bno, int diff, String username) throws Exception;
 	
-	public void remove(Integer bno) throws Exception;
+	//public void remove(int bno) throws Exception;
 	
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
-	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception;
-	public List<BoardVO> listBoardByWriter(String writer, Criteria cri) throws Exception;
+	public List<BoardVO> listByRegdate(LocalDateTime regdate) throws Exception;
+	public List<BoardVO> listByWriter(String writer, Criteria cri) throws Exception;
 	
-	public int getSearchCount(SearchCriteria cri) throws Exception;
-	public int getTotalCount() throws Exception;
+	public int getSearchCnt(SearchCriteria cri) throws Exception;
+	public int getTotalCnt() throws Exception;
 	public int getTotalCntByWriter(String username) throws Exception;
 	
-	public List<AttachVO> getAttach(Integer bno) throws Exception;
+	public List<AttachVO> getAttach(int bno) throws Exception;
 	public void removeAttach(String fullName) throws Exception;
 	
 	public int getReplyCnt(int bno) throws Exception;

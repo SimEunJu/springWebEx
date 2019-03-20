@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,36 +32,40 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.util.UploadFileUtils;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Controller
 @Log4j
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/board/daily/file")
 public class UploadController {
 	
-	@Autowired
-	BoardService serv;
+	@NonNull BoardService boardServ;
 	
 	@Resource
 	String uploadPath;
 	
-	@GetMapping("/board/daily/file")
 	@ResponseBody
+	@GetMapping("")
 	public ResponseEntity<byte[]> displayFile(String fileName){
 			File file = new File(uploadPath+fileName);
 			ResponseEntity<byte[]> result = null;
 			HttpHeaders header = new HttpHeaders();
+			
 			try {
 				header.add("Content-Type", Files.probeContentType(file.toPath()));
 				result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+			
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return result;
 	}
 	
-	@PostMapping(value="/board/daily/file", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
+	@PostMapping(value="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<List<AttachVO>> uploadFile(@RequestParam("uploadFile") MultipartFile[] file) throws IOException, Exception{
 		
@@ -93,8 +97,8 @@ public class UploadController {
 		return new ResponseEntity<>(attaches, HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value="/board/daily/file/donwload", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
+	@GetMapping(value="/donwload", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<FileSystemResource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) throws IOException{
 		FileSystemResource resource = new FileSystemResource(uploadPath+fileName);
 		if(resource.exists() == false) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -117,10 +121,10 @@ public class UploadController {
 		return new ResponseEntity<>(resource, header, HttpStatus.OK);
 		
 	}
-
-	@DeleteMapping(value="/board/daily/file", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	
 	@ResponseBody
-	public ResponseEntity<String[]> deleteOneFile(String fileName, String type) throws Exception{
+	@DeleteMapping(value="")
+	public ResponseEntity<Void> deleteOneFile(String fileName, String type) throws Exception{
 		File file;
 		try{
 			file = new File(uploadPath, URLDecoder.decode(fileName, "UTF-8"));
@@ -134,7 +138,7 @@ public class UploadController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(new String[] {"deleted"}, HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

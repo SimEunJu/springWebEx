@@ -102,5 +102,3 @@ $(document).ajaxSend(function(e, xhr, options) {
     xhr.setRequestHeader(csrfHeader, csrfToken);
 });
 </script>
-</body>
-</html>

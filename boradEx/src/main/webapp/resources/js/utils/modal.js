@@ -156,7 +156,7 @@ function sendMsg(receivers, url){
 		title: this.title.val(),
 		content: this.msg.val()
 	};
-		
+	const self = this;
 	$.post({
 		url: url,
 		data: JSON.stringify(envelope),
@@ -164,7 +164,7 @@ function sendMsg(receivers, url){
 			
 		}).done(function(){
 			// 메시지 전송 후 모달 닫기
-			this.toggleModal();
+			self.toggleModal();
 			alert("메시지가 성공적으로 발송되었습니다.");
 		
 		}).fail(showAjaxError);

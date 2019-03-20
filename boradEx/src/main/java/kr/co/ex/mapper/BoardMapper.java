@@ -26,7 +26,7 @@ public interface BoardMapper {
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
 	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception;
-	public List<BoardVO> listBoardByWriter(String writer, Criteria cri) throws Exception;
+	public List<BoardVO> listBoardByWriter(@Param("writer") String writer, @Param("cri") Criteria cri) throws Exception;
 	
 	public int searchCount(SearchCriteria cri) throws Exception;
 	public int totalCount() throws Exception;

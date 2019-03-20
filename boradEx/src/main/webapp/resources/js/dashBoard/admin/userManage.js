@@ -62,7 +62,7 @@ $("document").ready(function(){
 			const tableRow = tableRowTemplate(users);
 			check.tbody.html(tableRow);
 
-			check.reset();
+			check.resetRepo();
 			alert("선택된 회원의 상태를 변경 하였습니다.");
 	
 		}).fail(showAjaxError);
