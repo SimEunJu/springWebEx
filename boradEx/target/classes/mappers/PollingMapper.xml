@@ -6,13 +6,17 @@
 <mapper namespace="kr.co.ex.mapper.PollingMapper">
 
 <select id="readNotiCnt" resultType="kr.co.ex.dto.PollingNotiDto">
+	<![CDATA[
 	select count(nno) as cnt, max(nno) as nno from tbl_notification 
 	where nno>#{nno} and receiver=#{username} limit #{limit}
+	]]>
 </select>
 
 <select id="readMsgCnt" resultType="kr.co.ex.dto.PollingMsgDto">
+	<![CDATA[
 	select count(msg_no) as cnt, max(msg_no) as msg_no from tbl_msg
 	where msg_no>#{msgNo} and receiver=#{username} limit #{limit}
+	]]>
 </select>
 
 </mapper>

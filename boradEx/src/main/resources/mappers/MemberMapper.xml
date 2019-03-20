@@ -30,10 +30,6 @@
 		values(#{username}, #{auth})
 	</insert>
 	
-	<update id="updatePoint">
-		update tbl_user set point = point+#{point} where uid=#{uid}
-	</update>
-	
 	<select id="listMember" resultType="kr.co.ex.domain.MemberVO">
 		select * from tbl_member limit #{pageStart}, #{perPageNum}
 	</select>
@@ -61,7 +57,7 @@
 		update tbl_member set report_cnt = report_cnt + #{diff} where username=#{username}
 	</update>
 
-	<select id="readUserByKeyword" resultType="kr.co.ex.domain.MemberVO">
+	<select id="listMemberByKeyword" resultType="kr.co.ex.domain.MemberVO">
 		select * from tbl_member where username like '%#{keyword}%'
 	</select>
 	
