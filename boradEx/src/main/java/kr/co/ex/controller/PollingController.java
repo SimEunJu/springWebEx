@@ -14,23 +14,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.dto.PollingMsgDto;
+import kr.co.ex.dto.PollingNotiDto;
 import kr.co.ex.service.MsgService;
 import kr.co.ex.service.PollingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@RestController
 @Log4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/board/polling")
 @PreAuthorize("isAuthenticated()")
 public class PollingController {
 	
-	@NonNull
-	private PollingService pollServ;
-	@NonNull
-	private MsgService msgServ;
+	// 로직을 함수로 뽑아낼 수 없을까?
+	
+	@NonNull private PollingService pollServ;
+	@NonNull private MsgService msgServ;
 	
 	private final int LIMIT = 999;
 	private final int DAY = 60*60*24;
@@ -77,10 +78,42 @@ public class PollingController {
 		log.info(msg.toString());
 		return ResponseEntity.ok(null);
 	}
+	
 	@GetMapping("/noti")
-	public ResponseEntity<Integer> pollingNotiCnt(HttpServletRequest req){
+	public ResponseEntity<Integer> pollingNotiCnt(@CookieValue(value="msgPoll", required=false) Cookie notiCk,
+			HttpServletResponse res){
 		
-		return new ResponseEntity<>(0, HttpStatus.OK);
+		PollingNotiDto noti = null;
+		int curCnt = 0;
+		int notiNo = 0;
+		int term = DEAFULT_TERM;
+		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		if(notiCk != null){
+			String ckVals[] = notiCk.getValue().split("z");
+			notiNo = Integer.parseInt(ckVals[0]);
+			curCnt = Integer.parseInt(ckVals[1]);
+			term = Integer.parseInt(ckVals[2]);
+			if(curCnt < LIMIT) noti = pollServ.getNotiCnt(new PollingNotiDto(notiNo, username, LIMIT-curCnt));
+		}
+		else{
+			noti = pollServ.getNotiCnt(new PollingNotiDto(0, username, LIMIT));
+		}
+		
+		int newTerm = calcTerm(curCnt, noti.getCnt(), term);
+		int newCnt = curCnt+noti.getCnt();
+		int	newNNo = noti.getNno() == 0 ? notiNo : noti.getNno();
+		
+		String ckVal = newNNo+"z"+newCnt+"z"+newTerm;
+		
+		Cookie msgCookie = new Cookie("msgPoll", ckVal);
+		msgCookie.setPath("/board");
+		msgCookie.setMaxAge(DAY);
+		res.addCookie(msgCookie);
+		
+		log.info(noti.toString());
+		return ResponseEntity.ok(null);
 	}
 	
 	private int calcTerm(int prev, int cur, int term){

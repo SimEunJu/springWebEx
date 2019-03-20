@@ -23,28 +23,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoradServiceImpl implements BoardService {
 
-	@NonNull
-	private BoardMapper mapper;
-	@NonNull
-	private ReplyMapper replyMapper;
-	@NonNull
-	private UserLikeMapper likeMapper;
+	@NonNull private BoardMapper boardMapper;
+	@NonNull private ReplyMapper replyMapper;
+	@NonNull private UserLikeMapper likeMapper;
 	
 	@Override
 	@Transactional
 	public void register(BoardVO board) throws Exception {
-		mapper.create(board);
+		boardMapper.create(board);
 		List<AttachVO> files = board.getFiles();
 		if(files != null){
 			for(AttachVO file : files){
-				mapper.addAttach(file);
+				boardMapper.addAttach(file);
 			}
 		}
 	}
 	
 	@Override
-	public BoardVO read(Integer bno) throws Exception {
-		BoardVO board = mapper.read(bno);
+	@Transactional
+	public BoardVO read(int bno) throws Exception {
+		BoardVO board = boardMapper.read(bno);
 		board.setReplyCnt(likeMapper.readLikeCnt(bno));
 		return board;
 	}
@@ -52,13 +50,13 @@ public class BoradServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public void modify(BoardVO board) throws Exception {
-		mapper.update(board);
-		Integer bno = board.getBno();
-		mapper.deleteAllAttach(bno);
+		boardMapper.update(board);
+		int bno = board.getBno();
+		boardMapper.deleteAllAttach(bno);
 		List<AttachVO> files = board.getFiles();
 		if(files != null){
 			for(AttachVO file: files){
-				mapper.replaceAttach(file);
+				boardMapper.replaceAttach(file);
 			}
 		}
 		
@@ -69,93 +67,93 @@ public class BoradServiceImpl implements BoardService {
 	public void updateLike(int bno, int diff, String username) throws Exception {	
 		if(diff > 0){
 			likeMapper.addLike(bno, username);
-			mapper.updateLike(bno, 1);
+			boardMapper.updateLike(bno, 1);
 		}
 		else if(diff < 0){
 			likeMapper.subLike(bno, username);
-			mapper.updateLike(bno, -1);
+			boardMapper.updateLike(bno, -1);
 		}
 		else throw new BadLikeUpdateException();
-		
-		
 	}
 
+	/* 게시물 삭제는 정책적으로 불가능
 	@Override
 	@Transactional
 	@Loggable
-	public void remove(Integer bno) throws Exception {
-		mapper.deleteAllAttach(bno);
-		mapper.delete(bno);
+	public void remove(int bno) throws Exception {
+		boardMapper.deleteAllAttach(bno);
+		boardMapper.delete(bno);
 	}
-
+	*/
+	
 	@Override
 	public List<BoardVO> listAll() throws Exception {
-		return mapper.listAll();
+		return boardMapper.listAll();
 	}
 
-	// 해괴망측
 	@Override
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception {
-		return mapper.listCriteria(cri).stream()
-				.map(l -> {
+		return boardMapper.listCriteria(cri).stream()
+				.map(b -> {
 					try {
-						l.setReplyCnt(replyMapper.totalCount(l.getBno(), false));
+						// 대댓글 갯수까지 포함한 총 댓글 수 
+						b.setReplyCnt(replyMapper.readTotalCnt(b.getBno(), false));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					return l;
+					return b;
 				})
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception {
-		return mapper.listRegdate(regdate);
+	public List<BoardVO> listByRegdate(LocalDateTime regdate) throws Exception {
+		return boardMapper.listRegdate(regdate);
 	}
 
 	@Override
-	public int getTotalCount() throws Exception {
-		return mapper.totalCount();
+	public int getTotalCnt() throws Exception {
+		return boardMapper.totalCount();
 	}
 
 	@Override
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception {
-		return mapper.listSearch(cri).stream()
-				.map(l -> {
+		return boardMapper.listSearch(cri).stream()
+				.map(b -> {
 					try {
-						l.setReplyCnt(replyMapper.totalCount(l.getBno(), false));
+						b.setReplyCnt(replyMapper.readTotalCnt(b.getBno(), false));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					return l;
+					return b;
 				})
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public int getSearchCount(SearchCriteria cri) throws Exception {
-		return mapper.searchCount(cri);
+	public int getSearchCnt(SearchCriteria cri) throws Exception {
+		return boardMapper.searchCount(cri);
 	}
 
 	@Override
-	public List<AttachVO> getAttach(Integer bno) throws Exception {
-		return mapper.getAttach(bno);
+	public List<AttachVO> getAttach(int bno) throws Exception {
+		return boardMapper.getAttach(bno);
 	}
 
 	@Override
 	@Loggable
 	public void removeAttach(String fullName) throws Exception {
-		mapper.deleteAttach(fullName);
+		boardMapper.deleteAttach(fullName);
 	}
 
 	@Override
 	public int getReplyCnt(int bno) throws Exception {
-		return mapper.readReplyCnt(bno);
+		return boardMapper.readReplyCnt(bno);
 	}
 
 	@Override
 	public void updateViewCnt(int bno) throws Exception {
-		mapper.updateViewCnt(bno);
+		boardMapper.updateViewCnt(bno);
 	}
 
 	@Override
@@ -164,25 +162,25 @@ public class BoradServiceImpl implements BoardService {
 		else if(diff < -1) diff = -1;
 		else if(diff == 0) return;
 		
-		mapper.updateReportCnt(bno, diff);
+		boardMapper.updateReportCnt(bno, diff);
 	}	
 	
 	@Override
 	public int getTotalCntByWriter(String username) throws Exception {
-		return mapper.readTotalCntByWriter(username);
+		return boardMapper.readTotalCntByWriter(username);
 	}
 
 	@Override
-	public List<BoardVO> listBoardByWriter(String writer, Criteria cri) throws Exception {
-		return mapper.listBoardByWriter(writer, cri)
+	public List<BoardVO> listByWriter(String writer, Criteria cri) throws Exception {
+		return boardMapper.listBoardByWriter(writer, cri)
 				.stream()
-				.map(p -> {
+				.map(b -> {
 					try {
-						p.setReplyCnt(replyMapper.totalCount(p.getBno(), false));
+						b.setReplyCnt(replyMapper.readTotalCnt(b.getBno(), false));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					return p;
+					return b;
 				})
 				.collect(Collectors.toList());
 	}
