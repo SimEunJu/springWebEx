@@ -6,15 +6,21 @@
 <mapper namespace="kr.co.ex.mapper.AdminStatTaskMapper">
 
 <select id="getJoinUserCount" resultType="int">
+	<![CDATA[
 	select count(username) from tbl_member where regdate > #{date}
+	]]>
 </select>
 
 <select id="getLeaveUserCount" resultType="int">
+	<![CDATA[
 	select count(username) from tbl_member where leave_date > #{date} and state = 'L'
+	]]>
 </select>
 
 <select id="getPostCount" resultType="int">
+	<![CDATA[
 	select count(bno) from tbl_board where regdate > #{date}
+	]]>
 </select>
 	
 <insert id="createUserStat">

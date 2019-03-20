@@ -5,11 +5,11 @@
 
 <mapper namespace="kr.co.ex.mapper.NotificationMapper">
 
-<insert id="createNotification">
+<insert id="createNoti">
 	insert into tbl_notification(bno, rno, username, type) values(#{bno}, #{rno}, #{username}, #{type})
 </insert>
 
-<select id="readNotification" resultType="kr.co.ex.domain.NotificationVO">
+<select id="readNoti" resultType="kr.co.ex.domain.NotificationVO">
 	select nno, tbl_notification.regdate, read_flag, delete_flag, tbl_board.bno, tbl_reply.rno, username, tbl_notification.type, title, reply
 	from tbl_notification, tbl_reply, tbl_board 
 	where tbl_notification.username=#{username} 
@@ -23,11 +23,11 @@
 	select count(nno) from tbl_notification where username=#{username}
 </select>
 
-<update id="markNotification">
+<update id="updateReadNoti">
 	update table tbl_notification set read_flag='1' where nno=#{nno}
 </update>
 
-<update id="deleteNotification">
+<update id="deleteNoti">
 	update table tbl_notification set delete_flag='1' where nno=#{nno}
 </update>
 
