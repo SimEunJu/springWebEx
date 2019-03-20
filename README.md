@@ -39,3 +39,6 @@ spring MVC, mybatis, mysql,
 - db 관련: 파일 삭제, procedure, view, 통계
 - 로그인이 계속 풀려 spring-session
 - 하루 방문 수
+- localDateTime el function
+- log4jdbc-log4j2 com.mysql.cj.jdbc.Driver 추가
+- long poll
