@@ -17,6 +17,7 @@ public interface BoardService {
 	public void register(BoardVO board) throws Exception;
 	
 	public BoardVO read(int bno) throws Exception;
+	public String getWriterName(int bno);
 	
 	public void modify(BoardVO board) throws Exception;
 	public void updateLike(int bno, int diff, String username) throws Exception;

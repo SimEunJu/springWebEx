@@ -5,8 +5,7 @@
 
 <form role="form">
 	<input type="hidden" name="page" value="${pagination.cri.page }">
-	<input type="hidden" name="perPageNum"
-		value="${pagination.cri.perPageNum }">
+	<input type="hidden" name="perPageNum" value="${pagination.cri.perPageNum }">	 
 </form>
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog">
@@ -22,7 +21,7 @@
 	</div>
 </div>
 
-<%@ include file="../include/searchBar.jsp"%>
+<%@ include file="/WEB-INF/views/include/searchBar.jsp"%>
 
 <div class="row p-2 m-2 border justify-cotent-end">
 	<button id="newBtn" class="btn btn-outline-primary ml-auto">글쓰기</button>
@@ -56,6 +55,5 @@
 	</table>
 </div>
 
-<%@ include file="../include/pagination.jsp"%>
+<%@ include file="/WEB-INF/views/include/pagination.jsp"%>
 <div id="data" data-msg="${msg}"></div>
-<script src="/resources/js/common/polling.js"></script>

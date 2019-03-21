@@ -19,7 +19,6 @@
 				<div class="col-xs-4 float-right">
 					<button type="submit" class="btn btn-outline-primary">Login</button>
 				</div>
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }">
 			</div>
 		</form>
 		<div class="col-md align-self-center text-center">

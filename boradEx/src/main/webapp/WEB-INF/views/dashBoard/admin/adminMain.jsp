@@ -67,9 +67,9 @@
 	</div>
 </div>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-<script>
+
+<script type="text/javascript">
 const userJoinCnt = ${userJoinCnt};
 const userLeaveCnt = ${userLeaveCnt};
 const postCnt = ${postCnt};

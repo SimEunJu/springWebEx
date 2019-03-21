@@ -1,3 +1,5 @@
+// Check/ Pagination/ Modal/ 
+
 function Check(keyword) {
 		this.tbody = $("tbody");
 		this.checkes = this.tbody.find("input[name='"+keyword+"']");
@@ -6,21 +8,25 @@ function Check(keyword) {
 		this.repo = {};
 		this.list = [];
 		
+		// event
 		this.allCheck.on("click", () => {
 			this.allShowedCheck.prop("checked", false);
 			this.checkes.prop("checked", false);
 			this.resetRepo();
 		});
+		
 		this.allShowedCheck.on("click", (e) => {
 			if($(e.target).is(":checked")) this.checkes.prop("checked", true);
 			else this.checkes.prop("checked", false);
 			
 			this.allCheck.prop("checked", false);
 		});
+		
 		this.tbody.on("click", () => {
 			this.allCheck.prop("checked", false);
-		})
+		});
 }
+
 Check.prototype.collectCheckVal = collectCheckVal;
 Check.prototype.appendCheckVal = appendChecked;
 Check.prototype.flatToList = flatToList;
@@ -73,6 +79,7 @@ function makeQuery(addition){
 	}
 	return "page="+this.page+"&perPageNum="+this.perPageNum+query;
 }
+
 function changePage(target){
 	if(target === this.pageEle) return;
 	this.pageEle.removeClass("active");
@@ -101,20 +108,17 @@ function toggleModal(){
 	this.modal.modal("toggle");
 }
 
-function showAjaxError(jqXHR, textStatus, errorThrown){
-	console.error(jqXHR, textStatus, errorThrown);
-}
-
 function MsgModal(){
 	Modal.call(this);
 }
+
 MsgModal.prototype = Object.create(Modal.prototype);
 MsgModal.prototype.constructor = MsgModal;
 MsgModal.prototype.openMsgModal = openMsgModal;
 MsgModal.prototype.sendMsg = sendMsg;
 
+// 좀 더 리팩토링 할 수 있지 않을까?
 function openMsgModal(check, page, template){
-
 	// 선택된 회원 리스트 생성   
 	check.appendCheckVal(page);
 	const list = check.flatToList(check.repo);
@@ -170,11 +174,18 @@ function sendMsg(receivers, url){
 		}).fail(showAjaxError);
 }
 
+function showAjaxError(jqXHR, textStatus, errorThrown){
+	console.error(jqXHR, textStatus, errorThrown);
+}
+
 function addHandlebarHelper(){
 	Handlebars.registerHelper("dateFormat", function(date){
 		if(date === null) return;
-		return date.year+"-"+date.monthValue+"-"+date.dayOfMonth+" "+date.hour+":"+date.minute;
-	});
+			return date.year+"-"+(date.monthValue<10 ? "0"+date.monthValue : date.monthValue)
+				+"-"+(date.dayOfMonth<10 ? "0"+date.dayOfMonth : date.dayOfMonth)
+				+" "+(date.hour<10 ? "0"+date.hour : date.hour)
+				+":"+(date.minute<10 ? "0"+date.minute : date.minute);
+		});
 	Handlebars.registerHelper("for", function(start, end, block){
 		let acc = "";
 		for(let i=start; i<=end; i++){

@@ -9,10 +9,6 @@
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
 			<label for="all-mem">전체</label>
 		</div>
-		
-		<div class="float-right">
-			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
-		</div>
 	</div>
 	
 	<table class="table table-hover">
@@ -67,8 +63,3 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/utils/modal.js"></script>
-<script>
-$("document").ready(function(){
-	
-});
-</script>

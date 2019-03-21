@@ -18,28 +18,27 @@ import lombok.extern.log4j.Log4j;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-	@NonNull
-	private NotificationMapper notiMapper;
+	@NonNull private NotificationMapper notiMapper;
 	
 	@Override
 	public void registerNotification(NotificationVO vo) throws Exception {
-		notiMapper.createNotification(vo);
+		notiMapper.createNoti(vo);
 	}
 
 	@Override
 	@Transactional
 	public List<NotificationDto> getNotifications(String username, Criteria cri) throws Exception {
-		return notiMapper.readNotification(username, cri);
+		return notiMapper.listNoti(username, cri);
 	}
 
 	@Override
 	public void markReadFlagNotification(int nno) throws Exception {
-		notiMapper.markNotification(nno);
+		notiMapper.updateReadNoti(nno);
 	}
 
 	@Override
 	public void deleteNotification(int nno) throws Exception {
-		notiMapper.deleteNotification(nno);
+		notiMapper.deleteNoti(nno);
 	}
 
 	@Override

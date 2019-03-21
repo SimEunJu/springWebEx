@@ -48,6 +48,11 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
+	public String getWriterName(int bno) {
+		return boardMapper.readWriterName(bno);
+	}
+	
+	@Override
 	@Transactional
 	public void modify(BoardVO board) throws Exception {
 		boardMapper.update(board);
@@ -184,5 +189,5 @@ public class BoradServiceImpl implements BoardService {
 				})
 				.collect(Collectors.toList());
 	}
-	
+
 }

@@ -25,8 +25,6 @@
 		<input type="text" value="${board.writer}" name="writer" class="form-control" readonly>
 	</div>
 
-	<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
-
 	<div class="row-12">
 		<ul class="uploadedList">
 
@@ -37,10 +35,37 @@
 	</div>
 </form>
 
-<%@ include file="../include/upload.jsp"%>
+<%@ include file="/WEB-INF/views/include/upload.jsp" %>
 
+<script id="file-info" type="text/x-handlebars-template">
+{{#each files}}
+	<input type='hidden' name='files[{{idx}}].fileName' value='{{fileName}}'/>";
+	<input type='hidden' name='files[{{idx}}].uuid' value='{{uuid}}'/>";
+	<input type='hidden' name='files[{{idx}}].uploadPath' value='{{uploadPath}}'/>";
+	<input type='hidden' name='files[{{idx}}].fileType' value='{{fileType}}'/>";
+{{/each}}
+</script>
+<script id="upload-item" type="text/x-handlebars-template">
+<li data-path='{{uploadPath}}' data-uuid='{{uuid}}' data-filename='{{fileName}}' data-type='{{fileType}}'>
+	<div>
+		<span>{{fileName}}</span>
+		<button type='button' data-file='{{filePath}}' data-type='{{fileType}}' class='btn btn-sm btn-warning'>
+			&times;
+		</button>
+		<br>
+		{{#if isImg}}
+			<img src='/board/daily/file?fileName={{filePath}}'>
+		{{else}}
+			<img src='/resources/img/attach.png'>
+		{{/if}}
+	</div>
+</li>
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
 
+<script src="/resources/js/utils/file.js"></script>
 <script>
     ClassicEditor
         .create(document.querySelector( '#editor' ))

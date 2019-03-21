@@ -9,7 +9,7 @@
 	insert into tbl_notification(bno, rno, username, type) values(#{bno}, #{rno}, #{username}, #{type})
 </insert>
 
-<select id="readNoti" resultType="kr.co.ex.domain.NotificationVO">
+<select id="listNoti" resultType="kr.co.ex.domain.NotificationVO">
 	select nno, tbl_notification.regdate, read_flag, delete_flag, tbl_board.bno, tbl_reply.rno, username, tbl_notification.type, title, reply
 	from tbl_notification, tbl_reply, tbl_board 
 	where tbl_notification.username=#{username} 
