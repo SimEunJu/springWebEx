@@ -1,6 +1,5 @@
 $("document").ready(function(){
-	
-	
+
 	addHandlebarHelper();
 	
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;

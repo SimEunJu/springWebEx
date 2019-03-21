@@ -63,10 +63,3 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/utils/modal.js"></script>
-<script>
-const csrfToken = "${_csrf.token }";
-const csrfHeader = "${_csrf.headerName }";
-$(document).ajaxSend(function(e, xhr, options) {
-    xhr.setRequestHeader(csrfHeader, csrfToken);
-});
-</script>

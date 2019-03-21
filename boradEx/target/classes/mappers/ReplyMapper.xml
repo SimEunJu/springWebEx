@@ -39,7 +39,7 @@
   	<include refid="limit" />
   </select>
   
-  <select id="totalCount" resultType="int">
+  <select id="readTotalCnt" resultType="int">
   	select count(rno) from tbl_reply 
   	where bno=#{bno} 
   	<if test="notIncludeAdded">

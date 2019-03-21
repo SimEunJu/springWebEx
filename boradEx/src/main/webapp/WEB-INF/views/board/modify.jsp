@@ -25,8 +25,6 @@
 		<input type="text" value="${board.writer}" name="writer" class="form-control" readonly>
 	</div>
 
-	<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
-
 	<div class="row-12">
 		<ul class="uploadedList">
 

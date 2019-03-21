@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public List<MemberVO> getMemberByKeyword(String keyword) {
-		return memMapper.readUserByKeyword(keyword);
+		return memMapper.listMemberByKeyword(keyword);
 	}
 
 	@Override

@@ -66,13 +66,11 @@ public class BoardContoller {
 			String keyword = cri.getKeyword();
 			if(keyword == null){
 				totalCount = boardServ.getTotalCnt();
-				boardList = boardServ.listCriteria(cri);
 			}
 			else{
 				totalCount = boardServ.getSearchCnt(cri);
-				boardList = boardServ.listSearch(cri);
 			}
-			
+			boardList = boardServ.listSearch(cri);
 			pageMaker.setCri(cri);
 			pageMaker.setTotalCount(totalCount);
 			

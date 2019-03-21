@@ -121,10 +121,6 @@
 	
 <script type="text/javascript" >
 
-$(document).ajaxSend(function(e, xhr, options){
-	xhr.setRequestHeader("${_csrf.headerName}",  "${_csrf.token}");
-});
-
 let nameTestAuth = "";
 let isLoggedTestAuth = false;
 

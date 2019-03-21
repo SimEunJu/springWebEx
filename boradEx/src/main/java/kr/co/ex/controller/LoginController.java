@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ public class LoginController {
 	}	
 
 	@PostMapping("/board/signin")
+	@PreAuthorize("isAnoymous()")
 	public String signin(LoginDto user){
 		
 		List<AuthVO> auth = new ArrayList<>();
@@ -43,6 +45,7 @@ public class LoginController {
 	}
 	
 	@GetMapping("/board/logout")
+	@PreAuthorize("isAuthenticated()")
 	public String logout(){
 		return "login/logout.page";
 	}

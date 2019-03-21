@@ -28,9 +28,6 @@
 				</c:when>
 			</c:choose>
 		</div>
-		
-		<input type="hidden" value="${_csrf.token }" name="${_csrf.parameterName }">
-		
 	</div>
 	
 	<div>

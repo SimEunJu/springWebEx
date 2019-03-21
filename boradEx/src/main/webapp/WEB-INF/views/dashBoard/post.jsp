@@ -9,10 +9,6 @@
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
 			<label for="all-mem">전체</label>
 		</div>
-		
-		<div class="float-right">
-			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
-		</div>
 	</div>
 	
 	<table class="table table-hover">

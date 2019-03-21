@@ -11,7 +11,7 @@
 		</div>
 		
 		<div class="float-right">
-			<button type="button" class="btn btn-outline-info" id="btn-all">모든 댓글</button>
+			<button type="button" class="btn btn-outline-info" id="btn-all">모든 글</button>
 			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
 		</div>
 	</div>
@@ -68,8 +68,3 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/utils/modal.js"></script>
-<script>
-$("document").ready(function(){
-	
-});
-</script>

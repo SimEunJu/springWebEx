@@ -1,3 +1,4 @@
+
 function Check(keyword) {
 		this.tbody = $("tbody");
 		this.checkes = this.tbody.find("input[name='"+keyword+"']");
