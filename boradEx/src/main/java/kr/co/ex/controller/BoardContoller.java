@@ -55,6 +55,7 @@ public class BoardContoller {
 	* @param cri 몇 번째 page인지, page마다 몇 개의 글을 보여주는지, 검색 타입, 검색 키워드
 	*/
 	
+	// 검색결과 유지
 	@GetMapping("")
 	public String showPostList(@ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
@@ -65,12 +66,14 @@ public class BoardContoller {
 			
 			String keyword = cri.getKeyword();
 			if(keyword == null){
-				totalCount = boardServ.getTotalCnt();
+				totalCount = boardServ.getTotalCnt(cri);
+				boardList = boardServ.listCriteria(cri);
 			}
 			else{
 				totalCount = boardServ.getSearchCnt(cri);
+				boardList = boardServ.listSearch(cri);
 			}
-			boardList = boardServ.listSearch(cri);
+			
 			pageMaker.setCri(cri);
 			pageMaker.setTotalCount(totalCount);
 			
@@ -128,9 +131,10 @@ public class BoardContoller {
 		return "redirect:/board/daily";
 	}
 	
+	// 검색결과 유지
 	@GetMapping("/{boardNo}")
 	public String showEachPost(@PathVariable int boardNo, 
-			@RequestParam(required=false) String from, @RequestParam(required=false) int nno,
+			@RequestParam(required=false) String from, @RequestParam(required=false) Integer nno,
 			@ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			boardServ.updateViewCnt(boardNo);
@@ -156,6 +160,7 @@ public class BoardContoller {
 		return attaches;
 	}
 	
+	// 검색어 유지
 	@GetMapping("/{boardNo}/mod")
 	@PreAuthorize("isAuthenticated()")
 	public String modifyPost(@PathVariable int boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
@@ -169,6 +174,7 @@ public class BoardContoller {
 		return "board/modify.part";
 	}
 	
+	// 검색어 유지
 	@PostMapping("/{boardNo}")
 	@PreAuthorize("isAuthenticated()")
 	public String modifyPost(BoardVO board, SearchCriteria cri, RedirectAttributes attrs){

@@ -50,13 +50,29 @@
 		order by bno desc, regdate desc
 	]]>
 </select>
+<sql id="type">
+	<choose>
+		<when test='userType.initial.equals("all")'>
+		
+		</when>
+		 <when test='userType.initial.equals("hot")'>
+			<![CDATA[
+			where viewcnt > 50
+			]]>
+		</when>
+		<when test='userType.initial.equals("notice")'>
+			where type='N'
+		</when>
+	</choose>
+</sql>
 
 <select id="listPage" resultType="kr.co.ex.domain.BoardVO">
 	<![CDATA[
 		select * from tbl_board where bno>0
-		order by bno desc, regdate desc
+		order by bno desc, regdate desc 
+	]]>
+		<include refid="type" />
 		limit #{pageStart}, #{perPageNum}
-	]]>	
 </select>
 
 <select id="listRegdate" resultType="kr.co.ex.domain.BoardVO">
@@ -69,10 +85,8 @@
 </select>
 
 <select id="totalCount" resultType="int">
-	<![CDATA[
-		select count(bno) from tbl_board where bno>0;
-	]]>
-	
+	select count(bno) from tbl_board
+	<include refid="type" />
 </select>
 
 <select id="readTotalCntByWriter" resultType="int">
@@ -106,7 +120,8 @@
 		select * from tbl_board 
 		where bno > 0 
 	]]>
-	<include refid="search"></include>
+	<include refid="type" />
+	<include refid="search" />
 	<![CDATA[
  		order by bno desc, regdate desc
  		limit #{pageStart}, #{perPageNum}
@@ -114,10 +129,9 @@
 </select>	
 
 <select id="searchCount" resultType="int">
-	<![CDATA[
-		select count(bno) from tbl_board where bno>0
-	]]>
-	<include refid="search"></include>
+	select count(bno) from tbl_board
+	<include refid="type" />
+	<include refid="search" />
 </select>
 
 <insert id="addAttach">

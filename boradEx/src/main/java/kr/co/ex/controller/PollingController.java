@@ -1,10 +1,8 @@
 package kr.co.ex.controller;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.dto.PollingMsgDto;
 import kr.co.ex.dto.PollingNotiDto;
-import kr.co.ex.service.MsgService;
 import kr.co.ex.service.PollingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +28,6 @@ public class PollingController {
 	// 로직을 함수로 뽑아낼 수 없을까?
 	
 	@NonNull private PollingService pollServ;
-	@NonNull private MsgService msgServ;
 	
 	private final int LIMIT = 999;
 	private final int DAY = 60*60*24;
@@ -80,7 +76,7 @@ public class PollingController {
 	}
 	
 	@GetMapping("/noti")
-	public ResponseEntity<Integer> pollingNotiCnt(@CookieValue(value="msgPoll", required=false) Cookie notiCk,
+	public ResponseEntity<Integer> pollingNotiCnt(@CookieValue(value="notiPoll", required=false) Cookie notiCk,
 			HttpServletResponse res){
 		
 		PollingNotiDto noti = null;
@@ -107,10 +103,10 @@ public class PollingController {
 		
 		String ckVal = newNNo+"z"+newCnt+"z"+newTerm;
 		
-		Cookie msgCookie = new Cookie("msgPoll", ckVal);
-		msgCookie.setPath("/board");
-		msgCookie.setMaxAge(DAY);
-		res.addCookie(msgCookie);
+		Cookie notiCookie = new Cookie("notiPoll", ckVal);
+		notiCookie.setPath("/board");
+		notiCookie.setMaxAge(DAY);
+		res.addCookie(notiCookie);
 		
 		log.info(noti.toString());
 		return ResponseEntity.ok(null);

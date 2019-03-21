@@ -26,17 +26,13 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/board/api/reply")
 public class ReplyRestController {
 	
-	@NonNull
-	private ReplyService replyServ;
-	
-	private final String ADMIN = "A";
-	private final String REPLY_WRITER = "R";
+	@NonNull private ReplyService replyServ;
 	
 	@GetMapping(value="", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<List<ReplyVO>> getReplies(Criteria cri){
 		List<ReplyVO> replies = null;
 		try {
-			replies = replyServ.listReplyByWriter(SecurityContextHolder.getContext().getAuthentication().getName(), cri);
+			replies = replyServ.listReplyByWriter(cri);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -46,14 +42,10 @@ public class ReplyRestController {
 	
 	@DeleteMapping(value="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<ReplyVO>> deleteReplies(@RequestBody List<Integer> rno){
-		String deleteType = REPLY_WRITER;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<ReplyVO> replies = null;
-		if(auth.getAuthorities().contains("ADMIN"))
-			deleteType = ADMIN;
 		try {
-			replyServ.removeReplies(deleteType, rno);
-			replies = replyServ.listReplyByWriter(auth.getName(), new Criteria());
+			replyServ.removeReplies(rno);
+			replies = replyServ.listReplyByWriter(new Criteria());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -27,15 +27,23 @@
 	<button id="newBtn" class="btn btn-outline-primary ml-auto">글쓰기</button>
 </div>
 
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link all active" href="javascript:void(0)">게시글</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link hot" href="javascript:void(0)">인기글</a>
+  </li>
+</ul>
 <div class="col-lg-12">
 	<table class="table table-hover">
 		<thead>
 			<tr>
-				<th>번호</th>
-				<th>제목</th>
-				<th>작성자</th>
-				<th>작성일</th>
-				<th>조회수</th>
+				<th class="border-top-0">번호</th>
+				<th class="border-top-0">제목</th>
+				<th class="border-top-0">작성자</th>
+				<th class="border-top-0">작성일</th>
+				<th class="border-top-0">조회수</th>
 			</tr>
 		</thead>
 		<tbody>

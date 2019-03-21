@@ -4,7 +4,8 @@
 <form role="form" method="post">
 	<input type="hidden" name="page" value="${cri.page}"> 
 	<input type="hidden" name="perPageNum" value="${cri.perPageNum}">
-
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	
 	<div class="form-group">
 		<label for="bno">게시물 번호</label> 
 		<input type="text" readonly="readonly" value="${board.bno }" name="bno" class="form-control">

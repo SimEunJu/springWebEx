@@ -143,7 +143,7 @@ public class AdminController {
 			PageMaker pm = PaginationUtils.pagination(move, cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("replies", replyServ.listReplyByWriter(auth.getName(), cri));
+			model.addAttribute("replies", replyServ.listReplyByWriter(cri));
 			
 		} catch (Exception e) {
 			e.printStackTrace();

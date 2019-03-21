@@ -117,8 +117,8 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int getTotalCnt() throws Exception {
-		return boardMapper.totalCount();
+	public int getTotalCnt(Criteria cri) throws Exception {
+		return boardMapper.totalCount(cri);
 	}
 
 	@Override

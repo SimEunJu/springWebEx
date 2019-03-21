@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
-import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.domain.SearchCriteria;
 
 @Service
@@ -31,7 +30,7 @@ public interface BoardService {
 	public List<BoardVO> listByWriter(String writer, Criteria cri) throws Exception;
 	
 	public int getSearchCnt(SearchCriteria cri) throws Exception;
-	public int getTotalCnt() throws Exception;
+	public int getTotalCnt(Criteria cri) throws Exception;
 	public int getTotalCntByWriter(String username) throws Exception;
 	
 	public List<AttachVO> getAttach(int bno) throws Exception;

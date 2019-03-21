@@ -13,7 +13,7 @@ public interface ReplyService {
 	public List<ReplyVO> listReply(int bno) throws Exception;
 	public List<ReplyDto> listCriteriaReply(int bno, Criteria cri) throws Exception;
 	public List<ReplyDto> listCriteriaAddedReply(int bno, int parRno, Criteria cri) throws Exception;
-	public List<ReplyVO> listReplyByWriter(String replyer, Criteria cri) throws Exception;
+	public List<ReplyVO> listReplyByWriter(Criteria cri) throws Exception;
 	
 	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception;
 	public int getAddedTotalCount(int parRno) throws Exception;
@@ -24,6 +24,7 @@ public interface ReplyService {
 	public void modifyReply(ReplyVO vo) throws Exception;
 	
 	public void removeReply(int rno, int bno) throws Exception;
+	public void removeReplies(List<Integer> rno) throws Exception;
 	public void removeReplies(List<Integer> rno, int bno) throws Exception;
 	
 	public void reportReply(int rno) throws Exception;

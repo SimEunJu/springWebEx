@@ -9,7 +9,7 @@ function longPoll(url, callback) {
             term = callback()*60*10;
         },
         //timeout: 3000,
-        complete: setTimeout(function() { longPoll(url, callback); }, term)
+        complete: setTimeout(function() { callback(url, callback); }, term)
     });
 }
 
@@ -26,9 +26,24 @@ longPoll("/board/polling/msg", function(){
 	const term = cookie[3];
 	
 	if(parseInt(cnt) > 999){
-		msg.html("999+");
+		poll.msg.innerHTML = "999+";
 		return false;
 	}
 	poll.msg.innerHTML = cnt;
+	return term;
+});
+
+longPoll("/board/polling/noti", function(){
+	console.log(document.cookie);
+	const cookie = document.cookie.match(/notiPoll=(\d+)z(\d+)z(\d+)/);
+	const no = cookie[1];
+	const cnt = cookie[2];
+	const term = cookie[3];
+	
+	if(parseInt(cnt) > 999){
+		poll.noti.innerHTML = "999+";
+		return false;
+	}
+	poll.noti.innerHTML = cnt;
 	return term;
 });

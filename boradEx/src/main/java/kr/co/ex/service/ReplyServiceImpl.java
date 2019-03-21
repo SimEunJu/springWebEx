@@ -99,7 +99,8 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 	
 	@Override
-	public List<ReplyVO> listReplyByWriter(String replyer, Criteria cri) throws Exception {
+	public List<ReplyVO> listReplyByWriter(Criteria cri) throws Exception {
+		String replyer = SecurityContextHolder.getContext().getAuthentication().getName();
 		return replyMapper.listReplyByReplyer(replyer, cri);
 	}
 
@@ -141,7 +142,7 @@ public class ReplyServiceImpl implements ReplyService {
 	@Transactional
 	@Loggable
 	public void removeReply(int rno, int bno) throws Exception {
-		String deleteType = getDeleteType(rno, bno);
+		String deleteType = getDeleteType(rno, getWriterName(bno));
 		replyMapper.delete(deleteType, rno);
 	}
 
@@ -149,11 +150,19 @@ public class ReplyServiceImpl implements ReplyService {
 	@Loggable
 	public void removeReplies(List<Integer> rno, int bno) throws Exception {
 		String user = SecurityContextHolder.getContext().getAuthentication().getName();
-		String deleteType = getDeleteType(rno.get(0), bno);
+		String deleteType = getDeleteType(rno.get(0), getWriterName(bno));
 		replyMapper.deleteReplies(deleteType, rno);
 	}
-
-	private String getDeleteType(int rno, int bno) throws Exception{
+	
+	@Override
+	@Loggable
+	public void removeReplies(List<Integer> rno) throws Exception {
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		String deleteType = getDeleteType(rno.get(0), null);
+		replyMapper.deleteReplies(deleteType, rno);
+	}
+	
+	private String getDeleteType(int rno, String boardWriter) throws Exception{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> roles = auth.getAuthorities().stream()
 				.map(a -> a.getAuthority()).collect(Collectors.toList());
@@ -163,7 +172,7 @@ public class ReplyServiceImpl implements ReplyService {
 		else if(!roles.contains("USER")) throw new AccessDeniedException("USER 권한 이상의 권한을 가지고 있지 않습니다.");
 		
 		String deleteType = "";
-		if(user.equals(getWriterName(bno))) deleteType = "B";
+		if(user.equals(boardWriter)) deleteType = "B";
 		else if(user.equals(getReplyer(rno))) deleteType = "R";
 		else if(user.equals("ADMIN")) deleteType = "A";
 		

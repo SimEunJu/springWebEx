@@ -338,7 +338,7 @@ $(document).ready(function(){
 		});
 		
 		$(".board-report").on("click", function(){
-			report("/board/"+board.bno+"/report", {
+			report("/board/daily"+board.bno+"/report", {
 				diff: 1
 			})
 		})

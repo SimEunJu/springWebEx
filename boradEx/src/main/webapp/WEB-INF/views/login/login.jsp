@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<div class="container">
+
 	<div class="row border m-2 p-2">
 		<form method="post" action="/login" class="col-md">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			<div class="form-group">
 				<input class="form-control" placeholder="아이디" type="text" name="username" /> 
 			</div>
@@ -21,8 +22,9 @@
 				</div>
 			</div>
 		</form>
+		
 		<div class="col-md align-self-center text-center">
 			<a href="/board/oauth2/authorization/google">Google로 로그인</a>
 		</div>
 	</div>
-</div>
+

@@ -29,7 +29,7 @@ public interface BoardMapper {
 	public List<BoardVO> listBoardByWriter(@Param("writer") String writer, @Param("cri") Criteria cri) throws Exception;
 	
 	public int searchCount(SearchCriteria cri) throws Exception;
-	public int totalCount() throws Exception;
+	public int totalCount(Criteria cri) throws Exception;
 	public int readTotalCntByWriter(String username) throws Exception;
 	
 	public String readWriterName(int bno);

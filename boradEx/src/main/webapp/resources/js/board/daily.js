@@ -12,6 +12,16 @@ $("document").ready(function(){
 		
 		history.replaceState({}, null, null);
 		
+		let type = "all";
+		$("nav a").on("click", function(e){
+			const target = e.target;
+			type = target.attr("class").match(/all|hot/)[1];
+			window.location.href = "/board/daily"+"${pagination.cri.makeQuery()}"
+			+"&searchType=" + $("select option:selected").val()
+			+"&keyword=" + encodeURIComponent($("input[name='keyword']").val())
+			+"&type="+type;
+		});
+		
 		$("#searchBtn").on("click", function(e){
 			
 			if(!$("select option:selected").val()){
@@ -26,7 +36,8 @@ $("document").ready(function(){
 			
 			window.location.href = "/board/daily"+"${pagination.cri.makeQuery()}"
 									+"&searchType=" + $("select option:selected").val()
-									+"&keyword=" + encodeURIComponent($("input[name='keyword']").val());
+									+"&keyword=" + encodeURIComponent($("input[name='keyword']").val())
+									+"&type="+type;
 		});
 		
 		$("#newBtn").on("click", function(){

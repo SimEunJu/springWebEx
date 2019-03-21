@@ -4,6 +4,7 @@
 
 <form role="form" id="register-form" action="/board/daily/new" method="post">
 	<div>
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		<div class="form-group">
 			<label for="title">제목</label> 
 			<input type="text" name="title" class="form-control" placeholder="Enter Title">
