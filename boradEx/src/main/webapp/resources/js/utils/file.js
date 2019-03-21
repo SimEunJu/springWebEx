@@ -1,5 +1,4 @@
 
-
 const fileService = (function(){
 	function getFilesInfo(template){
 		let files = [];

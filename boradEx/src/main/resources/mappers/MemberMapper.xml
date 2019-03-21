@@ -65,5 +65,4 @@
 		call update_access_time(#{epochSecond})
 	</select> 
 	
-	
 </mapper>

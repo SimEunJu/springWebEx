@@ -43,6 +43,8 @@
 <tiles:insertAttribute name="footer" />
 
 <script type="text/javascript" src="/resources/js/${path}.js"></script>
-
+<sec:authorize access="isAuthenticated()">
+	<script src="/resources/js/common/polling.js"></script>
+</sec:authorize>
 </body>
 </html>

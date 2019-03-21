@@ -63,8 +63,3 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
 <script src="/resources/js/utils/modal.js"></script>
-<script>
-$("document").ready(function(){
-	
-});
-</script>
