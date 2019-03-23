@@ -58,7 +58,8 @@
 	</update>
 
 	<select id="listMemberByKeyword" resultType="kr.co.ex.domain.MemberVO">
-		select * from tbl_member where username like '%#{keyword}%'
+		<bind name="searchWord" value="'%' + keyword + '%'" />
+		select * from tbl_member where username like #{searchWord}
 	</select>
 	
 	<select id="updateAccessTimeProcedure" statementType="CALLABLE">

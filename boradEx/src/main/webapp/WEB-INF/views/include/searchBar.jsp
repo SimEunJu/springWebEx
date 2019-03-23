@@ -13,7 +13,7 @@
 		</select>
 	</div>
 	<div class="col-md-6">
-		<input class="form-control" type="search" aria-label="Search" value="${cri.keyword eq null ? '' : cri.keyword}">
+		<input class="form-control" type="search" name="new-keyword" value="${cri.keyword eq null ? '' : cri.keyword}">
 	</div>
-	<button class="btn btn-outline-success col-md-2" type="submit">검색</button>	
+	<button class="btn btn-outline-success col-md-2" type="submit" id="search-btn">검색</button>	
 </div>

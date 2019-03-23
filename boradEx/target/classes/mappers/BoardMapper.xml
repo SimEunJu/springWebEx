@@ -51,27 +51,31 @@
 	]]>
 </select>
 <sql id="type">
+	<trim prefix="and">
 	<choose>
-		<when test='userType.initial.equals("all")'>
-		
+		<when test='type.typeInitial.equals("all")'>
+			
 		</when>
-		 <when test='userType.initial.equals("hot")'>
+		 <when test='type.typeInitial.equals("hot")'>
 			<![CDATA[
-			where viewcnt > 50
+			viewcnt > 50
 			]]>
 		</when>
-		<when test='userType.initial.equals("notice")'>
-			where type='N'
+		<when test='type.typeInitial.equals("notice")'>
+			type='N'
 		</when>
 	</choose>
+	</trim>
 </sql>
 
-<select id="listPage" resultType="kr.co.ex.domain.BoardVO">
+<select id="listCriteria" resultType="kr.co.ex.domain.BoardVO">
 	<![CDATA[
 		select * from tbl_board where bno>0
 		order by bno desc, regdate desc 
 	]]>
+	<trim prefix="where" prefixOverrides="and">
 		<include refid="type" />
+	</trim>
 		limit #{pageStart}, #{perPageNum}
 </select>
 
@@ -85,8 +89,11 @@
 </select>
 
 <select id="totalCount" resultType="int">
-	select count(bno) from tbl_board
-	<include refid="type" />
+	select count(bno) from tbl_board 
+	<trim prefix="where" prefixOverrides="and">
+		<include refid="type" />
+	</trim>
+	
 </select>
 
 <select id="readTotalCntByWriter" resultType="int">
@@ -95,18 +102,19 @@
 
 <sql id="search">
 	<if test="typeArr != null">
-	<trim prefix=" and (" suffix=") " prefixOverrides="or">
+	<trim prefix="and (" suffix=") " prefixOverrides="or">
 		<foreach item="type" collection="typeArr">
 			<trim prefix="or">
+				<bind name="searchWord" value="'%' + keyword + '%'" />
 				<choose>
 					<when test="searchType == 't'.toString()">
-						title like '%'||#{keyword}||'%'
+						title like #{searchWord}
 					</when>
 					<when test="searchType == 'c'.toString()">
-						content like '%'||{keyword}||'%'
+						content like #{searchWord}
 					</when>
 					<when test="searchType == 'w'.toString()">
-						writer like '%'||#{keyword}||'%'
+						writer like #{searchWord}
 					</when>
 				</choose>
 			</trim>
@@ -120,8 +128,8 @@
 		select * from tbl_board 
 		where bno > 0 
 	]]>
-	<include refid="type" />
-	<include refid="search" />
+		<include refid="type" />
+		<include refid="search" />
 	<![CDATA[
  		order by bno desc, regdate desc
  		limit #{pageStart}, #{perPageNum}
@@ -130,8 +138,10 @@
 
 <select id="searchCount" resultType="int">
 	select count(bno) from tbl_board
-	<include refid="type" />
-	<include refid="search" />
+	<trim prefix="where" prefixOverrides="and">
+		<include refid="type" />
+		<include refid="search" />
+	</trim>
 </select>
 
 <insert id="addAttach">

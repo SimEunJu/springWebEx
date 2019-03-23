@@ -59,6 +59,7 @@ public class BoardContoller {
 	@GetMapping("")
 	public String showPostList(@ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
+			log.info(cri.toString());
 			PageMaker pageMaker = new PageMaker();
 			
 			int totalCount = 0;

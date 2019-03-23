@@ -13,30 +13,28 @@ $("document").ready(function(){
 		history.replaceState({}, null, null);
 		
 		let type = "all";
-		$("nav a").on("click", function(e){
-			const target = e.target;
+		$(".nav a").on("click", function(e){
+			const target = $(e.target);
 			type = target.attr("class").match(/all|hot/)[1];
-			window.location.href = "/board/daily"+"${pagination.cri.makeQuery()}"
-			+"&searchType=" + $("select option:selected").val()
-			+"&keyword=" + encodeURIComponent($("input[name='keyword']").val())
-			+"&type="+type;
+			window.location.href = "/board/daily?"+makeQuery();
 		});
 		
-		$("#searchBtn").on("click", function(e){
+		$("#search-btn").on("click", function(e){
 			
 			if(!$("select option:selected").val()){
-				alter("검색 종류를 입력하세요");
+				alert("검색 종류를 입력하세요");
 				return;
 			}
 			
-			if(!$("input[name='keyword']").val()){
-				alter("검색 종류를 입력하세요");
+			if(!$("input[name='new-keyword']").val()){
+				alert("검색어를 입력하세요");
 				return;
 			}
 			
-			window.location.href = "/board/daily"+"${pagination.cri.makeQuery()}"
+			const vals = makeQuery.prototype.vals;
+			window.location.href = "/board/daily?"+"page="+vals.page+"&perPageNum="+vals.perPageNum
 									+"&searchType=" + $("select option:selected").val()
-									+"&keyword=" + encodeURIComponent($("input[name='keyword']").val())
+									+"&keyword=" + encodeURIComponent($("input[name='new-keyword']").val())
 									+"&type="+type;
 		});
 		
@@ -44,4 +42,20 @@ $("document").ready(function(){
 			window.location.href = "/board/daily/new";
 		});
 		
+		function makeQuery(){
+			let query = "";
+			for(let attr in vals){
+				query += attr+"="+vals[attr]+"&";
+			}
+			query = query.splice(0, query.length-1);
+			return query;
+		}
+		makeQuery.prototype.vals = {
+				page : $("form input[name='page']").val() ? $("form input[name='page']").val() : 1,
+				perPageNum : $("form input[name='perPageNum']").val() ? $("form input[name='perPageNum']").val() : 10,
+				searchType : $("form input[name='searchType']").val(),
+				keyword : $("form input[name='keyword']").val(),
+				type: $("form input[name='type']").val()
+		};
+		console.dir(makeQuery);
 	})

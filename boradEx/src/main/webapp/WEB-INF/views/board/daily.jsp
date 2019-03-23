@@ -5,7 +5,10 @@
 
 <form role="form">
 	<input type="hidden" name="page" value="${pagination.cri.page }">
-	<input type="hidden" name="perPageNum" value="${pagination.cri.perPageNum }">	 
+	<input type="hidden" name="perPageNum" value="${pagination.cri.perPageNum }">
+	<input type="hidden" name="keyword" value="${pagination.cri.keyword }">
+	<input type="hidden" name="searchType" value="${pagination.cri.searchType }">
+	<input type="hidden" name="type" value="${pagination.cri.type.typeInitial }">	 
 </form>
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog">
