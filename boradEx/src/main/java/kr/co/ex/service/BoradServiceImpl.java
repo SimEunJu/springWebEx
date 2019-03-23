@@ -11,6 +11,7 @@ import kr.co.ex.annoation.Loggable;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
+import kr.co.ex.domain.NoticeCriteria;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.mapper.BoardMapper;
@@ -135,6 +136,11 @@ public class BoradServiceImpl implements BoardService {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<BoardVO> listNotice(NoticeCriteria cri) throws Exception {
+		return boardMapper.listNotice(cri);
+	}
+	
 	@Override
 	public int getSearchCnt(SearchCriteria cri) throws Exception {
 		return boardMapper.searchCount(cri);

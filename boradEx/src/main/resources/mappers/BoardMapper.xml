@@ -136,6 +136,14 @@
 	]]>
 </select>	
 
+<select id="listNotice" resultType="kr.co.ex.domain.BoardVO">
+	select * from tbl_board
+	<![CDATA[
+	where bno > #{NOTICE_BOARD_START-1} and bno < #{NOTICE_BOARD_END + 1}
+	]]>
+	limit #{pageStart}, #{perPageNum}
+</select>
+
 <select id="searchCount" resultType="int">
 	select count(bno) from tbl_board
 	<trim prefix="where" prefixOverrides="and">

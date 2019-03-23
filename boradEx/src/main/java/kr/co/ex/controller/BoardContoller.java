@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
+import kr.co.ex.domain.NoticeCriteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
@@ -50,10 +50,16 @@ public class BoardContoller {
 	// 이미지 파일이 저장되는 루트 경로		
 	@Resource
 	String uploadPath;
-	
+
 	/*
 	* @param cri 몇 번째 page인지, page마다 몇 개의 글을 보여주는지, 검색 타입, 검색 키워드
 	*/
+	
+	private List<BoardVO> getNoticeBoard() throws Exception{
+		// [20, 50] 공지사항 전용 시작 번호대입니다.
+		NoticeCriteria cri = new NoticeCriteria();
+		return boardServ.listNotice(cri);
+	}
 	
 	// 검색결과 유지
 	@GetMapping("")
@@ -80,6 +86,8 @@ public class BoardContoller {
 			
 			model.addAttribute("pagination", pageMaker);
 			model.addAttribute("boardList", boardList);
+			
+			model.addAttribute("noticeList", getNoticeBoard());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

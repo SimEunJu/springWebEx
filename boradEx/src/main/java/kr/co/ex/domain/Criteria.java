@@ -4,10 +4,11 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import kr.co.ex.util.BoardType;
-import kr.co.ex.util.UserType;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Getter
+@Getter @Setter
 public class Criteria {
 	protected int page;
 	// number of article in a page;
