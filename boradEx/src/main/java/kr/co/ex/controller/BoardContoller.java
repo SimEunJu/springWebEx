@@ -27,9 +27,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
-import kr.co.ex.domain.NoticeCriteria;
+import kr.co.ex.domain.NoticeBoardCriteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
+import kr.co.ex.exception.UndefinedBoardTypeException;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.UserLikeService;
@@ -50,17 +51,24 @@ public class BoardContoller {
 	// 이미지 파일이 저장되는 루트 경로		
 	@Resource
 	String uploadPath;
+	
+	@NonNull public final static NoticeBoardCriteria notiCri;
+	
+	static {
+		notiCri = new NoticeBoardCriteria();
+		notiCri.setPage(1);
+		notiCri.setPerPageNum(notiCri.getNoticeEndIdx() - notiCri.getNoticeStartIdx());
+	}
 
+	// [20, 50] 공지사항 전용 시작 번호대입니다.
+	private List<BoardVO> getNoticeBoard() throws Exception{
+		return boardServ.listNotice(notiCri);
+	}
+	
 	/*
 	* @param cri 몇 번째 page인지, page마다 몇 개의 글을 보여주는지, 검색 타입, 검색 키워드
 	*/
-	
-	private List<BoardVO> getNoticeBoard() throws Exception{
-		// [20, 50] 공지사항 전용 시작 번호대입니다.
-		NoticeCriteria cri = new NoticeCriteria();
-		return boardServ.listNotice(cri);
-	}
-	
+
 	// 검색결과 유지
 	@GetMapping("")
 	public String showPostList(@ModelAttribute("cri") SearchCriteria cri, Model model){
@@ -72,15 +80,23 @@ public class BoardContoller {
 			List<BoardVO> boardList = null;
 			
 			String keyword = cri.getKeyword();
-			if(keyword == null){
+			switch (cri.getType()) {
+			case ALL:
 				totalCount = boardServ.getTotalCnt(cri);
 				boardList = boardServ.listCriteria(cri);
-			}
-			else{
+				break;
+			case HOT:
 				totalCount = boardServ.getSearchCnt(cri);
 				boardList = boardServ.listSearch(cri);
+				break;
+			case NOTICE:
+				totalCount = boardServ.getNoticeCnt();
+				boardList = boardServ.listNotice(notiCri);
+				break;
+			default:
+				throw new UndefinedBoardTypeException(cri.getType().toString());
 			}
-			
+
 			pageMaker.setCri(cri);
 			pageMaker.setTotalCount(totalCount);
 			

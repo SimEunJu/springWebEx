@@ -139,7 +139,7 @@
 <select id="listNotice" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board
 	<![CDATA[
-	where bno > #{NOTICE_BOARD_START-1} and bno < #{NOTICE_BOARD_END + 1}
+	where bno > #{noticeStartIdx-1} and bno < #{noticeEndIdx + 1} and type=#{type.typeInitial}
 	]]>
 	limit #{pageStart}, #{perPageNum}
 </select>

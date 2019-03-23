@@ -21,7 +21,7 @@ public class Criteria {
 		this.perPageNum = 10;
 		this.type = BoardType.ALL;
 	}
-	public void setMode(String mode){
+	public void setType(String mode){
 		BoardType type = null;
 		switch (mode) {
 		case "all":

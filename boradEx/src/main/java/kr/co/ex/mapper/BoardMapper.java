@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
-import kr.co.ex.domain.NoticeCriteria;
+import kr.co.ex.domain.NoticeBoardCriteria;
 import kr.co.ex.domain.SearchCriteria;
 
 @Mapper
@@ -28,7 +28,8 @@ public interface BoardMapper {
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
 	public List<BoardVO> listRegdate(LocalDateTime regdate) throws Exception;
 	public List<BoardVO> listBoardByWriter(@Param("writer") String writer, @Param("cri") Criteria cri) throws Exception;
-	public List<BoardVO> listNotice(NoticeCriteria cri) throws Exception;
+	
+	public List<BoardVO> listNotice(NoticeBoardCriteria cri) throws Exception;
 	
 	public int searchCount(SearchCriteria cri) throws Exception;
 	public int totalCount(Criteria cri) throws Exception;
