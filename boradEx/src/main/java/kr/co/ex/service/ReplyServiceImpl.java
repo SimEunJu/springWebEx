@@ -3,10 +3,10 @@ package kr.co.ex.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +24,8 @@ import lombok.RequiredArgsConstructor;
 public class ReplyServiceImpl implements ReplyService {
 
 	@NonNull private ReplyMapper replyMapper;
-	
 	@NonNull private BoardMapper boardMapper;
+	@NonNull private BCryptPasswordEncoder pwEncoder;
 	
 	@Override
 	public void addReply(ReplyVO vo) throws Exception {
@@ -147,6 +147,24 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
+	@Transactional
+	@Loggable
+	public void removeAnonymousReply(int rno, int bno, String password) throws Exception{
+		String deleteType = null;
+		try{
+			deleteType = getDeleteType(rno, getWriterName(bno));
+		}catch(AccessDeniedException e){
+			if(pwEncoder.matches(password, getPassword(rno))) deleteType = "R";
+			else throw new AccessDeniedException("익명 댓글에 대한 비밀번호가 다릅니다.");
+		}
+		replyMapper.delete(deleteType, rno);
+	}
+	
+	private String getPassword(int rno) throws Exception{
+		return replyMapper.readPasswrod(rno);
+	}
+	
+	@Override
 	@Loggable
 	public void removeReplies(List<Integer> rno, int bno) throws Exception {
 		String user = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -168,8 +186,8 @@ public class ReplyServiceImpl implements ReplyService {
 				.map(a -> a.getAuthority()).collect(Collectors.toList());
 		String user = auth.getName();
 	
-		if(roles.contains("ADMIN")) user = "ADMIN";
-		else if(!roles.contains("USER")) throw new AccessDeniedException("USER 권한 이상의 권한을 가지고 있지 않습니다.");
+		if(roles.contains("ROLE_ADMIN")) user = "ADMIN";
+		else if(!roles.contains("ROLE_USER")) throw new AccessDeniedException("USER 권한 이상의 권한을 가지고 있지 않습니다.");
 		
 		String deleteType = "";
 		if(user.equals(boardWriter)) deleteType = "B";

@@ -7,9 +7,8 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,11 +56,11 @@ public class ReplyController {
 						.build();
 				notiServ.registerNotification(noti);
 			}
-			return new ResponseEntity<String>("success", HttpStatus.OK);
+			return new ResponseEntity<>("success", HttpStatus.OK);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -82,10 +81,10 @@ public class ReplyController {
 		
 			map.put("replies", replyServ.listCriteriaReply(boardNo, cri));
 		
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			return new ResponseEntity<>(map, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -110,10 +109,10 @@ public class ReplyController {
 	public ResponseEntity<String> reportReply(@PathVariable int rno, ReplyVO vo){
 		try {
 			replyServ.reportReply(rno);
-			return new ResponseEntity<String>("success", HttpStatus.OK);
+			return new ResponseEntity<>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -125,19 +124,34 @@ public class ReplyController {
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@DeleteMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<String> remove(@PathVariable int bno, @PathVariable int rno, ReplyVO vo){
+	public ResponseEntity<String> remove(@PathVariable int bno, @PathVariable int rno){
 		try {
 			replyServ.removeReply(rno, bno);
-			return new ResponseEntity<String>("success", HttpStatus.OK);
+			return new ResponseEntity<>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping(value="/{rno}/password", produces={MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> matchPasswordAndDelete(@PathVariable int bno, @PathVariable int rno,
+			@RequestParam String password){
+		try {
+			replyServ.removeAnonymousReply(rno, bno, password);
+			return new ResponseEntity<>("success", HttpStatus.OK);
+		}
+		catch (Exception e) {
+			if(e instanceof AccessDeniedException){ 
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 }

@@ -39,6 +39,10 @@
   	<include refid="limit" />
   </select>
   
+  <select id="readPassword" resultType="String">
+  	select password from tbl_reply where rno = #{rno}
+  </select>
+  
   <select id="readTotalCnt" resultType="int">
   	select count(rno) from tbl_reply 
   	where bno=#{bno} 

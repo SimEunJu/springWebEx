@@ -135,6 +135,7 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/notice/new")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String registerNotice(){
 		return "board/new.part";
 	}
