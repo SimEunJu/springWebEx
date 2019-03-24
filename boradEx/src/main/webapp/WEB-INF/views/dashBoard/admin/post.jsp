@@ -11,6 +11,7 @@
 		</div>
 		
 		<div class="float-right">
+			<button type="button" class="btn btn-outline-danger" id="btn-notice">공지시항 작성</button>
 			<button type="button" class="btn btn-outline-info" id="btn-all">모든 글</button>
 			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
 		</div>

@@ -130,16 +130,32 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/new")
-	public String regist(){
+	public String register(){
+		return "board/new.part";
+	}
+	
+	@GetMapping("/notice/new")
+	public String registerNotice(){
 		return "board/new.part";
 	}
 	
 	@PostMapping("/new")
 	public String registerPost(BoardVO board, RedirectAttributes attrs){
 		try {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
-			if(auth != null) board.setWriter(auth.getName());
+			boardServ.register(board);
+			attrs.addFlashAttribute("msg", "success");
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			attrs.addFlashAttribute("msg", "fail");
+		}
+		return "redirect:/board/daily";
+	}
+	
+	@PostMapping("/notice/new")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String registerNoticePost(BoardVO board, RedirectAttributes attrs){
+		try {
 			
 			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");

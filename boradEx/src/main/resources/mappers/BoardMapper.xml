@@ -17,6 +17,11 @@
 	)
 </insert>
 
+<insert id="createNotice">
+	insert into tbl_board (bno, title, content, writer) 
+	values (#{bno}, #{title}, #{content}, #{writer})
+</insert>
+
 <select id="read" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board where bno=#{bno}
 </select>

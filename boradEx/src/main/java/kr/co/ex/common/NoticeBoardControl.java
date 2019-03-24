@@ -90,6 +90,16 @@ public class NoticeBoardControl {
 		return idx + START_IDX;
 	}
 	
+	public synchronized boolean rollbackRequestNotiBoardIdx(int idx){
+		unsetUseIdx(idx);
+		return true;
+	}
+	
+	public synchronized boolean rollbackReleaseNotiBoardIdx(int idx){
+		setUseIdx(idx);
+		return true;
+	}
+	
 	public synchronized boolean releaseNotiBoardIdx(int idx){
 		if(idxUseList.get(idx) == false) throw new CorruptReleseOnNoticeIdx(idx);
 		unsetUseIdx(idx);

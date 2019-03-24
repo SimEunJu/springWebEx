@@ -19,14 +19,17 @@ import kr.co.ex.mapper.ReplyMapper;
 import kr.co.ex.mapper.UserLikeMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 
 @Service
+@Log4j
 @RequiredArgsConstructor
 public class BoradServiceImpl implements BoardService {
 
 	@NonNull private BoardMapper boardMapper;
 	@NonNull private ReplyMapper replyMapper;
 	@NonNull private UserLikeMapper likeMapper;
+	@NonNull private NoticeBoardControl notiControl;
 	
 	@Override
 	@Transactional
@@ -82,15 +85,20 @@ public class BoradServiceImpl implements BoardService {
 		else throw new BadLikeUpdateException();
 	}
 
-	/* 게시물 삭제는 정책적으로 불가능
+	// 회원의 게시물 삭제는 불가능, 관리자는 가능
 	@Override
 	@Transactional
 	@Loggable
 	public void remove(int bno) throws Exception {
-		boardMapper.deleteAllAttach(bno);
-		boardMapper.delete(bno);
+		try{
+			boardMapper.deleteAllAttach(bno);
+			boardMapper.delete(bno);
+			notiControl.releaseNotiBoardIdx(bno);
+		}catch(Exception e){
+			notiControl.rollbackReleaseNotiBoardIdx(bno);
+			e.printStackTrace();
+		}
 	}
-	*/
 	
 	@Override
 	public List<BoardVO> listAll() throws Exception {
@@ -144,6 +152,19 @@ public class BoradServiceImpl implements BoardService {
 	@Override
 	public int getNoticeCnt(NoticeBoardControl.NoticeBoardCriteria cri) throws Exception {
 		return boardMapper.totalCount(cri);
+	}
+	
+	@Override
+	public void registerNotice(BoardVO vo){
+		int bno = 0;
+		try{
+			bno = notiControl.requestNotiBoardIdx();
+			vo.setBno(bno);
+			boardMapper.createNotice(vo);
+		}catch(Exception e){
+			if(bno != 0) notiControl.rollbackRequestNotiBoardIdx(bno);
+			e.printStackTrace();
+		}	
 	}
 	
 	@Override
