@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.co.ex.common.NoticeBoardControl;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
-import kr.co.ex.domain.NoticeBoardCriteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.UndefinedBoardTypeException;
@@ -47,21 +47,15 @@ public class BoardContoller {
 	@NonNull private BoardService boardServ;
 	@NonNull private UserLikeService likeServ;
 	@NonNull private NotificationService notiServ;
+	@NonNull private NoticeBoardControl notiControl;
 	
 	// 이미지 파일이 저장되는 루트 경로		
 	@Resource
 	String uploadPath;
-	
-	@NonNull public final static NoticeBoardCriteria notiCri;
-	
-	static {
-		notiCri = new NoticeBoardCriteria();
-		notiCri.setPage(1);
-		notiCri.setPerPageNum(notiCri.getNoticeEndIdx() - notiCri.getNoticeStartIdx());
-	}
 
-	// [20, 50] 공지사항 전용 시작 번호대입니다.
-	private List<BoardVO> getNoticeBoard() throws Exception{
+	// [20, 50) 공지사항 전용 시작 번호대입니다.
+	private List<BoardVO> getNoticeBoard(SearchCriteria searchCri) throws Exception{
+		NoticeBoardControl.NoticeBoardCriteria notiCri = notiControl.getNoticeBoardCri(searchCri);
 		return boardServ.listNotice(notiCri);
 	}
 	
@@ -90,8 +84,9 @@ public class BoardContoller {
 				boardList = boardServ.listSearch(cri);
 				break;
 			case NOTICE:
-				totalCount = boardServ.getNoticeCnt();
-				boardList = boardServ.listNotice(notiCri);
+				// 공지글만 검색하고 싶을 때 xml에서 search 가능하도록 변경 또는 추가해야
+				// 공지글 페이징 하고 싶을 때 totalCnt 추가해야
+				boardList = getNoticeBoard(cri);
 				break;
 			default:
 				throw new UndefinedBoardTypeException(cri.getType().toString());
@@ -103,7 +98,7 @@ public class BoardContoller {
 			model.addAttribute("pagination", pageMaker);
 			model.addAttribute("boardList", boardList);
 			
-			model.addAttribute("noticeList", getNoticeBoard());
+			model.addAttribute("noticeList", getNoticeBoard(cri));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

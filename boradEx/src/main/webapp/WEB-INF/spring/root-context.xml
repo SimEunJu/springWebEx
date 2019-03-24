@@ -63,6 +63,12 @@
     	</property>
     </bean>
 	
+	<bean id="notiBoardControl" class="kr.co.ex.common.NoticeBoardControl">
+		<!-- 공지글 시작 번호 -->
+		<constructor-arg index="0" value="20" />
+		<!-- 공지글 마지막 번호 -->
+		<constructor-arg index="1" value="50" />
+	</bean>
 	
 	<context:component-scan base-package="kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
 	

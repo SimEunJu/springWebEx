@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ex.annoation.Loggable;
+import kr.co.ex.common.NoticeBoardControl;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
-import kr.co.ex.domain.NoticeBoardCriteria;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.mapper.BoardMapper;
@@ -21,19 +21,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BoradServiceImpl implements BoardService {
 
 	@NonNull private BoardMapper boardMapper;
 	@NonNull private ReplyMapper replyMapper;
 	@NonNull private UserLikeMapper likeMapper;
-	
-	@NonNull public final static NoticeBoardCriteria noticeBoardCri;
-	
-	static {
-		noticeBoardCri = new NoticeBoardCriteria();
-		noticeBoardCri.setPerPageNum(noticeBoardCri.getNoticeEndIdx() - noticeBoardCri.getNoticeStartIdx());
-		noticeBoardCri.setPage(1);
-	}
 	
 	@Override
 	@Transactional
@@ -144,13 +137,13 @@ public class BoradServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardVO> listNotice(NoticeBoardCriteria cri) throws Exception {
+	public List<BoardVO> listNotice(NoticeBoardControl.NoticeBoardCriteria cri) throws Exception {
 		return boardMapper.listNotice(cri);
 	}
 
 	@Override
-	public int getNoticeCnt() throws Exception {
-		return boardMapper.totalCount(this.noticeBoardCri);
+	public int getNoticeCnt(NoticeBoardControl.NoticeBoardCriteria cri) throws Exception {
+		return boardMapper.totalCount(cri);
 	}
 	
 	@Override
