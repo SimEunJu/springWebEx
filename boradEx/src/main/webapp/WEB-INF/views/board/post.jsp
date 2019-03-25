@@ -36,7 +36,9 @@
 	</form>
 
 	<div class="row justify-content-center">
-		<button class="btn btn-${isUserLiked? '' : 'outline-'}danger mb-4 like" style="color: ${isUserLiked ? 'white' : 'red'}">
+		<button class="btn btn-${isUserLiked? '' : 'outline-'}danger mb-4 like"
+			data-like="${isUserLiked ? 'true' : 'false'}"
+			style="color: ${isUserLiked ? 'white' : 'red'}">
 			<span style="font-size: 20px; font-weight: bold;">♥</span> 좋아요 
 			<span class="like-num">${board.userLike}</span>
 		</button>
@@ -82,7 +84,7 @@
 
 	<div class="card-body">
 		<div class="row card-body reply-form">
-			<div class="col-sm-2">
+			<div class="col-md-2">
 				<sec:authorize access="isAuthenticated()">
 					<div class="reply-secret">
 						<label>비밀글</label> <input type="checkbox" name="secret">
@@ -94,14 +96,14 @@
 				</sec:authorize>
 				<sec:authorize access="isAnonymous()">
 					<div class="non-logged">
-						<input type="text" name="replyer" style="width: 100%;"
-							autocomplete="off" placeholder="이름"> <input
-							type="password" name="password" style="width: 100%;"
-							placeholder="비밀번호" autocomplete="off">
+						<input class="form-control" type="text" name="replyer" style="width: 100%;" 
+						placeholder="익명" autocomplete="off" value="익명" readonly> 
+						<input class="form-control" type="password" name="password" style="width: 100%;"
+						placeholder="비밀번호" autocomplete="off">
 					</div>
 				</sec:authorize>
 			</div>
-			<div class="col-sm-8">
+			<div class="col-sm-10">
 				<div class="reply">
 					<textarea style="width: 100%;" name="reply"></textarea>
 				</div>
@@ -111,9 +113,17 @@
 			</div>
 			<hr>
 		</div>
-		<ul class="reply-list list-group" data-trigger="click" data-toggle="popover" data-content="신고">
-
-		</ul>
+		
+			<div data-toggle="del-popover" id="del-popover"
+				data-content='<input type="password" name="pw" style="width:100px" class="form-control-sm" placeholder="비밀번호">
+				<button type="button" class="reply-pw btn btn-link btn-link">확인</button>' >
+			
+				<ul class="reply-list list-group" data-trigger="click" data-toggle="report-popover" id="report-popover" data-content="신고">
+			
+				</ul>
+			</div>
+		</div>
+		
 	</div>
 
 	<div class="card-footer pagination justify-content-center"></div>
@@ -130,7 +140,7 @@ let isLoggedTestAuth = false;
 </sec:authorize>
 
 const board = {
-		wrtier: "${board.writer}",
+		writer: "${board.writer}",
 		bno: "${board.bno}"
 };
 </script>
@@ -178,7 +188,11 @@ const board = {
 		{{else}}
 			<div class="header">
 				<strong class="primary-font">{{replyer}}</strong>
-				<small class="pull-right text-muted">{{dateFormat regdate}}</small>
+				<small class="float-right">{{dateFormat regdate}}</small>
+				<div class="row justify-content-end mr-1">
+					<small><a class="reply-del">삭제</a></small>
+					<small><a class="reply-report">|신고</a></small>
+				</div>
 			</div>
 			<p>{{reply}}</p>
 		{{/if}}
@@ -228,7 +242,7 @@ const board = {
 
 <script type="text/javascript" src="/resources/js/utils/file.js"></script>
 <script type="text/javascript" src="/resources/js/utils/reply.js"></script>
-<script type="text/javascript" src="/resources/js/utils/handlebarHelper.js"></script>
+<script type="text/javascript" src="/resources/js/utils/common.js"></script>
 
 <script>
     ClassicEditor

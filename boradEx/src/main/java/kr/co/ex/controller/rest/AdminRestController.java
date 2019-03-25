@@ -104,12 +104,12 @@ public class AdminRestController {
 	}
 	
 	@PostMapping(value = "/usertype", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Map<String, List<MemberVO>>> changeUserType(@RequestParam String prevType, @RequestParam String nextType, @RequestBody List<String> members) {
+	public ResponseEntity<Map<String, List<MemberVO>>> changeUserType(@RequestParam String type, @RequestParam String showType, @RequestBody List<String> members) {
 		
-		UserType prevUserType = getMemberType(prevType);
+		UserType prevUserType = getMemberType(type);
 		memServ.updateState(members, prevUserType);
 		
-		UserType nextUserType = getMemberType(nextType);
+		UserType nextUserType = getMemberType(showType);
 		Map<String, List<MemberVO>> list = Collections.singletonMap("users", memServ.ListCategorizedMember(nextUserType, new Criteria()));
 		
 		return new ResponseEntity<>(list, HttpStatus.OK);

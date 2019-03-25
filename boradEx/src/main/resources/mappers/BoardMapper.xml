@@ -55,7 +55,7 @@
 		order by bno desc, regdate desc
 	]]>
 </select>
-<sql id="type">
+<sql id="category">
 	<trim prefix="and">
 	<choose>
 		<when test='type.typeInitial.equals("all")'>
@@ -67,7 +67,7 @@
 			]]>
 		</when>
 		<when test='type.typeInitial.equals("notice")'>
-			type='N'
+			category=1
 		</when>
 	</choose>
 	</trim>
@@ -79,7 +79,7 @@
 		order by bno desc, regdate desc 
 	]]>
 	<trim prefix="where" prefixOverrides="and">
-		<include refid="type" />
+		<include refid="category" />
 	</trim>
 		limit #{pageStart}, #{perPageNum}
 </select>
@@ -96,7 +96,7 @@
 <select id="totalCount" resultType="int">
 	select count(bno) from tbl_board 
 	<trim prefix="where" prefixOverrides="and">
-		<include refid="type" />
+		<include refid="category" />
 	</trim>
 	
 </select>
@@ -133,7 +133,7 @@
 		select * from tbl_board 
 		where bno > 0 
 	]]>
-		<include refid="type" />
+		<include refid="category" />
 		<include refid="search" />
 	<![CDATA[
  		order by bno desc, regdate desc
@@ -144,7 +144,7 @@
 <select id="listNotice" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board
 	<![CDATA[
-	where bno >= #{noticeStartIdx} and bno < #{noticeEndIdx} and type=#{type.typeInitial} and isNull(delete_type)
+	where bno >= #{noticeStartIdx} and bno < #{noticeEndIdx} and category=#{type.typeNumber} and isNull(delete_type)
 	]]>
 	limit #{pageStart}, #{perPageNum}
 </select>
@@ -152,7 +152,7 @@
 <select id="searchCount" resultType="int">
 	select count(bno) from tbl_board
 	<trim prefix="where" prefixOverrides="and">
-		<include refid="type" />
+		<include refid="category" />
 		<include refid="search" />
 	</trim>
 </select>

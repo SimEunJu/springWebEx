@@ -37,6 +37,18 @@ const replyService = (function(){
 			}
 		})
 	}
+	
+	function removeAnoymous(param, callback, error){
+		$.post(`/board/daily/${param.bno}/reply/${param.rno}/pw`, param.pw)
+		.done(function(result, status, xhr){
+			if(callback) callbak(result);
+		})
+		.fail(function(xhr, status, err){
+			if(status == 401) alert("비밀번호가 다릅니다.");
+			if(error) error(err);
+		});
+	}
+	
 	function update(reply, callback, error){
 		$.ajax({
 			type: 'put',
@@ -62,6 +74,7 @@ const replyService = (function(){
 	return {add: add,
 		getList: getList,
 		remove: remove,
+		removeAnoymous: removeAnoymous,
 		update: update,
 		report: report}
 })();

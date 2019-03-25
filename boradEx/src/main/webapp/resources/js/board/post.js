@@ -37,8 +37,9 @@ $(document).ready(function(){
 		})();
 	
 		const replyObj = {
-				listSec: $(".reply-list"),
-				pagination: $(".pagination"), 
+				delPopover: $(".card #del-popover"),
+				listSec: $(".card .reply-list"),
+				pagination: $(".card .pagination"), 
 				
 				delBtn: $(".reply-del"),
 				addedBtn: $(".reply-added"),
@@ -106,35 +107,81 @@ $(document).ready(function(){
 			showReplyList(replyObj.page);
 		});
 		
+		replyObj.delPopover.popover({
+			selector: ".reply-del",
+			html: true,
+			trigger: "click"
+		});
+		
 		replyObj.listSec.on("click", ".reply-del", handleReplyDelEvt);
 		
-		function handleReplyDelEvt(){
-			if(confirm("정말 삭제하시겠습니다?")){
-				const rno = $(this).parents(".reply").data("rno");
-				// 해당 댓글 삭제하고
+		function handleReplyDelEvt(e){
+			const target = $(e.target);
+			
+			if(isLogged == false){
+				alert("로그인 해주세요.");
+				e.stopImmediatePropagation();
+				return;
+			}
+			
+			const reply = target.parents(".reply");
+			const rno = reply.data("rno");
+			const replyer = reply.find(".header .replyer").text();
+			
+			if(replyer === "anonymousUser"){
+				replyObj.delPopover.popover("toggle");
+				return;
+			}
+			
+			else if(confirm("정말 삭제하시겠습니까?")){
 				replyService.remove({rno : rno, bno: board.bno}, 
 					function(){
-						// 댓글 목록 갱신
-						showReplyList(replyObj.page);
+					// 댓글 목록 갱신
+					showReplyList(replyObj.page);
 				});
 			}
+			e.stopImmediatePropagation();
 		}
 		
-		// 회원 이름 클릭 시 신고 버튼 생성
+		replyObj.listSec.on("click", ".replyer", function(e){
+			if(this.innerHTML === "anonymousUser"){
+				e.stopImmediatePropagation();
+			}
+		});
+		
+		// 리팩토링 필요??
 		replyObj.listSec.popover({selector: ".replyer"});
 		$("body").on("click", ".popover", function(e){
 			
-			const replyer = replyObj.listSec.find(".replyer").filter((idx,r) => 
-				{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
-			);
+			const target = e.target;
+			let targetClassName = "";
 			
-			if(replyer === "익명") return;
-			const rno = replyer.parents("li").data("rno");
-			report("/board/user/report", {
-				username: replyer.text(),
-				rno : rno,
-				diff : 1
-			});
+			if(target.tagName === "BUTTON"){
+				const targetBtn = replyObj.listSec.find(".reply-del").filter((idx,r) => 
+					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
+				);
+				
+				const pw = targetBtn.siblings("input").val();
+				const rno = targetBtn.parents("li").data("rno");
+				replyServ.removeAnoymous({
+					rno: rno, bno: board.bno, pw: pw
+				});
+			
+			}else{
+				const targetReplyer = replyObj.listSec.find(".replyer").filter((idx,r) => 
+					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
+				);
+				
+				if(targetReplyer.dataset.report == false) return;
+				targetReplyer.dataset.report = true;
+				
+				const rno = targetReplyer.parents("li").data("rno");
+				report("/board/user/report", {
+					username: targetReplyer.text(),
+					rno : rno,
+					diff : 1
+				});
+			}		
 		});
 		
 		function report(url, data){
@@ -148,7 +195,11 @@ $(document).ready(function(){
 				console.error(jqXHR, textStatus, errorThrown);
 			});
 		}
+		
 		replyObj.listSec.on("click", ".reply-report", function(e){
+			if(this.dataset.report == true) return;
+			this.dataset.report = true;
+			
 			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
 				const rno = $(this).parents(".reply").data("rno");
 				replyService.report({bno: board.bno, rno: rno}, function(){
@@ -233,7 +284,7 @@ $(document).ready(function(){
 					reply: form.find("textarea[name='reply']").val(),
 					replyer: form.find("input[name='replyer']").val(),
 					writer: board.writer,
-					bno: board.no,
+					bno: board.bno,
 			}
 			if(isLogged && !checkInputVal(required)){
 				alert("빈 칸을 채워주세요.");
@@ -265,8 +316,8 @@ $(document).ready(function(){
 			}
 			return true;
 		}
-	
-		replyObj.listSec.on("click", ".reply-reg",function(){		
+		
+		replyObj.listSec.siblings(".reply-form").on("click", ".reply-reg",function(){		
 			addReply(replyObj.form);		
 		});
 		
@@ -325,20 +376,22 @@ $(document).ready(function(){
 		}
 		
 		$(".like").on("click", function(){
-		
-			if($(this).css("color") === "rgb(255, 255, 255)"){
-				console.log("dislike");
+			if(this.dataset.like === true){
+				this.dataset.like = false;
 				updateLike($(this), -1);
 				return;
 			}
 			else{
 				updateLike($(this), 1);
+				this.dataset.like = true;
 				return;
 			}
 		});
 		
 		$(".board-report").on("click", function(){
-			report("/board/daily"+board.bno+"/report", {
+			if(this.dataset.report == true) return;
+			this.dataset.report = true;
+			report("/board/daily/"+board.bno+"/report", {
 				diff: 1
 			})
 		})
@@ -384,7 +437,8 @@ $(document).ready(function(){
 			}
 			
 			formObj.attr("action", "/board/daily/"+board.bno);
-			formObj.attr("method", "DELETE");
+			formObj.attr("_method", "DELETE")
+			formObj.attr("method", "post");
 			formObj.submit();
 		});
 		

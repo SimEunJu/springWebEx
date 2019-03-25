@@ -55,7 +55,7 @@
 					<td>${notice.bno}</td>
 					<td><a
 						href="/board/daily/${notice.bno}/${pagination.cri.makeSearch()}">${notice.title}</a>
-						[<a href="javascript:void(0)">${notice.replyCnt}</a>]</td>
+					</td>
 					<td>${notice.writer}</td>
 					<td>${cf:formatLocalDateTime(notice.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
 					<td>${notice.viewcnt}</td>

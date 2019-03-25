@@ -201,3 +201,4 @@ function addHandlebarHelper(){
 		return acc;
 	});
 }
+addHandlebarHelper();

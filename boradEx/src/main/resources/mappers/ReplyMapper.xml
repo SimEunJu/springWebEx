@@ -27,7 +27,7 @@
   	<include refid="limit" />
   </select>
   
-  <select id="listCriteriaAdded" resultType="kr.co.ex.domain.ReplyVO">
+  <select id="listCriteriaAdded" resultType="kr.co.ex.dto.ReplyDto">
 	select * from tbl_reply
 	where par_rno=#{parRno}
 	order by rno
@@ -52,7 +52,7 @@
   	
   </select>
   
-  <select id="addedTotalCount" resultType="int">
+  <select id="readAddedTotalCnt" resultType="int">
   	select count(par_rno) from tbl_reply where par_rno=#{parRno}
   </select>
   

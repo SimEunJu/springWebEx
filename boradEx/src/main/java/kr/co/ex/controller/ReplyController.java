@@ -89,12 +89,11 @@ public class ReplyController {
 	}
 	
 	@GetMapping(value="/added/{parRno}/{page}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("permitAll()")
-	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int bno, @PathVariable int parRno, @PathVariable int page){
+	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable int parRno, @PathVariable int page){
 		try{
 			Criteria cri = new Criteria();
 			cri.setPage(page);
-			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(bno, parRno, cri);
+			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(boardNo, parRno, cri);
 			
 			return new ResponseEntity<>(replies, HttpStatus.OK);
 			
@@ -130,9 +129,9 @@ public class ReplyController {
 	
 	@DeleteMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<String> remove(@PathVariable int bno, @PathVariable int rno){
+	public ResponseEntity<String> remove(@PathVariable int boardNo, @PathVariable int rno){
 		try {
-			replyServ.removeReply(rno, bno);
+			replyServ.removeReply(rno, boardNo);
 			return new ResponseEntity<>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -140,11 +139,11 @@ public class ReplyController {
 		}
 	}
 	
-	@PostMapping(value="/{rno}/password", produces={MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> matchPasswordAndDelete(@PathVariable int bno, @PathVariable int rno,
-			@RequestParam String password){
+	@PostMapping(value="/{rno}/pw", produces={MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> matchPasswordAndDelete(@PathVariable int boardNo, @PathVariable int rno,
+			@RequestParam String pw){
 		try {
-			replyServ.removeAnonymousReply(rno, bno, password);
+			replyServ.removeAnonymousReply(rno, boardNo, pw);
 			return new ResponseEntity<>("success", HttpStatus.OK);
 		}
 		catch (Exception e) {
