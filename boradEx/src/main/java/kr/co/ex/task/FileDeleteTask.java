@@ -66,7 +66,7 @@ public class FileDeleteTask {
 					} 
 			}
 		}
-		
+	
 		private class CustomResultHandler implements ResultHandler<String>{
 			@Override
 			public void handleResult(ResultContext<? extends String> resultContext) {

@@ -172,7 +172,7 @@ $(document).ready(function(){
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);
 				
-				if(targetReplyer.dataset.report == false) return;
+				if(targetReplyer.dataset.report == "false") return;
 				targetReplyer.dataset.report = true;
 				
 				const rno = targetReplyer.parents("li").data("rno");
@@ -197,7 +197,7 @@ $(document).ready(function(){
 		}
 		
 		replyObj.listSec.on("click", ".reply-report", function(e){
-			if(this.dataset.report == true) return;
+			if(this.dataset.report == "true") return;
 			this.dataset.report = true;
 			
 			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
@@ -376,7 +376,7 @@ $(document).ready(function(){
 		}
 		
 		$(".like").on("click", function(){
-			if(this.dataset.like === true){
+			if(this.dataset.like === "true"){
 				this.dataset.like = false;
 				updateLike($(this), -1);
 				return;
@@ -389,7 +389,7 @@ $(document).ready(function(){
 		});
 		
 		$(".board-report").on("click", function(){
-			if(this.dataset.report == true) return;
+			if(this.dataset.report == "true") return;
 			this.dataset.report = true;
 			report("/board/daily/"+board.bno+"/report", {
 				diff: 1

@@ -88,7 +88,10 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http
- 
+    		.requiresChannel()
+    			.anyRequest()
+    			.requiresSecure()
+    			.and()
     		.formLogin()
     			.loginPage("/board/login")
     			.loginProcessingUrl("/login")

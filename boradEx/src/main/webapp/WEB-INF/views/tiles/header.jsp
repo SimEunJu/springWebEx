@@ -41,7 +41,7 @@
 		</div>
 	</nav>
 	<script>
-	/* (function(){
+	(function(){
 		const toggler = document.querySelector(".navbar-toggler");
 		const toggleList = $("#navbar");
 		toggler.addEventListener("click", function(){
@@ -49,5 +49,5 @@
 			const togglerVal = toggler.getAttribute("aria-expanded") === "true" ? "true" : "false";
 			toggler.setAttribute("aria-expanded", togglerVal);
 		});
-	})(); */
+	})();
 	</script>

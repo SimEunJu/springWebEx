@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<bean id="customLoginSuccessHandler" class="kr.co.ex.security.CustomLoginSuccessHandler"></bean>
+	<!-- <bean id="customLoginSuccessHandler" class="kr.co.ex.security.CustomLoginSuccessHandler"></bean> -->
 	<bean id="customLoginFailureHandler" class="kr.co.ex.security.CustomLoginFailureHandler"></bean>
 	<bean id="customAccessDeniedHandler" class="kr.co.ex.security.CustomAccessDeniedHandler"></bean>
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
