@@ -31,8 +31,12 @@
 </select>
 
 <select id="listBoardByWriter" resultType="kr.co.ex.domain.BoardVO">
-	select * from tbl_board where writer=#{writer}
+	select * from tbl_board where writer=#{writer} and isnull(delete_type)
 	limit #{cri.pageStart}, #{cri.perPageNum}
+</select>
+
+<select id="readPassword" resultType="String">
+	select password from tbl_board where bno=#{bno}
 </select>
 
 <update id="update">
@@ -45,13 +49,13 @@
 </update>
 
 <update id="delete">
-	update tbl_board set delete_flag="1" where bno=#{bno}
+	update tbl_board set delete_type=#{deleteType} where bno=#{bno} 
 </update>
 
 <select id="listAll" resultType="kr.co.ex.domain.BoardVO">
 	<![CDATA[
 		select * from tbl_board 
-		where bno>0
+		where isnull(delete_type)
 		order by bno desc, regdate desc
 	]]>
 </select>
@@ -75,7 +79,7 @@
 
 <select id="listCriteria" resultType="kr.co.ex.domain.BoardVO">
 	<![CDATA[
-		select * from tbl_board where bno>0
+		select * from tbl_board where isnull(delete_type)
 		order by bno desc, regdate desc 
 	]]>
 	<trim prefix="where" prefixOverrides="and">
@@ -87,7 +91,7 @@
 <select id="listRegdate" resultType="kr.co.ex.domain.BoardVO">
  	<![CDATA[
  		select * from tbl_board
- 		where regdate >= #{regdate}
+ 		where regdate >= #{regdate} and isnull(delete_type)
  		order by viewcnt desc
  		limit 0, 10 
 	 ]]>
@@ -97,12 +101,13 @@
 	select count(bno) from tbl_board 
 	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />
+		and isnull(delete_type)
 	</trim>
 	
 </select>
 
 <select id="readTotalCntByWriter" resultType="int">
-	select count(bno) from tbl_board where writer=#{username}
+	select count(bno) from tbl_board where writer=#{username} and isnull(delete_type)
 </select>
 
 <sql id="search">
@@ -131,7 +136,7 @@
 <select id="listSearch" resultType="kr.co.ex.domain.BoardVO">
 	<![CDATA[
 		select * from tbl_board 
-		where bno > 0 
+		where isnull(delete_type)
 	]]>
 		<include refid="category" />
 		<include refid="search" />
@@ -154,6 +159,7 @@
 	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />
 		<include refid="search" />
+		and isnull(delete_type)
 	</trim>
 </select>
 

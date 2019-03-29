@@ -7,12 +7,12 @@
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		<div class="form-group">
 			<label for="title">제목</label> 
-			<input type="text" name="title" class="form-control" placeholder="Enter Title">
+			<input type="text" name="title" class="form-control" placeholder="제목" required>
 		</div>
 		
 		<div class="form-group">
 			<label for="content">내용</label>
-			<textarea name="content" id="editor" name="content"></textarea>
+			<textarea name="content" id="editor" required></textarea>
 		</div>
 		
 		<div class="form-group">
@@ -32,17 +32,25 @@
 	</div>
 	
 	<div>
-		<button type="submit" class="btn btn-outline-primary">Submit</button>
+		<button type="submit" class="btn btn-outline-primary">등록</button>
 	</div>
 </form>
 
 <%@ include file="/WEB-INF/views/include/upload.jsp" %>
 
 <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
+
+<script src="/resources/js/utils/file.js"></script>
+<script src="/resources/js/include/upload.js"></script>
 
 <script>
+let editor;
     ClassicEditor
         .create( document.querySelector( '#editor' ) )
+        .then( newEditor => {
+       		editor = newEditor;
+    	})
         .catch( error => {
             console.error( error );
         } );

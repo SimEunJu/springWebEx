@@ -12,30 +12,34 @@ $("document").ready(function(){
 		
 		history.replaceState({}, null, null);
 		
-		let type = "all";
+		const tabObj = {
+			all : $(".nav .all"),
+			hot : $(".nav .hot")
+		}
+		
 		$(".nav a").on("click", function(e){
 			const target = $(e.target);
-			type = target.attr("class").match(/all|hot/)[1];
+			const type = target.attr("class").match(/all|hot/)[0];
+			makeQuery.prototype.vals.type = type;
 			window.location.href = "/board/daily?"+makeQuery();
 		});
 		
 		$("#search-btn").on("click", function(e){
 			
-			if(!$("select option:selected").val()){
-				alert("검색 종류를 입력하세요");
-				return;
-			}
+			let option = $("select option:selected").val();
+			if(option === "n") option = "tcw";
 			
-			if(!$("input[name='new-keyword']").val()){
+			const keyword = $("input[name='new-keyword']").val();
+			if(!keyword){
 				alert("검색어를 입력하세요");
 				return;
 			}
 			
 			const vals = makeQuery.prototype.vals;
 			window.location.href = "/board/daily?"+"page="+vals.page+"&perPageNum="+vals.perPageNum
-									+"&searchType=" + $("select option:selected").val()
-									+"&keyword=" + encodeURIComponent($("input[name='new-keyword']").val())
-									+"&type="+type;
+									+"&searchType=" + option
+									+"&keyword=" + encodeURIComponent(keyword)
+									+"&type="+vals.type;
 		});
 		
 		$("#newBtn").on("click", function(){
@@ -44,10 +48,11 @@ $("document").ready(function(){
 		
 		function makeQuery(){
 			let query = "";
+			const vals = makeQuery.prototype.vals;
 			for(let attr in vals){
 				query += attr+"="+vals[attr]+"&";
 			}
-			query = query.splice(0, query.length-1);
+			query = query.slice(0, query.length-1);
 			return query;
 		}
 		makeQuery.prototype.vals = {

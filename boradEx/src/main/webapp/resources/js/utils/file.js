@@ -6,7 +6,7 @@ const fileService = (function(){
 			const fileObj = obj;
 			files.push({
 				idx: i,
-				fileName: fileObj.dataset.filname,
+				fileName: fileObj.dataset.filename,
 				uuid: fileObj.dataset.uuid,
 				uploadPath: fileObj.dataset.path,
 				fileType: fileObj.dataset.type

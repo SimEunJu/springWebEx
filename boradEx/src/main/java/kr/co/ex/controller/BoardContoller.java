@@ -1,12 +1,9 @@
 package kr.co.ex.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -142,6 +139,7 @@ public class BoardContoller {
 	
 	@PostMapping("/new")
 	public String registerPost(BoardVO board, RedirectAttributes attrs){
+		log.info(board.toString());
 		try {
 			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");
@@ -155,9 +153,8 @@ public class BoardContoller {
 	
 	@PostMapping("/notice/new")
 	@PreAuthorize("hasRole('ADMIN')")
-	public String registerNoticePost(BoardVO board, RedirectAttributes attrs){
+	public String registerNoticePost(@Valid BoardVO board, RedirectAttributes attrs){
 		try {
-			
 			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");
 		
@@ -224,35 +221,6 @@ public class BoardContoller {
 		}
 		return "redirect:/board/daily"+cri.makeSearch();
 	}
-	/*
-	@DeleteMapping("/{boardNo}")
-	@PreAuthorize("principal.username == #name")
-	public String deletePost(@PathVariable Integer boardNo, @RequestParam String username, SearchCriteria cri, RedirectAttributes attrs){
-		try{
-			this.deleteFile(boardServ.getAttach(boardNo));
-			boardServ.remove(boardNo);
-			attrs.addFlashAttribute("msg", "success");
-		} catch(Exception e){
-			e.printStackTrace();
-			attrs.addFlashAttribute("msg", "fail");
-		}
-		return "redirect:/board/daily"+cri.makeSearch();
-	}
-	*/
-	private void deleteFile(List<AttachVO> attaches){
-		if(attaches == null || attaches.size() == 0) return;
-		attaches.forEach(attach -> {
-			log.info(attach.toString());
-			try {
-				Path file = Paths.get(uploadPath+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
-				Files.deleteIfExists(file);
-				if(Files.probeContentType(file).startsWith("image")){
-					Path thumbnail = Paths.get(uploadPath+attach.getUploadPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
-					Files.deleteIfExists(thumbnail);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-	}
+	
+	
 }

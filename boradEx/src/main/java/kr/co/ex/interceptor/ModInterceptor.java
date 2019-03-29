@@ -1,24 +1,34 @@
 package kr.co.ex.interceptor;
 
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-public class LoginInterceptor extends HandlerInterceptorAdapter {
+import lombok.extern.log4j.Log4j;
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
-	private static final String LOGIN = "login";
-	private static final int WEEK = 60*60*24*7;
-	
+@Log4j
+public class ModInterceptor extends HandlerInterceptorAdapter {
+
 	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, 
+			Object handler) throws Exception {
+		List<GrantedAuthority> auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+			.stream().filter(a -> "ROLE_ADMIN".equals(a.getAuthority())).collect(Collectors.toList());
+		if(auth.size() != 0) return true;
+		HttpSession sess = request.getSession();
+		if(!(boolean)sess.getAttribute("anonyMod")) return false;
+		sess.removeAttribute("anonyMod");		
+		return true;
+	}
+
+/*	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, 
 			Object handler, ModelAndView modelAndView) throws Exception {
 		HttpSession sess = request.getSession();
@@ -39,17 +49,5 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		}else{
 			response.sendRedirect("/login");
 		}
-	}
-
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, 
-			Object handler) throws Exception {
-		HttpSession sess = request.getSession();
-		Object user = sess.getAttribute(LOGIN);
-		if(user != null){
-			sess.removeAttribute(LOGIN);
-		}
-		return true;
-	}
-
+	}*/	
 }

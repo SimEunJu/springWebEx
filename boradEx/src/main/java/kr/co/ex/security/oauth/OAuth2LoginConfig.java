@@ -26,27 +26,25 @@ import org.springframework.session.security.web.authentication.SpringSessionReme
 import kr.co.ex.security.domain.GoogleOAuth2User;
 import lombok.extern.log4j.Log4j;
 
-
 @Log4j
-@Configuration
 @EnableWebSecurity
 public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
 	
         
-        private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauthUserService() {
-        	
-            final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-            
-            return (userRequest) -> {
-            	OAuth2User user = delegate.loadUser(userRequest);
-            	
-                Map<String, Object> userInfo = user.getAttributes();
-                String email = (String) userInfo.get("email");
-                user = new GoogleOAuth2User(email, (String) email, (String) userInfo.get("name"));
-            
-                return user;
-            };
-        }	
+	private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauthUserService() {
+
+		final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+
+		return (userRequest) -> {
+			OAuth2User user = delegate.loadUser(userRequest);
+
+			Map<String, Object> userInfo = user.getAttributes();
+			String email = (String) userInfo.get("email");
+			user = new GoogleOAuth2User(email, (String) email, (String) userInfo.get("name"));
+
+			return user;
+		};
+	}
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
@@ -64,7 +62,7 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
             OAuth2AuthorizedClientService authorizedClientService) {
         return new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(authorizedClientService);
     }
-
+    
     @Value("${oauth2.google.client.id}")
     private String clientId;
     
@@ -88,10 +86,10 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http
-    		.requiresChannel()
+    	  		/*.requiresChannel()
     			.anyRequest()
     			.requiresSecure()
-    			.and()
+    			.and()*/
     		.formLogin()
     			.loginPage("/board/login")
     			.loginProcessingUrl("/login")

@@ -19,11 +19,12 @@ public interface BoardMapper {
 	public void createNotice(BoardVO vo) throws Exception;
 	
 	public BoardVO read(Integer bno) throws Exception;
+	public String readPassword(int bno) throws Exception;
 	
 	public void update(BoardVO vo) throws Exception;
 	public void updateLike(@Param("bno") int bno, @Param("diff") int diff) throws Exception;
 	
-	public void delete(Integer bno) throws Exception;
+	public void delete(@Param("bno") int bno, @Param("deleteType") String deleteType) throws Exception;
 	
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;

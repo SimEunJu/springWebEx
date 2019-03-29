@@ -416,36 +416,45 @@ $(document).ready(function(){
 		
 		$("#boardModBtn").on("click",function(e){
 			e.preventDefault();
-			formObj.attr("action", "/board/daily/"+board.bno+"/mod");
-			formObj.attr("method", "get");
-			formObj.submit()
+			if(isLogged === false){
+				boardModAndDel("/board/api/mod", "/board/daily/"+board.bno+"/mod"+window.location.search);
+				return;
+			}
+			window.location.href="/board/daily/"+board.bno+"/mod";
 		});
-		
+		// search parameter 유지
 		$("#boardRemBtn").on("click",function(e){
 			e.preventDefault();
-			var replyCnt = $(".chat li").length;
+			const replyCnt = $(".chat li").length;
 			console.log(replyCnt);
 			if(replyCnt > 0){
 				alert("댓글이 있는 게시물은 삭제할 수 없습니다.");
 				return;
 			}
-			var files = fileService.getFilesInfo();
-		
-			if(files !== ""){
-				$.post("/board/delete", 
-						{files : files, name: name});
-			}
 			
-			formObj.attr("action", "/board/daily/"+board.bno);
-			formObj.attr("_method", "DELETE")
-			formObj.attr("method", "post");
-			formObj.submit();
+			boardModAndDel("/board/api/rem", "/board/daily"+window.location.search);
+
 		});
+		
+		function boardModAndDel(url, successUrl){
+			let pw = null;
+			if(isLogged === false){
+				pw = prompt("비밀번호를 입력해주세요");
+			}
+			$.post(url, {bno: board.bno, password: pw})
+			.fail(function(jqXHR, textStatus, errorThrown){
+				if(jqXHR.status === 401) alert("잘못된 비밀번호입니다.");
+			})
+			.done(function(){
+				window.location.href=successUrl;
+			})
+		}
 		
 		$("#boardAllBtn").on("click",function(e){
 			e.preventDefault();
-			formObj.attr("action", "/board/daily");
+			formObj.attr("action", "/board/daily"+window.location.search);
 			formObj.attr("method", "get");
 			formObj.submit();
 		});
+	
 	});

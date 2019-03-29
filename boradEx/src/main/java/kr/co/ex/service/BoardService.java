@@ -18,12 +18,14 @@ public interface BoardService {
 	public void registerNotice(BoardVO vo) throws Exception;
 	
 	public BoardVO read(int bno) throws Exception;
+	public boolean matchPassword(int bno, String password) throws Exception;
 	public String getWriterName(int bno);
 	
 	public void modify(BoardVO board) throws Exception;
 	public void updateLike(int bno, int diff, String username) throws Exception;
 	
-	public void remove(int bno) throws Exception;
+	public void remove(BoardVO vo) throws Exception;
+	public void removeNoti(int bno) throws Exception;
 	
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;

@@ -20,3 +20,29 @@
 		</div>
 	</div>
 </div>
+
+<script id="file-info" type="text/x-handlebars-template">
+{{#each this}}
+	<input type='hidden' name='files[{{idx}}].fileName' value='{{fileName}}'/>";
+	<input type='hidden' name='files[{{idx}}].uuid' value='{{uuid}}'/>";
+	<input type='hidden' name='files[{{idx}}].uploadPath' value='{{uploadPath}}'/>";
+	<input type='hidden' name='files[{{idx}}].fileType' value='{{fileType}}'/>";
+{{/each}}
+</script>
+<script id="upload-item" type="text/x-handlebars-template">
+<li data-path='{{uploadPath}}' data-uuid='{{uuid}}' data-filename='{{fileName}}' data-type='{{fileType}}'>
+	<div>
+		<span>{{fileName}}</span>
+		<button type='button' data-file='{{filePath}}' data-type='{{fileType}}' class='btn btn-sm btn-warning'>
+			&times;
+		</button>
+		<br>
+		{{#if isImg}}
+			<img src='/board/daily/file?fileName={{filePath}}'>
+		{{else}}
+			<img src='/resources/img/attach.png'>
+		{{/if}}
+	</div>
+</li>
+</script>
+

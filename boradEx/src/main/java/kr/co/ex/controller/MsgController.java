@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 @RestController
-@RequestMapping("/board/use/msg")
+@RequestMapping("/board/user/msg")
 @PreAuthorize("hasRole('USER')")
 @RequiredArgsConstructor
 public class MsgController {

@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +16,11 @@ import kr.co.ex.common.NoticeBoardControl;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
+import kr.co.ex.domain.MsgVO;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.BadLikeUpdateException;
 import kr.co.ex.mapper.BoardMapper;
+import kr.co.ex.mapper.MsgMapper;
 import kr.co.ex.mapper.ReplyMapper;
 import kr.co.ex.mapper.UserLikeMapper;
 import lombok.NonNull;
@@ -30,10 +36,20 @@ public class BoradServiceImpl implements BoardService {
 	@NonNull private ReplyMapper replyMapper;
 	@NonNull private UserLikeMapper likeMapper;
 	@NonNull private NoticeBoardControl notiControl;
+	@NonNull private BCryptPasswordEncoder pwCrypt;
+	@NonNull private MsgMapper msgMapper;
 	
 	@Override
 	@Transactional
 	public void register(BoardVO board) throws Exception {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
+		if(authorities.contains("ROLE_ANONYMOUS")){
+			board.setWriter("익명");
+			board.setPassword(pwCrypt.encode(board.getPassword()));
+		}
+		else board.setWriter(auth.getName());
+		
 		boardMapper.create(board);
 		List<AttachVO> files = board.getFiles();
 		if(files != null){
@@ -85,19 +101,54 @@ public class BoradServiceImpl implements BoardService {
 		else throw new BadLikeUpdateException();
 	}
 
-	// 회원의 게시물 삭제는 불가능, 관리자는 가능
+	
 	@Override
 	@Transactional
 	@Loggable
-	public void remove(int bno) throws Exception {
+	public void removeNoti(int bno) throws Exception {
 		try{
 			boardMapper.deleteAllAttach(bno);
-			boardMapper.delete(bno);
+			boardMapper.delete(bno, "A");
 			notiControl.releaseNotiBoardIdx(bno);
 		}catch(Exception e){
 			notiControl.rollbackReleaseNotiBoardIdx(bno);
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	@Transactional
+	@Loggable
+	public void remove(BoardVO vo) throws Exception {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
+		if(authorities.contains("ROLE_ANONYMOUS")){ 
+			if(!matchPassword(vo.getBno(), vo.getPassword())) throw new AccessDeniedException("익명 게시글에 대한 비밀번호가 다릅니다.");
+			vo.setDeleteType("B");
+		}
+		else if(authorities.contains("ROLE_ADMIN")){
+			vo.setDeleteType("A");
+			MsgVO msg = new MsgVO();
+			BoardVO deleted = read(vo.getBno());
+			msg.setReceiver(deleted.getWriter());
+			// 관리자
+			msg.setSender(auth.getName());
+			msg.setTitle(deleted.getTitle()+"... 해당 게시글을 삭제 처리되었습니다.");
+			msg.setContent(vo.getContent()+"test");
+			msgMapper.createMsg(msg);
+		}
+		
+		try{
+			boardMapper.deleteAllAttach(vo.getBno());
+			boardMapper.delete(vo.getBno(), vo.getDeleteType());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public boolean matchPassword(int bno, String raw) throws Exception{
+		return pwCrypt.matches(raw, boardMapper.readPassword(bno));
 	}
 	
 	@Override

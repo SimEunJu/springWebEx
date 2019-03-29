@@ -11,14 +11,9 @@
 </form>
 
 	<div class="row justify-content-end">
-		<sec:authorize access="isAuthenticated()">
-			<sec:authentication property="principal" var="loginUser" />
-			<c:if test="${loginUser.username eq board.writer}">
-				<button type="submit" id="boardModBtn" class="btn btn-outline-warning">수정</button>
-				<button type="submit" id="boardRemBtn" class="btn btn-outline-danger">삭제</button>
-			</c:if>
-		</sec:authorize>
 		<button type="submit" id="boardAllBtn" class="btn btn-outline-primary">목록으로</button>
+		<button type="submit" id="boardModBtn" class="btn btn-outline-warning">수정</button>
+		<button type="submit" id="boardRemBtn" class="btn btn-outline-danger">삭제</button>
 	</div>
 	<form>
 		<div class="form-group">

@@ -54,12 +54,9 @@ $(".upload-result").on("click", "button", function(e){
 	
 	$.ajax({
 		url: "/board/daily/file",
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader(csrfHeader, csrfTokenVal);
-		},
-		method: "delete",
-		dataType: "json",
-		data: {fileName: fileName, type: type}
+		method: "POST",
+		data: {_method:"DELETE", fileName: fileName, type: type},
+		/*contentType: "application/json"*/
 	}).done(function(){
 		li.remove();
 		

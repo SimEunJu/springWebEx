@@ -122,10 +122,11 @@ public class UploadController {
 		
 	}
 	
-	@ResponseBody
 	@DeleteMapping(value="")
-	public ResponseEntity<Void> deleteOneFile(String fileName, String type) throws Exception{
+	@PreAuthorize("isAuthorize()")
+	public ResponseEntity<Void> deleteOneFile(@RequestParam String fileName, @RequestParam String type) throws Exception{
 		File file;
+		log.info(fileName);
 		try{
 			file = new File(uploadPath, URLDecoder.decode(fileName, "UTF-8"));
 			file.delete();

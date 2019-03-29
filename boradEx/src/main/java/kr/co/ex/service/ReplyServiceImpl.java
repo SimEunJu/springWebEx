@@ -29,8 +29,11 @@ public class ReplyServiceImpl implements ReplyService {
 	
 	@Override
 	public void addReply(ReplyVO vo) throws Exception {
-		String user = SecurityContextHolder.getContext().getAuthentication().getName();
-		vo.setReplyer(user);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
+		if(authorities.contains("ROLE_ANONYMOUS")) vo.setReplyer("¿Õ∏Ì");
+		else vo.setReplyer(auth.getName());
+		
 		replyMapper.create(vo);
 	}
 	
