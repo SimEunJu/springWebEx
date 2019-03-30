@@ -40,7 +40,12 @@ public class MemberServiceImpl implements MemberService {
 			throw new UndefinedMemberType(type.toString());
 		}
 	}
-	
+
+	@Override
+	public MemberVO getMember(String username) {
+		return memMapper.read(username);
+	}
+
 	@Override
 	public List<MemberVO> listMember(Criteria cri) {
 		return memMapper.listMember(cri);
@@ -83,6 +88,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void updateAccessTime(long epochSecond) {
 		memMapper.updateAccessTimeProcedure(epochSecond);
+	}
+
+	@Override
+	public void leave(String username) throws Exception {
+		memMapper.updateLeave(username);
 	}
 
 }

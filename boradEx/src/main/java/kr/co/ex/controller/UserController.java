@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
@@ -42,6 +43,8 @@ public class UserController {
 	
 	@GetMapping("")
 	public String showUserMain(@RequestParam(required=false) String move, Criteria cri, Model model){
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		model.addAttribute("user", memServ.getMember(username));
 		return "dashBoard/user/userMain.page";
 	}
 	
@@ -126,6 +129,20 @@ public class UserController {
 	
 	@GetMapping("/info")
 	public String showUserInfo(@RequestParam(required=false) String move, Criteria cri, Model model){
+		
 		return "dashBoard/user/userInfo.page";
+	}
+	
+	@GetMapping("/leave")
+	@ResponseBody
+	public ResponseEntity<Void> leave(){
+		try{
+			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			memServ.leave(username);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 }

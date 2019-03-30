@@ -5,7 +5,7 @@
 
 <mapper namespace="kr.co.ex.mapper.MemberMapper">
 	
-	<resultMap id="login" type="kr.co.ex.domain.MemberVO">
+	<resultMap id="member" type="kr.co.ex.domain.MemberVO">
 		<id property="username" column="username" />
 		<result property="userpw" column="userpw" />
 		<result property="enabled" column="enabled" />
@@ -15,7 +15,7 @@
 		</collection>
 	</resultMap>
 	
-	<select id="read" resultMap="login">
+	<select id="read" resultMap="member">
 		select * from tbl_member, tbl_member_auth
 		where #{username} = tbl_member.username and #{username} = tbl_member_auth.username
 	</select>
@@ -51,6 +51,10 @@
 		<foreach collection="members" item="name">
 			update tbl_member set state=#{state} where username=#{name};
 		</foreach>
+	</update>
+	
+	<update id="updateLeave">
+		update tbl_member set state="L", leave_date="now()" where username=#{username}
 	</update>
 	
 	<update id="updateReportCnt">

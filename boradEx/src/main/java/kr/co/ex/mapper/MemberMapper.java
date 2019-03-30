@@ -25,6 +25,7 @@ public interface MemberMapper {
 	public List<MemberVO> listStateMember(@Param("cri") Criteria cri, @Param("state") String state);
 
 	public void updateState(@Param("members") List<String> members, @Param("state") String state);
+	public void updateLeave(String username) throws Exception;
 	public void updateReportCnt(@Param("username") String username, @Param("diff") int diff);
 	public void updateAccessTimeProcedure(long epochSecond);
 }

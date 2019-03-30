@@ -18,8 +18,8 @@
 </insert>
 
 <insert id="createNotice">
-	insert into tbl_board (bno, title, content, writer) 
-	values (#{bno}, #{title}, #{content}, #{writer})
+	insert into tbl_board (bno, title, content, writer, delete_type) 
+	values (#{bno}, #{title}, #{content}, #{writer}, null)
 </insert>
 
 <select id="read" resultType="kr.co.ex.domain.BoardVO">
@@ -53,12 +53,10 @@
 </update>
 
 <select id="listAll" resultType="kr.co.ex.domain.BoardVO">
-	<![CDATA[
-		select * from tbl_board 
-		where isnull(delete_type)
-		order by bno desc, regdate desc
-	]]>
+	select * from tbl_board where isnull(delete_type)
+	order regdate desc
 </select>
+
 <sql id="category">
 	<trim prefix="and">
 	<choose>
@@ -78,14 +76,12 @@
 </sql>
 
 <select id="listCriteria" resultType="kr.co.ex.domain.BoardVO">
-	<![CDATA[
-		select * from tbl_board where isnull(delete_type)
-		order by bno desc, regdate desc 
-	]]>
+	select * from tbl_board where isnull(delete_type)
 	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />
 	</trim>
-		limit #{pageStart}, #{perPageNum}
+	order by bno desc 
+	limit #{pageStart}, #{perPageNum}
 </select>
 
 <select id="listRegdate" resultType="kr.co.ex.domain.BoardVO">
@@ -134,14 +130,14 @@
 </sql>
 
 <select id="listSearch" resultType="kr.co.ex.domain.BoardVO">
-	<![CDATA[
-		select * from tbl_board 
-		where isnull(delete_type)
-	]]>
+	select * from tbl_board 
+	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />
 		<include refid="search" />
+		and isnull(delete_type)
+	</trim>
 	<![CDATA[
- 		order by bno desc, regdate desc
+ 		order by bno desc
  		limit #{pageStart}, #{perPageNum}
 	]]>
 </select>	
@@ -185,7 +181,7 @@
 	values(LAST_INSERT_ID(), #{fileName}, #{uploadPath}, #{uuid}, #{fileType})
 </update>
 
-<select id="readReplyCnt" resultType="java.lang.Integer">
+<select id="readReplyCnt" resultType="int">
 	select count(rno) from tbl_reply where bno=#{bno}
 </select>
 

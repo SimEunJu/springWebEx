@@ -25,13 +25,12 @@
 						<c:set var="identity" value="user" scope="request" />
 					</sec:authorize>
 					<li class="nav-item"><a class="nav-link" href="/board/logout">로그아웃</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="/board/${identity}/info">내 정보</a></li>
+					<li class="nav-item"><a class="nav-link" href="/board/${identity}">내 정보</a></li>
 					<li class="nav-item">
-						<a class="nav-link" href="/board/${identity}/noti">알림<span class="notibadge badge badge-warning">?</span></a>
+						<a class="nav-link" href="/board/${identity}/noti">알림<span class="notibadge badge badge-warning">0</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/board/${identity}/msg">메시지<span class="msgbadge badge badge-warning">?</span></a>
+						<a class="nav-link" href="/board/${identity}/msg">메시지<span class="msgbadge badge badge-warning">0</span></a>
 					</li>
 				</sec:authorize>
 				<sec:authorize access="isAnonymous()">

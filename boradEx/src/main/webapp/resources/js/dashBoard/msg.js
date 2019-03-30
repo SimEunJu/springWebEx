@@ -1,8 +1,6 @@
 // 1. send msg 2. delete msg 3. read msg 4. pagination
 $("document").ready(function(){
-	
 
-	
 	addHandlebarHelper();
 	
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;

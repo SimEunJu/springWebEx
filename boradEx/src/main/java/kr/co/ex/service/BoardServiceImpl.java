@@ -30,7 +30,7 @@ import lombok.extern.log4j.Log4j;
 @Service
 @Log4j
 @RequiredArgsConstructor
-public class BoradServiceImpl implements BoardService {
+public class BoardServiceImpl implements BoardService {
 
 	@NonNull private BoardMapper boardMapper;
 	@NonNull private ReplyMapper replyMapper;

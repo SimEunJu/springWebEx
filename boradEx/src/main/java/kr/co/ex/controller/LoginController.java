@@ -3,8 +3,6 @@ package kr.co.ex.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,14 +28,18 @@ public class LoginController {
 	}
 
 	@GetMapping("/board/login")
-	public String login(HttpServletRequest req){
+	public String login(){
 		return "login/login.part";	
 	}	
 
+	@GetMapping("/board/signin")
+	public String signin(){
+		return "redirect:/board/oauth2/authorization/google";
+	}
+	
 	@PostMapping("/board/signin")
 	@PreAuthorize("isAnoymous()")
-	public String signin(LoginDto user){
-		
+	public String signin(LoginDto user){	
 		List<AuthVO> auth = new ArrayList<>();
 		user.setAuths(auth);
 		serv.signIn(user);

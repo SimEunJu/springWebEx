@@ -7,6 +7,7 @@ import kr.co.ex.domain.MemberVO;
 import kr.co.ex.util.UserType;
 
 public interface MemberService {
+	public MemberVO getMember(String username);
 	public int getMemberCnt();
 	
 	public List<MemberVO> ListCategorizedMember(UserType type, Criteria cri);
@@ -15,6 +16,7 @@ public interface MemberService {
 	public List<MemberVO> listStateMember(Criteria cri, UserType userType);
 	
 	public void updateState(List<String> members, UserType type);
+	public void leave(String username) throws Exception;
 	public void updateReportCnt(String username, int diff);
 	public void updateAccessTime(long epochSecond);
 	

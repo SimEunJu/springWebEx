@@ -1,15 +1,15 @@
-package kr.co.ex.security.oauth;
+package kr.co.ex.security.config;
 
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -23,13 +23,17 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
+import kr.co.ex.domain.MemberVO;
 import kr.co.ex.security.domain.GoogleOAuth2User;
+import kr.co.ex.service.MemberService;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 @EnableWebSecurity
 public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
 	
+	@Autowired
+	private MemberService memServ;
         
 	private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauthUserService() {
 
@@ -37,7 +41,6 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
 
 		return (userRequest) -> {
 			OAuth2User user = delegate.loadUser(userRequest);
-
 			Map<String, Object> userInfo = user.getAttributes();
 			String email = (String) userInfo.get("email");
 			user = new GoogleOAuth2User(email, (String) email, (String) userInfo.get("name"));
@@ -98,6 +101,7 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     			.rememberMeServices(rememberMeServ)
     			.and()
     		.logout()
+    			.logoutUrl("board/logout")
     			.invalidateHttpSession(true)
     			.deleteCookies("SESSION")
     			.and()
