@@ -8,5 +8,16 @@
 	$(document).ajaxSend(function(e, xhr, options){
 		xhr.setRequestHeader(csrfHeader, csrfToken);
 	});
+
+	if(!window.bootstrap){
+		const toggler = document.querySelector(".navbar-toggler");
+		const toggleList = $("#navbar");
+	
+		toggler.addEventListener("click", function(){
+			toggleList.toggleClass("show");
+			const togglerVal = toggler.getAttribute("aria-expanded") === "true" ? "true" : "false";
+			toggler.setAttribute("aria-expanded", togglerVal);
+		});
+	}
 })();
 </script>
