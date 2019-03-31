@@ -101,7 +101,7 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     			.rememberMeServices(rememberMeServ)
     			.and()
     		.logout()
-    			.logoutUrl("board/logout")
+    			.logoutUrl("/board/logout")
     			.invalidateHttpSession(true)
     			.deleteCookies("SESSION")
     			.and()

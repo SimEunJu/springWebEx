@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
+import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.dto.NotificationDto;
 import kr.co.ex.service.AdminStatService;
 import kr.co.ex.service.BoardService;
@@ -121,7 +122,7 @@ public class AdminController {
 	}
 	
 	@GetMapping("/post")
-	public String managePost(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String managePost(@RequestParam(required=false) String move, SearchCriteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			

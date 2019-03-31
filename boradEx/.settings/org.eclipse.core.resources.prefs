@@ -14,3 +14,4 @@ encoding//src/main/webapp/WEB-INF/views/tiles/footer.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/tiles/left.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/tiles/template.jsp=UTF-8
 encoding//src/main/webapp/resources/css/header.css=UTF-8
+encoding//src/test/java/kr/co/ex/security/PasswordEncodeTest.java=UTF-8

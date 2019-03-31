@@ -122,9 +122,9 @@ public class BoardServiceImpl implements BoardService {
 	public void remove(BoardVO vo) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
+		vo.setDeleteType("B");
 		if(authorities.contains("ROLE_ANONYMOUS")){ 
 			if(!matchPassword(vo.getBno(), vo.getPassword())) throw new AccessDeniedException("익명 게시글에 대한 비밀번호가 다릅니다.");
-			vo.setDeleteType("B");
 		}
 		else if(authorities.contains("ROLE_ADMIN")){
 			vo.setDeleteType("A");
@@ -133,7 +133,8 @@ public class BoardServiceImpl implements BoardService {
 			msg.setReceiver(deleted.getWriter());
 			// 관리자
 			msg.setSender(auth.getName());
-			msg.setTitle(deleted.getTitle()+"... 해당 게시글을 삭제 처리되었습니다.");
+			msg.setTitle(deleted.getTitle()+"... 해당 게시글은 삭제 처리되었습니다.");
+			// 삭제 이유 작성
 			msg.setContent(vo.getContent()+"test");
 			msgMapper.createMsg(msg);
 		}

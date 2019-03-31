@@ -24,7 +24,13 @@
 					<sec:authorize access="hasRole('USER')">
 						<c:set var="identity" value="user" scope="request" />
 					</sec:authorize>
-					<li class="nav-item"><a class="nav-link" href="/board/logout">로그아웃</a></li>
+					<li class="nav-item">
+						<form method="post" action="/board/logout">
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+							<a class="nav-link" onclick="this.parentNode.submit()">로그아웃</a>
+						</form>
+						
+					</li>
 					<li class="nav-item"><a class="nav-link" href="/board/${identity}">내 정보</a></li>
 					<li class="nav-item">
 						<a class="nav-link" href="/board/${identity}/noti">알림<span class="notibadge badge badge-warning">0</span></a>

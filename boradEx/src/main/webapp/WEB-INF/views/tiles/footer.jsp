@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<footer class="bg-light">
+<footer class="bg-light mt-5" style="height:100px">
 </footer>
 
 <script>

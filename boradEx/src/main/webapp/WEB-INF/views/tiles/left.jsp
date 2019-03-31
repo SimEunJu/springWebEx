@@ -11,6 +11,5 @@
 		</sec:authorize>
 		<li class="list-group-item"><a href="/board/${identity}/post">내가 쓴 글</a></li>
 		<li class="list-group-item"><a href="/board/${identity}/reply">내가 쓴 댓글</a></li>
-		<li class="list-group-item"><a href="/board/${identity}/info">내 정보</a></li>
 	</ul>
 </div>

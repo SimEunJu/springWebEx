@@ -1,15 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>내가 쓴 글</title>
-</head>
-<body>
 
-<div class="container">
-	<form>
+	<form class="col-md-9 mt-2">
   		<div class="form-group">
     		<label for="id">이메일</label>
     		<input type="text" class="form-control" value="${user.username}" id="id" readonly>
@@ -28,7 +20,3 @@
   		</div>
   		<button type="submit" class="btn btn-warning btn-leave">탈퇴</button>
 	</form>
-</div>
-
-</body>
-</html>

@@ -45,7 +45,7 @@ public class UserController {
 	public String showUserMain(@RequestParam(required=false) String move, Criteria cri, Model model){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		model.addAttribute("user", memServ.getMember(username));
-		return "dashBoard/user/userMain.page";
+		return "dashBoard/user/userInfo.page";
 	}
 	
 	@PostMapping("/report")
@@ -124,7 +124,7 @@ public class UserController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "dashBoard.msg.page";
+		return "dashBoard/msg.page";
 	}
 	
 	@GetMapping("/info")

@@ -30,23 +30,23 @@ public class PasswordEncodeTest {
 	
 	@Test
 	public void testPasswordEncoder(){
-		String sql = "insert into tbl_member(userid, username, password) values(?,?,?)";
-		for(int i=0; i<3; i++){
+		String sql = "insert into tbl_member(username, password) values(?,?,?)";
+		for(int i=0; i<1; i++){
 			Connection con = null;
 			PreparedStatement state = null;
 			try{
 				con = ds.getConnection();
 				state = con.prepareStatement(sql);
-				state.setString(3, encoder.encode("pw"+i));
+				state.setString(3, encoder.encode("ADMIN"));
 				if(i == 0){
-					state.setString(1, "user");
-					state.setString(2, "일반사용자");
+					state.setString(1, "ADMIN");
+					state.setString(2, "bo");
 				}else if(i == 1){
 					state.setString(1, "manager");
-					state.setString(2, "매니저");
+					state.setString(2, "留ㅻ땲��");
 				}else if(i == 2){
 					state.setString(1, "admin");
-					state.setString(2, "관리자");
+					state.setString(2, "愿�由ъ옄");
 				}
 				state.executeUpdate();
 			}catch(Exception e){

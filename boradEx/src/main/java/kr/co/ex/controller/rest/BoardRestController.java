@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -64,6 +65,26 @@ public class BoardRestController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	
+	}
+	
+	@PostMapping("/rem")
+	public ResponseEntity<List<BoardVO>> deletePost(List<Integer> bnoList, SearchCriteria cri){
+		List<BoardVO> list = null;
+		try{
+			for(int bno : bnoList){
+				BoardVO vo = new BoardVO();
+				vo.setBno(bno);
+				boardServ.remove(vo);
+				this.deleteFile(boardServ.getAttach(bno));
+			}
+			list = boardServ.listSearch(cri);
+		} catch(AccessDeniedException e){
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		} catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(list,HttpStatus.OK);
 	}
 	
 	@PostMapping("/rem")

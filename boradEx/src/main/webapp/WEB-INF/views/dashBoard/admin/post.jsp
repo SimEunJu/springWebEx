@@ -3,16 +3,31 @@
 <%@ taglib prefix="cf" uri="http://ex.co.kr/format_local_datetime"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<form role="form">
+	<input type="hidden" name="page" value="${pagination.cri.page }">
+	<input type="hidden" name="perPageNum" value="${pagination.cri.perPageNum }">
+	<input type="hidden" name="keyword" value="${pagination.cri.keyword }">
+	<input type="hidden" name="searchType" value="${pagination.cri.searchType }">
+	<input type="hidden" name="type" value="${pagination.cri.type.typeInitial }">	 
+</form>
+
 <div class="col-md-9">
 	<div class="row my-2 p-2 border">
 		<div class="col">
-			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
-			<label for="all-mem">전체</label>
+			<a href="/board/daily/notice/new">
+				<button type="button" class="btn btn-outline-danger" id="btn-notice">공지시항 작성</button>
+			</a>
 		</div>
-		
-		<div class="float-right">
-			<button type="button" class="btn btn-outline-danger" id="btn-notice">공지시항 작성</button>
-			<button type="button" class="btn btn-outline-info" id="btn-all">모든 글</button>
+		<div class="col">
+			<%@include file="/WEB-INF/views/include/searchBar.jsp" %>
+			<input type="radio" id="user-leave" name="boardType" value="all">
+			<label for="board-all">모든 글</label>
+			<input type="radio" id="user-leave" name="boardType" value="report">
+			<label for="board-report">신고 순</label>
+		</div>
+		<div class="col">
+			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
+			<label for="all-mem">전체</label>		
 			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
 		</div>
 	</div>
@@ -20,10 +35,11 @@
 	<table class="table table-hover">
   		<thead class="thead-dark">
     		<tr>
-      			<th scope="col"><input type="checkbox" name="noti" value="all" /></th>
+      			<th scope="col"><input type="checkbox" name="post" value="all" /></th>
       			<th scope="col">제목</th>
       			<th scope="col">조회수</th>
       			<th scope="col">날짜</th>
+      			<th scope="col">신고 수</th>
     		</tr>
   		</thead>
   		
@@ -34,6 +50,7 @@
       			<td><a href="/board/daily/${post.bno}">${post.title}[${post.replyCnt}]</a></td>
 				<td>${post.viewcnt}</td>
       			<td>${cf:formatLocalDateTime(post.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
+      			<td>${post.reportCnt}</td>
     		</tr>
     		</c:forEach>
   		</tbody>

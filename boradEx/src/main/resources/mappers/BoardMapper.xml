@@ -5,6 +5,10 @@
 
 <mapper namespace="kr.co.ex.mapper.BoardMapper">
 
+<sql id="noticeBoundary">
+	and bno>100
+</sql>
+
 <insert id="create">
 	insert into tbl_board (title, content, writer
 	<if test="password != null">
