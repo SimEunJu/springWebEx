@@ -6,7 +6,7 @@
 <div class="col-md-9"> 
 	<div class="row my-2 p-2 border">
 		<div class="col">
-			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
+			<input type="checkbox" id="all-mem" name="reply" value="all" /> 
 			<label for="all-mem">전체</label>
 		</div>
 		

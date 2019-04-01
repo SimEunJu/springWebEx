@@ -26,8 +26,10 @@
     		<tr>
       			<th scope="row"><input type="checkbox" name="post" value="${post.bno}" /></th>
       			<td><a href="/board/daily/${post.bno}">${post.title}[${post.replyCnt}]</a></td>
+				<td>${post.writer}</td>
 				<td>${post.viewcnt}</td>
       			<td>${cf:formatLocalDateTime(post.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
+    			<td>${post.reportCnt}</td>
     		</tr>
     		</c:forEach>
   		</tbody>
@@ -55,8 +57,10 @@
 	<tr>
 		<th scope="row"><input type="checkbox" name="post" value="{{bno}}" /></th>
       	<td><a href="/board/daily/{{bno}}">{{title}}[{{replyCnt}}]</a></td>
+		<td>{{writer}}</td>	
 		<td>{{viewcnt}}</td>
       	<td>{{dateFormat regdate}}</td>
+		<td>{{reportCnt}}</td>
      </tr>
 {{/each}}
 </script>
