@@ -85,6 +85,9 @@
 		<include refid="category" />
 	</trim>
 	order by bno desc 
+	<if test='type.typeInitial.equals("report")'>
+		, report_cnt desc
+	</if>
 	limit #{pageStart}, #{perPageNum}
 </select>
 
@@ -140,10 +143,11 @@
 		<include refid="search" />
 		and isnull(delete_type)
 	</trim>
-	<![CDATA[
- 		order by bno desc
- 		limit #{pageStart}, #{perPageNum}
-	]]>
+ 	order by bno desc
+ 	<if test='type.typeInitial.equals("report")'>
+		, report_cnt desc
+	</if>
+ 	limit #{pageStart}, #{perPageNum}
 </select>	
 
 <select id="listNotice" resultType="kr.co.ex.domain.BoardVO">

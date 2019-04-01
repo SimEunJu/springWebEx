@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,13 +68,29 @@ public class BoardRestController {
 	
 	}
 	
-	@PostMapping("/rem")
-	public ResponseEntity<List<BoardVO>> deletePost(List<Integer> bnoList, SearchCriteria cri){
+	private String getReason(String val){
+		switch (val) {
+		case "report":
+			return "신고 횟수의 누적으로 삭제 처리 되었습니다.";
+		case "inappropriate":
+			return "부적절한 내용을 담고 있기 때문에 삭제 처리 되었습니다.";
+		default:
+			return null;
+		}
+	}
+	
+	@PostMapping("/admin/rem")
+	@PreAuthorize("hasRole('ADMIN'")
+	public ResponseEntity<List<BoardVO>> deletePost(@RequestBody Map<String, Object> param, SearchCriteria cri){
 		List<BoardVO> list = null;
 		try{
-			for(int bno : bnoList){
+			List<String> bnoList = (List<String>) param.get("bnoList");
+			String reason = (String) param.get("reason");
+			for(String boardNo : bnoList){
+				int bno = Integer.parseInt(boardNo);
 				BoardVO vo = new BoardVO();
 				vo.setBno(bno);
+				vo.setContent(getReason(reason));
 				boardServ.remove(vo);
 				this.deleteFile(boardServ.getAttach(bno));
 			}

@@ -3,7 +3,9 @@ package kr.co.ex.util;
 public enum BoardType {
 	ALL(0, "all"),
 	HOT(2, "hot"),
-	NOTICE(1, "notice");
+	NOTICE(1, "notice"),
+	REPORT(3, "report"),
+	SELF(4, "self");
 	
 	final private int type;
 	final private String initial;

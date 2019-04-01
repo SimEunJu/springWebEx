@@ -1,21 +1,26 @@
 $("document").ready(function(){
 	
-	const check	= new Check("user");
+	const check	= new Check("post");
 	const pagination = new Pagination();
 	
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
 	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
 	// 선택한 게시글 삭제
-	$(".btn-usertype").on("click", function(e){
+	$("#btn-del").on("click", function(e){
 		
 		// 체크된 게시물 번호 목록 생성
 		check.appendCheckVal(pagination.page);
 		check.flatToList(check.repo);
 		
+		if(check.list.length === 0){
+			alert("선택된 항목이 없습니다.");
+			return;
+		}
+		
 		const showType = $("input[type='radio']:checked").val();
 		$.post({
-			url: "/board/api/rem",
-			data: JSON.stringify(check.list),
+			url: "/board/api/admin/rem",
+			data: JSON.stringify({bnoList: check.list, reason: $("select[name='delete'] option:selected").val()}),
 			contentType: "application/json; charset=utf-8"
 		})
 		.done(function(posts){
@@ -31,7 +36,6 @@ $("document").ready(function(){
 	
 	// 신고순으로 정렬
 	$("input[type='radio']").on("click", function(e){
-		
 		const boardType = $(e.target).val();
 		makeQuery.prototype.vals.type = boardType;
 		window.location.href = "/board/admin/post?"+makeQuery();
@@ -40,7 +44,7 @@ $("document").ready(function(){
 	// 검색
 	$("#search-btn").on("click", function(e){
 		
-		let option = $("select option:selected").val();
+		let option = $("select[name='searchType'] option:selected").val();
 		if(option === "n") option = "tcw";
 		
 		const keyword = $("input[name='new-keyword']").val();
@@ -70,6 +74,6 @@ $("document").ready(function(){
 			perPageNum : $("form input[name='perPageNum']").val() ? $("form input[name='perPageNum']").val() : 10,
 			searchType : $("form input[name='searchType']").val(),
 			keyword : $("form input[name='keyword']").val(),
-			type: ""
+			type: $("form input[name='type']").val(),
 	};
 });

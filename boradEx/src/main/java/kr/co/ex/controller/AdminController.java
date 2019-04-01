@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.dto.NotificationDto;
+import kr.co.ex.exception.UndefinedBoardTypeException;
 import kr.co.ex.service.AdminStatService;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.service.MemberService;
@@ -126,10 +128,32 @@ public class AdminController {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(move, cri, boardServ.getTotalCntByWriter(auth.getName()));
+			PageMaker pageMaker = new PageMaker();
 			
-			model.addAttribute("pagination", pm);
-			model.addAttribute("posts", boardServ.listByWriter(auth.getName(), cri));
+			int totalCount = 0;
+			List<BoardVO> boardList = null;
+			
+			String keyword = cri.getKeyword();
+			switch (cri.getType()) {
+			case ALL:
+			case REPORT:
+				boardList = boardServ.listSearch(cri);
+				totalCount = boardServ.getSearchCnt(cri);
+				break;
+			case SELF:
+				String username = auth.getName();
+				totalCount = boardServ.getTotalCntByWriter(username);
+				boardList = boardServ.listByWriter(auth.getName()  , cri);
+				break;
+			default:
+				throw new UndefinedBoardTypeException(cri.getType().toString());
+			}
+
+			pageMaker.setCri(cri);
+			pageMaker.setTotalCount(totalCount);
+			
+			model.addAttribute("pagination", pageMaker);
+			model.addAttribute("boardList", boardList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

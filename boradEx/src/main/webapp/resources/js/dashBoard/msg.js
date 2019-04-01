@@ -16,6 +16,8 @@ $("document").ready(function(){
 	
 	$("#btn-msg").on("click", function(){
 		msgModal.openMsgModal(check, pagination.page, receiverListTemplate);
+		msgModal.title.attr("readonly", false);
+		msgModal.msg.attr("readonly", false);
 		msgModal.modal.find(".modal-footer .modal-send").show();
 		msgModal.modal.find(".modal-header .modal-title").html("메시지 보내기");
 		msgModal.sender.html(username);
@@ -84,7 +86,9 @@ $("document").ready(function(){
 			msgModal.toggleModal();
 			
 			msgModal.title.val(res.title);
-			msgModal.msg.val(res.content)
+			msgModal.title.attr("readonly", true);
+			msgModal.msg.val(res.content);
+			msgModal.msg.attr("readonly", true);
 			msgModal.sender.html(res.sender);
 			msgModal.receiver.html(res.receiver);
 			

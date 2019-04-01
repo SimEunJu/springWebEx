@@ -3,6 +3,8 @@ package kr.co.ex.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -70,7 +72,6 @@ public class BoardContoller {
 			int totalCount = 0;
 			List<BoardVO> boardList = null;
 			
-			String keyword = cri.getKeyword();
 			switch (cri.getType()) {
 			case ALL:
 				totalCount = boardServ.getTotalCnt(cri);
@@ -155,7 +156,7 @@ public class BoardContoller {
 	@PreAuthorize("hasRole('ADMIN')")
 	public String registerNoticePost(@Valid BoardVO board, RedirectAttributes attrs){
 		try {
-			boardServ.register(board);
+			boardServ.registerNotice(board);
 			attrs.addFlashAttribute("msg", "success");
 		
 		} catch (Exception e) {
@@ -222,5 +223,21 @@ public class BoardContoller {
 		return "redirect:/board/daily"+cri.makeSearch();
 	}
 	
-	
+	@GetMapping("/{boardNo}/temp")
+	@PreAuthorize("isAuthenticated()")
+	public String showDeletedPost(@PathVariable int boardNo, HttpServletRequest req,
+			HttpServletResponse res, Model model){
+		BoardVO vo = null;
+		try {
+			vo = boardServ.read(boardNo);
+			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			if(!username.equals(vo.getWriter())){
+				return "redirect:/board/user";
+			}
+			model.addAttribute("board", vo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "temp/post.part";
+	}
 }

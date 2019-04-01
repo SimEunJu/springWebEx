@@ -23,6 +23,7 @@ public class BoardVO {
 	private Integer viewcnt;
 	private Integer userLike;
 	private String deleteType;
+	private Integer reportCnt;
 	
 	private Integer replyCnt;
 	private List<AttachVO> files;

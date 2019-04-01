@@ -33,6 +33,12 @@ public class Criteria {
 		case "notice":
 			type = BoardType.NOTICE;
 			break;	
+		case "report":
+			type = BoardType.REPORT;
+			break;
+		case "self":
+			type = BoardType.SELF;
+			break;
 		default:
 			type = BoardType.ALL;
 		break;
