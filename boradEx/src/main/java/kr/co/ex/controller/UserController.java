@@ -129,7 +129,8 @@ public class UserController {
 	
 	@GetMapping("/info")
 	public String showUserInfo(@RequestParam(required=false) String move, Criteria cri, Model model){
-		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		model.addAttribute("user", memServ.getMember(username));
 		return "dashBoard/user/userInfo.page";
 	}
 	

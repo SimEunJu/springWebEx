@@ -51,6 +51,11 @@
 		<foreach collection="members" item="name">
 			update tbl_member set state=#{state} where username=#{name};
 		</foreach>
+		<if test="state.equals('B')">
+			<foreach collection="members" item="name">	
+				update tbl_member_auth set auth="ROLE_BANNED" where username=#{name};
+			</foreach>
+		</if>
 	</update>
 	
 	<update id="updateLeave">

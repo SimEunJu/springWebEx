@@ -8,7 +8,7 @@
   		</div>
   		<div class="form-group">
     		<label for="state">상태</label>
-    		<input type="text" class="form-control" value="${user.state}" id="state" readonly>
+    		<input type="text" class="form-control" value="${user.stateDescription}" id="state" readonly>
   		</div>
   		<div class="form-group">
     		<label for="reportCnt">방은 경고 횟수</label>
