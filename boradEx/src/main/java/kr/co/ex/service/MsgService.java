@@ -18,4 +18,5 @@ public interface MsgService {
 	
 	public int getReceiverTotalCnt(String receiver) throws Exception;
 	public int getSenderTotalCnt(String sender) throws Exception;
+
 }

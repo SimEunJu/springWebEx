@@ -2,6 +2,7 @@ package kr.co.ex.service;
 
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,7 @@ import lombok.extern.log4j.Log4j;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-	@NonNull
-	private MemberMapper memMapper;
+	@NonNull private MemberMapper memMapper;
 	
 	@Transactional
 	@Override
@@ -88,6 +88,12 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void updateAccessTime(long epochSecond) {
 		memMapper.updateAccessTimeProcedure(epochSecond);
+	}
+
+	@Override
+	public void updateStateForLogin() {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		memMapper.updateStateForLogin(username);
 	}
 
 	@Override

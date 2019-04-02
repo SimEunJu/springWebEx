@@ -28,4 +28,6 @@ public interface MemberMapper {
 	public void updateLeave(String username) throws Exception;
 	public void updateReportCnt(@Param("username") String username, @Param("diff") int diff);
 	public void updateAccessTimeProcedure(long epochSecond);
+	
+	public void updateStateForLogin(String username);
 }

@@ -77,6 +77,10 @@
   	update tbl_reply set delete_type=#{deleteType}, reply="" where rno=#{rno};
   </update>
   
+  <update id="deleteByReplyer">
+  	update tbl_reply set delete_type="L", reply="" where replyer=#{username};
+  </update>
+  
   <update id="deleteReplies">
   	<foreach collection="rno" item="r">
   		update tbl_reply set delete_type=#{deleteType} where rno=#{r};

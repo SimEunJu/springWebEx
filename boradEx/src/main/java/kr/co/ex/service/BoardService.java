@@ -26,6 +26,7 @@ public interface BoardService {
 	
 	public void remove(BoardVO vo) throws Exception;
 	public void removeNoti(int bno) throws Exception;
+	public void removeByWriter();
 	
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;

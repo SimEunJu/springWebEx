@@ -139,6 +139,9 @@ public class UserController {
 		try{
 			String username = SecurityContextHolder.getContext().getAuthentication().getName();
 			memServ.leave(username);
+			// trigger로 첨부파일로 같이 삭제
+			boardServ.removeByWriter();
+			replyServ.removeReplyByReplyer();
 			return new ResponseEntity<>(HttpStatus.OK);
 		}catch(Exception e){
 			e.printStackTrace();

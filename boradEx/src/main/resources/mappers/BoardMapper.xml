@@ -56,6 +56,11 @@
 	update tbl_board set delete_type=#{deleteType} where bno=#{bno} 
 </update>
 
+
+<update id="deleteByWriter">
+	update tbl_board set delete_type="B" where writer=#{username} 
+</update>
+
 <select id="listAll" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board where isnull(delete_type)
 	order regdate desc

@@ -25,6 +25,7 @@ public interface BoardMapper {
 	public void updateLike(@Param("bno") int bno, @Param("diff") int diff) throws Exception;
 	
 	public void delete(@Param("bno") int bno, @Param("deleteType") String deleteType) throws Exception;
+	public void deleteByWriter(String username);
 	
 	public List<BoardVO> listAll() throws Exception;
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;

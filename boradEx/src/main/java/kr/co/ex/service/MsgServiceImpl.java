@@ -64,5 +64,5 @@ public class MsgServiceImpl implements MsgService {
 	public int getSenderTotalCnt(String sender) throws Exception {
 		return msgMapper.getSenderTotalCnt(sender);
 	}
-
+	
 }

@@ -70,4 +70,8 @@
 		call update_access_time(#{epochSecond})
 	</select> 
 	
+	<select id="updateStateForLogin">
+		insert into tbl_member(username) values (#{username})
+		on duplicate key update if(state="L", "A", state); 
+	</select>
 </mapper>

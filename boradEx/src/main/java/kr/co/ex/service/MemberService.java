@@ -20,5 +20,7 @@ public interface MemberService {
 	public void updateReportCnt(String username, int diff);
 	public void updateAccessTime(long epochSecond);
 	
+	public void updateStateForLogin();
+	
 	public List<MemberVO> getMemberByKeyword(String keyword);
 }

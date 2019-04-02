@@ -199,10 +199,15 @@ public class ReplyServiceImpl implements ReplyService {
 		
 		return deleteType;
 	}
-	
+
+	@Override
+	public void removeReplyByReplyer() {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		replyMapper.deleteByReplyer(username);
+	}
+
 	@Override
 	public void reportReply(int rno) throws Exception {
 		replyMapper.updateReport(rno);
 	}
-
 }

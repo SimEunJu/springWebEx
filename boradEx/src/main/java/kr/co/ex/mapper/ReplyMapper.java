@@ -31,4 +31,5 @@ public interface ReplyMapper {
 	
 	public void delete(@Param("deleteType") String deleteType, @Param("rno") Integer rno) throws Exception;
 	public void deleteReplies(@Param("deleteType") String deleteType, @Param("rno") List<Integer> rno) throws Exception;
+	public void deleteByReplyer(String username);
 }

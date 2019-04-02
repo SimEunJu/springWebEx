@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nimbusds.jose.proc.SecurityContext;
+
 import kr.co.ex.annoation.Loggable;
 import kr.co.ex.common.NoticeBoardControl;
 import kr.co.ex.domain.AttachVO;
@@ -149,6 +151,13 @@ public class BoardServiceImpl implements BoardService {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	@Transactional
+	public void removeByWriter() {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		boardMapper.deleteByWriter(username);
+	}
 	
 	@Override
 	public boolean matchPassword(int bno, String raw) throws Exception{
@@ -276,6 +285,5 @@ public class BoardServiceImpl implements BoardService {
 				})
 				.collect(Collectors.toList());
 	}
-
 
 }

@@ -143,10 +143,10 @@ $("document").ready(function(){
 				}
 				nMonth = day.getMonth();
 				if(month !== nMonth){
-					label += nMonth+"월 ";
+					label += (nMonth+1)+"월 ";
 					month = nMonth;
 				}
-				
+				if(day.getDate() === 1) label += (day.getMonth()+1)+"월 ";
 				label += day.getDate()+"일";
 				labels[i] = label;
 				label = "";
@@ -157,8 +157,7 @@ $("document").ready(function(){
 		case "w":
 			{
 			const sunday = new Date(today.setDate(today.getDate()-today.getDay()+7));
-			console.log(sunday);
-			
+	
 			let label = "";
 			let nthWeek;
 			
@@ -177,8 +176,19 @@ $("document").ready(function(){
 				}
 				
 				nthWeek = Math.floor(sunday.getDate()/7 + 1);
-				
-				labels[i] = label+nthWeek+"주";
+				if(nthWeek === 5){
+					nthWeek = 1;
+					if(nMonth === 12){
+						label = (nYear+1)+"년 "+(nMonth+2)+"월 1주";
+					}
+					else{
+						label = (nMonth+2)+"월 1주";
+					}
+				}
+				else{
+					label = label+nthWeek+"주";
+				}
+				labels[i] = label;
 				label = "";
 			}
 			}
@@ -187,22 +197,22 @@ $("document").ready(function(){
 			{
 			let nYear;
 			let label = "";
+			today.setMonth(month+1);
 			
 			for(let i=5; i>=0; i--){ 
-				
+				today.setMonth(today.getMonth() - 1);
 				nYear = today.getFullYear();
 				if(year !== nYear){
 					label += nYear+"년 ";
 					year = nYear;
 				}
-				today.setMonth(today.getMonth() - 1)
 				label += (today.getMonth()+1) +"월";
 				labels[i] = label;
 				label = "";
 			}
 			}
 			break;
-		default: return []		
+		default: return [];		
 		}
 		return labels;
 	}
