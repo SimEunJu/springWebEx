@@ -4,14 +4,16 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kr.co.ex.exception.UndefinedMemberType;
 import kr.co.ex.util.UserType;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString
+@Data
 public class MemberVO implements Serializable{
+
+	private static final long serialVersionUID = -1328198072064647266L;
 
 	private String userpw;
 	private String username;
@@ -25,19 +27,20 @@ public class MemberVO implements Serializable{
 	private List<AuthVO> authList;
 	
 	public String getStateDescription(){
-		switch (state) {
-		case "A":
-			return UserType.ACTIVE.getKorDescription();
-		case "B":
-			return UserType.BANNED.getKorDescription();
-		case "S":
-			return UserType.SLEEP.getKorDescription();
-		case "L":
-			return UserType.LEAVE.getKorDescription();
-		case "R":
-			return UserType.REPORT.getKorDescription();
-		default:
-			return null;
-		}
+	switch (state) {
+	case "A":
+		return UserType.ACTIVE.getKorDescription();
+	case "B":
+		return UserType.BANNED.getKorDescription();
+	case "S":
+		return UserType.SLEEP.getKorDescription();
+	case "L":
+		return UserType.LEAVE.getKorDescription();
+	case "R":
+		return UserType.REPORT.getKorDescription();
+	default:
+		return null;
 	}
+}
+
 }

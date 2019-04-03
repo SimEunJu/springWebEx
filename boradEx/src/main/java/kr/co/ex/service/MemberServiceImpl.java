@@ -43,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public MemberVO getMember(String username) {
+		
 		return memMapper.read(username);
 	}
 
