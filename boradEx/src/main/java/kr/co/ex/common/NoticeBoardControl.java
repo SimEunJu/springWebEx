@@ -2,7 +2,6 @@ package kr.co.ex.common;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Component;
 
@@ -10,10 +9,12 @@ import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.CorruptReleseOnNoticeIdx;
 import kr.co.ex.exception.NoAvailableNoticeBoardIdx;
 import kr.co.ex.util.BoardType;
+import lombok.extern.log4j.Log4j;
 
 // 공지글 생성할 때 사용
 // 삽입 가능한 게시글 번호 목록 관리
 @Component
+@Log4j
 public class NoticeBoardControl {
 	
 	private final int START_IDX;
@@ -32,7 +33,9 @@ public class NoticeBoardControl {
 		
 		// [start, end)
 		idxUseList = new CopyOnWriteArrayList<>();
-		IntStream.range(start, end).map(i -> {idxUseList.add(false); return i;}).close();
+		for(int i=START_IDX; i<=END_IDX; i++){
+			idxUseList.add(false);
+		}
 	}
 	
 	public NoticeBoardCriteria getNoticeBoardCri(SearchCriteria searchCri){
@@ -69,6 +72,7 @@ public class NoticeBoardControl {
 	
 	private int getMinIdx(){
 		int len = idxUseList.size();
+		log.info(idxUseList.toString());
 		for(int i=0; i<len; i++){
 			if(idxUseList.get(i) == false) return i; 
 		}

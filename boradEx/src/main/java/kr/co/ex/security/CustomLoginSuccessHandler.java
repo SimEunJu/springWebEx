@@ -1,35 +1,36 @@
 package kr.co.ex.security;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.authentication.jaas.AuthorityGranter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
+import kr.co.ex.service.MemberService;
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+@Component
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
-
+	
+	@Autowired MemberService memServ;
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth)
 			throws IOException, ServletException {
-		List<String> roles = new ArrayList<>();
-		auth.getAuthorities().forEach(authority -> {
-			roles.add(authority.getAuthority());
-		});
-	/*	if(roles.contains("ADMIN")){
-			res.sendRedirect("/admin");
-			return;
+		try{
+			log.info("oauth");
+			memServ.updateStateForLogin();
 		}
-		if(roles.contains("MEMBER")){
-			res.sendRedirect("/member");
-			return;
-		}*/
-		res.sendRedirect("/");
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		res.sendRedirect("/board/daily");
 	}
 
 }

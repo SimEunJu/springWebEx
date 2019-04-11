@@ -75,8 +75,16 @@
 		call update_access_time(#{epochSecond})
 	</select> 
 	
-	<select id="updateStateForLogin">
+	<insert id="updateStateForLogin">
 		insert into tbl_member(username) values (#{username})
-		on duplicate key update if(state="L", "A", state); 
+		on duplicate key update state=if(state="L", "A", state); 
+		<selectKey resultType="int" order="AFTER">
+			SELECT ROW_COUNT();
+		</selectKey>
+	</insert>
+	
+	<select id="updateRoleForLogin">
+		insert into tbl_member_auth(username) values (#{username})
+		on duplicate key update auth=if(auth!='ROLE_USER', auth, 'ROLE_USER');
 	</select>
 </mapper>

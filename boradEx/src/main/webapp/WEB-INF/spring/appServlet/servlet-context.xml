@@ -45,12 +45,6 @@
 			<beans:ref bean="AnonyModInterceptor"/>	
 		</interceptor>
 		
-		<interceptor>
-			<mapping path="/board/oauth2/code/google" />
-			<beans:bean id="OauthInterceptor" class="kr.co.ex.interceptor.OauthInterceptor" />
-			
-		</interceptor>
-		
 	</interceptors>
 	<!-- 
 		<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

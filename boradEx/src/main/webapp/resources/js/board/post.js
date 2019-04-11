@@ -25,10 +25,11 @@ $(document).ready(function(){
 					let filePath = "";
 					let isImg = false;
 					
-					if(attach.fileType.includes("img")){
+					if(attach.fileType.includes("image")){
 						filePath = encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
 						isImg = true;	
 					}
+					attach.isImg = isImg;
 					attach.filePath = filePath;
 				});
 				const str = uploadItemTemplate(res)
@@ -37,6 +38,7 @@ $(document).ready(function(){
 		})();
 	
 		const replyObj = {
+				replySec: $(".card"),
 				delPopover: $(".card #del-popover"),
 				listSec: $(".card .reply-list"),
 				pagination: $(".card .pagination"), 
@@ -317,14 +319,14 @@ $(document).ready(function(){
 			return true;
 		}
 		
-		replyObj.listSec.siblings(".reply-form").on("click", ".reply-reg",function(){		
+		replyObj.replySec.on("click", ".reply-reg",function(){		
 			addReply(replyObj.form);		
 		});
 		
 		replyObj.listSec.on("click", ".added-reply-reg", function(e){
 			e.stopPropagation();
 			const reply = $(this).parents(".reply");
-			const addedForm = $(this).find(".reply-form");
+			const addedForm = reply.find(".reply-form");
 			addedForm.attr("data-parrno", reply.data("rno"));
 			addReply(addedForm);
 		});
@@ -440,6 +442,7 @@ $(document).ready(function(){
 			let pw = null;
 			if(isLogged === false){
 				pw = prompt("비밀번호를 입력해주세요");
+				if(pw === null) return;
 			}
 			$.post(url, {bno: board.bno, password: pw})
 			.fail(function(jqXHR, textStatus, errorThrown){

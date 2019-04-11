@@ -1,8 +1,7 @@
 const form = $("#register-form");
 const formObj = {
-	title : $("form input[name='title']"),
+	title : form.find("input[name='title']"),
 	content : editor,
-	
 }
 $("button[type='submit']").on("click", function(e){
 	e.preventDefault();

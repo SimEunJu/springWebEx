@@ -38,7 +38,7 @@ import lombok.extern.log4j.Log4j;
 public class BoardRestController {
 	
 	@NonNull private BoardService boardServ;
-	@Resource String uploadPath;
+	@Resource private String uploadPath;
 	
 	@GetMapping(value="", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<List<BoardVO>> getPosts(Criteria cri){

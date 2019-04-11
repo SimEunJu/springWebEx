@@ -29,5 +29,6 @@ public interface MemberMapper {
 	public void updateReportCnt(@Param("username") String username, @Param("diff") int diff);
 	public void updateAccessTimeProcedure(long epochSecond);
 	
-	public void updateStateForLogin(String username);
+	public int updateStateForLogin(String username);
+	public void updateRoleForLogin(String username);
 }

@@ -135,12 +135,11 @@ public class BoardContoller {
 	@GetMapping("/notice/new")
 	@PreAuthorize("hasRole('ADMIN')")
 	public String registerNotice(){
-		return "board/new.part";
+		return "dashBoard/admin/new.part";
 	}
 	
 	@PostMapping("/new")
 	public String registerPost(BoardVO board, RedirectAttributes attrs){
-		log.info(board.toString());
 		try {
 			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");
@@ -156,6 +155,7 @@ public class BoardContoller {
 	@PreAuthorize("hasRole('ADMIN')")
 	public String registerNoticePost(@Valid BoardVO board, RedirectAttributes attrs){
 		try {
+			log.info(board.toString());
 			boardServ.registerNotice(board);
 			attrs.addFlashAttribute("msg", "success");
 		

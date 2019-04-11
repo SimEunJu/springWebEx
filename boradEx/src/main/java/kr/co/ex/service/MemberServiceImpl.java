@@ -92,9 +92,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	@Transactional
 	public void updateStateForLogin() {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		memMapper.updateStateForLogin(username);
+		int isUpdate = memMapper.updateStateForLogin(username);
+		if(isUpdate == 1) memMapper.updateRoleForLogin(username);
 	}
 
 	@Override

@@ -17,7 +17,7 @@ $("document").ready(function(){
 	
 	// 선택한 회원에게 메시지 보내기
 	$(".btn-msg").on("click", function(){
-		msgModal.title.innerHTML("메시지 전송");
+		msgModal.title.innerHTML ="메시지 전송";
 		msgModal.type = "msg";
 		msgModal.openMsgModal(check, pagination.page, receiverListTemplate);
 	});

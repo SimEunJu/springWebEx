@@ -67,7 +67,7 @@ public class PollingController {
 		String ckVal = newMsgNo+"z"+newCnt+"z"+newTerm;
 		
 		Cookie msgCookie = new Cookie("msgPoll", ckVal);
-		msgCookie.setPath("/board");
+		msgCookie.setPath("/");
 		msgCookie.setMaxAge(DAY);
 		res.addCookie(msgCookie);
 		
@@ -104,7 +104,7 @@ public class PollingController {
 		String ckVal = newNNo+"z"+newCnt+"z"+newTerm;
 		
 		Cookie notiCookie = new Cookie("notiPoll", ckVal);
-		notiCookie.setPath("/board");
+		notiCookie.setPath("/");
 		notiCookie.setMaxAge(DAY);
 		res.addCookie(notiCookie);
 		

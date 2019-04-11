@@ -24,16 +24,17 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import kr.co.ex.domain.MemberVO;
+import kr.co.ex.security.CustomLoginSuccessHandler;
 import kr.co.ex.security.domain.GoogleOAuth2User;
 import kr.co.ex.service.MemberService;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 @EnableWebSecurity
 public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
-	private MemberService memServ;
+	@Autowired private MemberService memServ;
         
 	private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauthUserService() {
 
@@ -83,9 +84,9 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
             .build();
     }
     
-    @Autowired
-    SpringSessionRememberMeServices rememberMeServ;
-	
+    @Autowired private SpringSessionRememberMeServices rememberMeServ;
+    @Autowired private CustomLoginSuccessHandler loginSucandler;
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http
@@ -103,10 +104,11 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
     		.logout()
     			.logoutUrl("/board/logout")
     			.invalidateHttpSession(true)
-    			.deleteCookies("SESSION")
+    			.deleteCookies("SESSION", "msgPoll", "notiPoll")
     			.and()
     		.oauth2Login()
     			.loginPage("/board/oauth2/login")
+    			.successHandler(loginSucandler)
     			.authorizationEndpoint()
     				.baseUri("/board/oauth2/authorization")
     				.and()

@@ -14,12 +14,8 @@ $("document").ready(function(){
 		e.preventDefault();
 			
 		var role = $(this).attr("role");
-			
-		if(role === "delete"){
-			formObj.attr("method", "DELETE");
-			formObj.attr("action", "/board/daily/"+bno);;
-			
-		}else if(role === "modify"){
+		
+		 if(role === "modify"){
 			formObj.attr("method", 'post');
 			formObj.attr("action", "/board/daily/"+bno);
 			

@@ -30,9 +30,9 @@
 		<ul class="uploadedList">
 
 		</ul>
-		<button type="submit" role="modify" class="btn btn-outline-primary">Save</button>
-		<button type="submit" role="delete" class="btn btn-outline-warning">Remove</button>
-		<button type="submit" role="list" class="btn btn-outline-info">List</button>
+		<button type="submit" role="modify" class="btn btn-outline-primary">저장</button>
+		<!-- <button type="submit" role="delete" class="btn btn-outline-warning">삭제</button> -->
+		<button type="submit" role="list" class="btn btn-outline-info">목록으로</button>
 	</div>
 </form>
 

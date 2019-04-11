@@ -15,7 +15,7 @@
 	
 	<import resource="./root-context.xml" />
 	
-	<context:component-scan base-package="kr.co.ex.security.config" />
+	<context:component-scan base-package="kr.co.ex.security" />
 
 	<bean id="rememberMeServices" class="org.springframework.session.security.web.authentication.SpringSessionRememberMeServices">
 		<property name="alwaysRemember" value="true"/>

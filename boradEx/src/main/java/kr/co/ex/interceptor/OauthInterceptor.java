@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import kr.co.ex.service.MemberService;
@@ -15,15 +16,21 @@ public class OauthInterceptor extends HandlerInterceptorAdapter {
 	@Autowired MemberService memServ;
 	
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
 		try{
+			log.info("oauth");
 			memServ.updateStateForLogin();
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			return false;
 		}
+	}
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		log.info("pre oauth2");
 		return true;
 	}
 

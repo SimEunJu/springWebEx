@@ -203,13 +203,13 @@ const board = {
 </script>
 
 <script id="upload-item" type="text/x-handlebars-template">
-{{#each attaches}}
+{{#each this}}
 <li data-path='{{uploadPath}}' data-uuid='{{uuid}}' data-filename='{{fileName}}' data-type='{{fileType}}'>
 	<div>
 		{{#if isImg}}
 			<img src='/board/daily/file?fileName={{filePath}}'>
 		{{else}}
-			<img src='/resources/img/attach.png'>
+			<img src='/resources/img/attach.png' style="height: 100px;">
 		{{/if}}
 		<span>{{fileName}}</span>
 	</div>
