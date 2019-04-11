@@ -28,7 +28,7 @@
     				<tr>
     				<th scope="row" class="row-1"><input type="checkbox" name="noti" value="${noti.nno}" /></th>
 
-					<td class="noti row-8" style="weight: ${noti.read_flag ? 'bold' : ''}">
+					<td class="noti row-8" style="weight: ${noti.readFlag ? 'bold' : ''}">
 						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}">
 							<c:choose>
 								<c:when test="${not empty noti.title}">
@@ -54,7 +54,7 @@
     </c:if>	
     			
 	<nav aria-label="Page navigation">
-  		<ul class="pagination">
+  		<ul class="pagination justify-content-center">
   			<c:if test="${pagination.prev}">
     		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
     		</c:if>

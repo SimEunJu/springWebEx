@@ -68,15 +68,12 @@ public class AdminRestController {
 	}
 
 	@GetMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public ResponseEntity<Map<String, Object>> listCriMember(@RequestParam(required = false) String move,
-			@RequestParam(defaultValue = "all") String type, Criteria cri) {
+	public ResponseEntity<Map<String, Object>> listCriMember(@RequestParam(defaultValue = "all") String type, Criteria cri) {
 		
 		UserType userType = getMemberType(type);
 		Map<String, Object> ret = new HashMap<>();
 		
-		PageMaker pm = null;
-		if (move != null)
-			pm = PaginationUtils.pagination(move, cri, memServ.getMemberCnt());
+		PageMaker pm = PaginationUtils.pagination(cri, memServ.getMemberCnt());
 		
 		ret.put("users", memServ.ListCategorizedMember(userType, cri));
 		ret.put("pagination", pm);

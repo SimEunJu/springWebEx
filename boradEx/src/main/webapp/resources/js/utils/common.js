@@ -72,14 +72,13 @@ function Pagination(){
 	this.perPageNum = 10;
 }
 Pagination.prototype.makeQuery = makeQuery;
-function makeQuery(addition){
+function makeQuery(page, addition){
 	let query = "";
 	for(let q in addition){
 		query = "&"+q+"="+addition[q];
 	}
-	return "page="+this.page+"&perPageNum="+this.perPageNum+query;
+	return "page="+page+"&perPageNum="+this.perPageNum+query;
 }
-
 function changePage(target){
 	if(target === this.pageEle) return;
 	this.pageEle.removeClass("active");

@@ -2,6 +2,7 @@ package kr.co.ex.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,13 +61,12 @@ public class UserController {
 	}
 	
 	@GetMapping("/noti")
-	public String showNotification(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showNotification(Criteria cri, Model model){
 		try {	
 			// 서버에서 사용자 이름을 가져온다
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = null;
-			if(move != null) pm = PaginationUtils.pagination(move, cri, notiServ.getNotiCntByUsername(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, notiServ.getNotiCntByUsername(auth.getName()));
 	
 			List<NotificationDto> noti = notiServ.getNotifications(auth.getName(), cri);
 			
@@ -81,11 +81,11 @@ public class UserController {
 	}
 
 	@GetMapping("/post")
-	public String showBoard(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showBoard(Criteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(move, cri, boardServ.getTotalCntByWriter(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, boardServ.getTotalCntByWriter(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
 			model.addAttribute("posts", boardServ.listByWriter(auth.getName(), cri));
@@ -96,11 +96,11 @@ public class UserController {
 	}
 	
 	@GetMapping("/reply")
-	public String showReply(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showReply(Criteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(move, cri, replyServ.getTotalCntByReplyer(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
 			model.addAttribute("replies", replyServ.listReplyByWriter(cri));
@@ -112,12 +112,11 @@ public class UserController {
 	}
 	
 	@GetMapping("/msg")
-	public String showMsg(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showMsg(Criteria cri, Model model){
 			try {
-			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(move, cri, msgServ.getReceiverTotalCnt(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, msgServ.getReceiverTotalCnt(auth.getName()));
 			
 			model.addAttribute("msges", msgServ.getMsgList(auth.getName(), cri));
 			model.addAttribute("pagination", pm);
@@ -128,7 +127,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/info")
-	public String showUserInfo(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showUserInfo(Model model){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		model.addAttribute("user", memServ.getMember(username));
 		return "dashBoard/user/userInfo.page";
@@ -143,7 +142,10 @@ public class UserController {
 			// trigger로 첨부파일로 같이 삭제
 			boardServ.removeByWriter();
 			replyServ.removeReplyByReplyer();
-			return new ResponseEntity<>(HttpStatus.OK);
+			SecurityContextHolder.clearContext();
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Location", "/board/logout");  
+			return new ResponseEntity<>(headers, HttpStatus.OK);
 		}catch(Exception e){
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

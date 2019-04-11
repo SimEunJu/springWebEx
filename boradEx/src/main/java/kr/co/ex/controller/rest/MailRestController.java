@@ -24,8 +24,7 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/board/api/admin/mail")
 public class MailRestController {
 	
-	@NonNull
-	private MailService mailServ;
+	@NonNull private MailService mailServ;
 	
 	@Value("${mail.google.email}")
 	private final String GOOGLE_EMAIL_SENDER;
@@ -33,7 +32,6 @@ public class MailRestController {
 	@PostMapping("")
 	public ResponseEntity<String> sendGoogleMail(@RequestBody Map<String, Object> param){
 		List<String> receivers = (List<String>) param.get("receivers");
-		
 		MailDto dto = new MailDto();
 			
 		dto.setTitle((String) param.get("title"));

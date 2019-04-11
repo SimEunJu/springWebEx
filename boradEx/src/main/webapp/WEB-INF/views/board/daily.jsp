@@ -54,7 +54,7 @@
 				<tr class="table-info">
 					<td>${notice.bno}</td>
 					<td><a
-						href="/board/daily/${notice.bno}/${pagination.cri.makeSearch()}">${notice.title}</a>
+						href="/board/daily/${notice.bno}${pagination.cri.makeSearch()}">${notice.title}</a>
 					</td>
 					<td>${notice.writer}</td>
 					<td>${cf:formatLocalDateTime(notice.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>

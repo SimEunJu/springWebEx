@@ -115,6 +115,14 @@ $("document").ready(function(){
 		});
 	});
 	
+	$("nav .pagination").on("click", "li", function(e){
+		e.preventDefault();
+		const page = e.target.getAttribute("href");
+		console.log(page);
+		const user = window.location.pathname.match(/user|admin/)[0];
+		window.location.href = `/board/${user}/msg?`+pagination.makeQuery(page);
+	})
+	
 	function ajax(setting, callback){
 		$.ajax({
 			url: setting.url,

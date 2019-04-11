@@ -8,7 +8,10 @@
 	<resultMap id="member" type="kr.co.ex.domain.MemberVO">
 		<id property="username" column="username" />
 		<result property="userpw" column="userpw" />
-		<result property="enabled" column="enabled" />
+		<result property="state" column="state" />
+		<result property="reportCnt" column="reportcnt" />
+		<result property="regdate" column="regdate" />
+		<result property="updatedate" column="updatedate" />
 		<collection property="authList" ofType="kr.co.ex.domain.AuthVO">
 			<id property="username" column="username" />
 			<result property="auth" column="auth" />
@@ -16,7 +19,8 @@
 	</resultMap>
 	
 	<select id="read" resultMap="member">
-		select * from tbl_member, tbl_member_auth
+		select tbl_member.username, userpw, regdate, updatedate, state, report_cnt, auth 
+		from tbl_member, tbl_member_auth
 		where #{username} = tbl_member.username and #{username} = tbl_member_auth.username
 	</select>
 	
@@ -59,7 +63,10 @@
 	</update>
 	
 	<update id="updateLeave">
-		update tbl_member set state="L", leave_date="now()" where username=#{username}
+		<![CDATA[
+		update tbl_member set state="L", leave_date=now() 
+		]]>
+		where username=#{username}
 	</update>
 	
 	<update id="updateReportCnt">

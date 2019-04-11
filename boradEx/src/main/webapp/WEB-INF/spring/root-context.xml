@@ -50,7 +50,7 @@
 
 	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
     	<property name="host" value="smtp.gmail.com" />
-    	<property name="port" value="587" />
+    	<property name="port" value="587" />	
     	<property name="username" value="${mail.google.email}" />
     	<property name="password" value="${mail.google.password}" />
     	<property name="defaultEncoding" value="UTF-8" />

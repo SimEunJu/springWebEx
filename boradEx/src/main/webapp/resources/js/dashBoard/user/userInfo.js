@@ -1,6 +1,6 @@
 $("document").ready(function(){
 	$(".btn-leave").on("click", function(e){
-		e.preventDeafult();
+		e.preventDefault();
 		
 		if(confirm("정말 탈퇴하시겠습니까?")){
 			

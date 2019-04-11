@@ -71,16 +71,14 @@ public class AdminController {
 	*/
 	
 	@GetMapping("/noti")
-	public String showNotification(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showNotification(Criteria cri, Model model){
 		try {	
 			// 서버에서 사용자 이름을 가져온다
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = null;
-			if(move != null) pm = PaginationUtils.pagination(move, cri, notiServ.getNotiCntByUsername(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, notiServ.getNotiCntByUsername(auth.getName()));
 	
 			List<NotificationDto> noti = notiServ.getNotifications(auth.getName(), cri);
-			
 			model.addAttribute("noties", noti);
 			model.addAttribute("pagination", pm);
 			
@@ -92,9 +90,9 @@ public class AdminController {
 	}
 	
 	@GetMapping("/user")
-	public String manageUser(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String manageUser(Criteria cri, Model model){
 		
-		PageMaker pm = PaginationUtils.pagination(move, cri, memServ.getMemberCnt());
+		PageMaker pm = PaginationUtils.pagination(cri, memServ.getMemberCnt());
 		
 		model.addAttribute("pagination", pm);
 		model.addAttribute("users", memServ.ListCategorizedMember(UserType.ALL, cri));
@@ -108,13 +106,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/msg")
-	public String showMsg(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String showMsg(Criteria cri, Model model){
 		try {
-			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(move, cri, msgServ.getReceiverTotalCnt(auth.getName()));
-			
+			PageMaker pm = PaginationUtils.pagination(cri, msgServ.getReceiverTotalCnt(auth.getName()));
 			model.addAttribute("msges", msgServ.getMsgList(auth.getName(), cri));
 			model.addAttribute("pagination", pm);
 		} catch (Exception e) {
@@ -124,11 +120,9 @@ public class AdminController {
 	}
 	
 	@GetMapping("/post")
-	public String managePost(@RequestParam(required=false) String move, SearchCriteria cri, Model model){
+	public String managePost(SearchCriteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
-			PageMaker pageMaker = new PageMaker();
 			
 			int totalCount = 0;
 			List<BoardVO> boardList = null;
@@ -148,9 +142,8 @@ public class AdminController {
 			default:
 				throw new UndefinedBoardTypeException(cri.getType().toString());
 			}
-
-			pageMaker.setCri(cri);
-			pageMaker.setTotalCount(totalCount);
+			
+			PageMaker pageMaker = PaginationUtils.pagination(cri, totalCount);
 			
 			model.addAttribute("pagination", pageMaker);
 			model.addAttribute("boardList", boardList);
@@ -161,11 +154,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/reply")
-	public String manageReply(@RequestParam(required=false) String move, Criteria cri, Model model){
+	public String manageReply(Criteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(move, cri, replyServ.getTotalCntByReplyer(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			model.addAttribute("pagination", pm);
 			model.addAttribute("replies", replyServ.listReplyByWriter(cri));

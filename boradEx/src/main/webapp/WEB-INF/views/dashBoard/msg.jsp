@@ -43,7 +43,7 @@
     </c:if>	
     
 	<nav aria-label="Page navigation">
-  		<ul class="pagination">
+  		<ul class="pagination justify-content-center">
   			<c:if test="${pagination.prev}">
     		<li class="page-item prev"><a class="page-link" href="">&laquo;</a></li>
     		</c:if>

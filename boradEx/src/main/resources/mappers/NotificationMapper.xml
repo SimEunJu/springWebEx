@@ -9,13 +9,14 @@
 	insert into tbl_notification(bno, rno, username, type) values(#{bno}, #{rno}, #{username}, #{type})
 </insert>
 
-<select id="listNoti" resultType="kr.co.ex.domain.NotificationVO">
-	select nno, tbl_notification.regdate, read_flag, delete_flag, tbl_board.bno, tbl_reply.rno, username, tbl_notification.type, title, reply
-	from tbl_notification, tbl_reply, tbl_board 
-	where tbl_notification.username=#{username} 
-		and tbl_notification.delete_flag='0'
-		and tbl_notification.rno=tbl_reply.rno
-		and tbl_notification.bno=tbl_board.bno
+<select id="listNoti" resultType="kr.co.ex.dto.NotificationDto">
+	select * from 
+		(select nno, read_flag, tbl_notification.rno, type, reply from tbl_notification left join tbl_reply 
+			on tbl_notification.username=#{username} and tbl_notification.delete_flag='0' and tbl_notification.rno=tbl_reply.rno) as noti_reply
+		join
+		(select nno, tbl_notification.bno, title from tbl_notification left join tbl_board 
+			on tbl_notification.username=#{username} and tbl_notification.delete_flag='0'and tbl_notification.bno=tbl_board.bno) as noti_board
+		on noti_reply.nno=noti_board.nno
 	order by nno desc
 	limit #{cri.pageStart}, #{cri.perPageNum}
 </select>

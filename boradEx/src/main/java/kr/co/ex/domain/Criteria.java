@@ -6,13 +6,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import kr.co.ex.util.BoardType;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import lombok.extern.log4j.Log4j;
 
-@Getter @Setter
+@Getter @Setter @Log4j
 public class Criteria {
 	protected int page;
 	// number of article in a page;
 	protected int perPageNum;
+	protected String move;
 	
 	protected BoardType type;
 	
@@ -47,7 +48,7 @@ public class Criteria {
 	}
 	
 	public void setPage(int page) {
-		if(page <= 0) page = 1;
+		if(page <= 0) this.page = 1;
 		else this.page = page;
 	}
 	public void setPerPageNum(int perPageNum) {

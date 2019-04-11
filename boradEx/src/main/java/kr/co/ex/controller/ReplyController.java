@@ -48,7 +48,7 @@ public class ReplyController {
 			replyServ.addReply(vo);
 			
 			String writer = boardServ.getWriterName(boardNo);
-			if(writer.equals(vo.getReplyer())){
+			if(!writer.equals(vo.getReplyer())){
 				NotificationVO noti = NotificationVO.builder()
 						.rno(vo.getRno())
 						.bno(boardNo)
