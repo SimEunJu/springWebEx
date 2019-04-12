@@ -104,7 +104,7 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/{boardNo}/like")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<Void> updatePostLike(@PathVariable int boardNo, @RequestParam int likeCnt){
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -117,9 +117,10 @@ public class BoardContoller {
 	}
 	
 	@PostMapping("/{boardNo}/report")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<String> updateReportCnt(@PathVariable int boardNo, @RequestParam int diff){
 		try{
+			log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 			boardServ.updateReportCnt(boardNo, diff);
 		}catch(Exception e){
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -155,7 +156,6 @@ public class BoardContoller {
 	@PreAuthorize("hasRole('ADMIN')")
 	public String registerNoticePost(@Valid BoardVO board, RedirectAttributes attrs){
 		try {
-			log.info(board.toString());
 			boardServ.registerNotice(board);
 			attrs.addFlashAttribute("msg", "success");
 		
@@ -197,7 +197,7 @@ public class BoardContoller {
 	
 	// 검색어 유지
 	@GetMapping("/{boardNo}/mod")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('USER')")
 	public String modifyPost(@PathVariable int boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			BoardVO board = boardServ.read(boardNo);
@@ -224,7 +224,7 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/{boardNo}/temp")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('USER')")
 	public String showDeletedPost(@PathVariable int boardNo, HttpServletRequest req,
 			HttpServletResponse res, Model model){
 		BoardVO vo = null;

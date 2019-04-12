@@ -80,7 +80,7 @@ public class BoardRestController {
 	}
 	
 	@PostMapping("/admin/rem")
-	@PreAuthorize("hasRole('ADMIN'")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<BoardVO>> deletePost(@RequestBody Map<String, Object> param, SearchCriteria cri){
 		List<BoardVO> list = null;
 		try{

@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -32,6 +33,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired private MemberService memServ;

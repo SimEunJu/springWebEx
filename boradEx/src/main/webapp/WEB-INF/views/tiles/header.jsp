@@ -5,7 +5,9 @@
 
 	<nav class="navbar navbar-expand-md navbar-light bg-light">
 		<div class="navbar-home">
-			<a class="navbar-brand" href="/board/daily"> <img id="home-icon" src="/resources/img/ear.png">오늘 하루를 말해줘
+			<a class="navbar-brand" href="/board/daily">
+				오늘 하루를 말해줘
+				<img id="home-icon" src="/resources/img/bird.png">
 			</a>
 		</div>
 
