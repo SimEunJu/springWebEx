@@ -35,7 +35,7 @@
   </select>
   
   <select id="listReplyByReplyer" resultType="kr.co.ex.domain.ReplyVO">
-  	select * from tbl_reply where replyer=#{replyer}
+  	select * from tbl_reply where replyer=#{replyer} and delete_type=null
   	<include refid="limit" />
   </select>
   

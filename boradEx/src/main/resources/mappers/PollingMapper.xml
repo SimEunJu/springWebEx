@@ -8,7 +8,7 @@
 <select id="readNotiCnt" resultType="kr.co.ex.dto.PollingNotiDto">
 	<![CDATA[
 	select count(nno) as cnt, max(nno) as nno from tbl_notification 
-	where nno>#{nno} and (read_flag='0' or delete_flag='0') username=#{username} limit #{limit}
+	where nno>#{nno} and (read_flag='0' or delete_flag='0') and username=#{username} limit #{limit}
 	]]>
 </select>
 

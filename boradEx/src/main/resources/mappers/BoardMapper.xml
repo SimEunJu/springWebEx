@@ -89,10 +89,11 @@
 	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />
 	</trim>
-	order by bno desc 
+	order by 
 	<if test='type.typeInitial.equals("report")'>
-		, report_cnt desc
+		report_cnt desc,
 	</if>
+	bno desc
 	limit #{pageStart}, #{perPageNum}
 </select>
 
