@@ -10,8 +10,8 @@
 </insert>
 
 <select id="listNoti" resultType="kr.co.ex.dto.NotificationDto">
-	select * from 
-		(select nno, read_flag, tbl_notification.rno, type, reply from tbl_notification left join tbl_reply 
+	select noti_reply.nno, read_flag, regdate, rno, type, reply, bno, title from 
+		(select nno, read_flag, tbl_notification.rno, tbl_notification.regdate, type, reply from tbl_notification left join tbl_reply 
 			on tbl_notification.username=#{username} and tbl_notification.delete_flag='0' and tbl_notification.rno=tbl_reply.rno) as noti_reply
 		join
 		(select nno, tbl_notification.bno, title from tbl_notification left join tbl_board 
@@ -26,11 +26,11 @@
 </select>
 
 <update id="updateReadNoti">
-	update table tbl_notification set read_flag='1' where nno=#{nno}
+	update tbl_notification set read_flag='1' where nno=#{nno}
 </update>
 
 <update id="deleteNoti">
-	update table tbl_notification set delete_flag='1' where nno=#{nno}
+	update tbl_notification set delete_flag='1' where nno=#{nno}
 </update>
 
 </mapper>

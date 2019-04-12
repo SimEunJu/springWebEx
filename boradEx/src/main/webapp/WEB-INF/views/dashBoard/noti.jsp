@@ -28,8 +28,8 @@
     				<tr>
     				<th scope="row" class="row-1"><input type="checkbox" name="noti" value="${noti.nno}" /></th>
 
-					<td class="noti row-8" style="weight: ${noti.readFlag ? 'bold' : ''}">
-						<a href="/board/daily/${noti.bno}?from=noti&rno=${noti.rno}">
+					<td class="noti row-8" style="font-weight: ${noti.readFlag ? '' : 'bold'}">
+						<a href="/board/daily/${noti.bno}?from=noti&nno=${noti.nno}">
 							<c:choose>
 								<c:when test="${not empty noti.title}">
       								[ ${noti.title} ]에 댓글이 달렸습니다.
