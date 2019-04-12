@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 
 <div class="row">
-	<ul class="pagination mx-auto">
+	<ul class="pagination mx-auto justify-content-center">
 		<c:if test="${pagination.prev}">
 			<li class="page-item"><a class="page-link" href="/board/daily${pageMaker.cri.makeSearch(pageMaker.startPage-1) }">&laquo;</a></li>
 		</c:if>

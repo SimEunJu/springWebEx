@@ -22,14 +22,15 @@ public class AdminStatTask {
 	// second/ minute/ hour/ day of month/ month/ day of week
 	@Scheduled(cron="0 0 3 * * *")
 	public void makeUserStatForAdmin(){
-		LocalDateTime today = DateUtils.getToday();
+		LocalDateTime startDate = DateUtils.getADaysAgo(1);
+		LocalDateTime endDate = DateUtils.getADaysAgo(0);
 		
 		UserStatVO vo = UserStatVO.builder()
 				.today(DateUtils.getToday())
-				.joinCnt(mapper.getJoinUserCount(today))
-				.leaveCnt(mapper.getLeaveUserCount(today))
-				.postCnt(mapper.getPostCount(today))
-				.visitCnt(mapper.getVisitCount(today.toEpochSecond(ZoneOffset.ofHours(+9))*1000))
+				.joinCnt(mapper.getJoinUserCount(startDate, endDate))
+				.leaveCnt(mapper.getLeaveUserCount(startDate, endDate))
+				.postCnt(mapper.getPostCount(startDate, endDate))
+				.visitCnt(mapper.getVisitCount(startDate.toEpochSecond(ZoneOffset.ofHours(+9))*1000, endDate.toEpochSecond(ZoneOffset.ofHours(+9))*1000))
 				.build();
 		log.info(vo.toString());
 		

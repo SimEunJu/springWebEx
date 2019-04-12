@@ -7,19 +7,19 @@
 
 <select id="getJoinUserCount" resultType="int">
 	<![CDATA[
-	select count(username) from tbl_member where regdate > #{date}
+	select count(username) from tbl_member where regdate > #{startDate} and regdate < #{endDate}
 	]]>
 </select>
 
 <select id="getLeaveUserCount" resultType="int">
 	<![CDATA[
-	select count(username) from tbl_member where leave_date > #{date} and state = 'L'
+	select count(username) from tbl_member where leave_date > #{startDate} and leave_date < #{endDate} and state = 'L'
 	]]>
 </select>
 
 <select id="getPostCount" resultType="int">
 	<![CDATA[
-	select count(bno) from tbl_board where regdate > #{date}
+	select count(bno) from tbl_board where regdate > #{startDate} and  regdate < #{endDate}
 	]]>
 </select>
 	
@@ -31,7 +31,7 @@
 <select id="getVisitCnt" resultType="int">
 	<![CDATA[
 	select count(last_access_time) from spring_session
-	where last_access_time >= #{epochSecond}
+	where last_access_time >= #{startEpochSecond} and last_access_time >= #{endEpochSecond}
 	]]>
 </select>
 
