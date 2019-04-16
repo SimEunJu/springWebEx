@@ -111,6 +111,7 @@ public class PollingController {
 		log.info(noti.toString());
 		return ResponseEntity.ok(null);
 	}
+	// 1. ÀÏÁ¤ °¹¼ö 
 	
 	private int calcTerm(int prev, int cur, int term){
 		// 0 <= diff <= 999

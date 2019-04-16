@@ -24,14 +24,6 @@
 		<beans:property name="order" value="2" />
 	</beans:bean>
 	
-	<beans:bean id="uploadPath" class="java.lang.String">
-		<beans:constructor-arg value="C:\Users\user\gitPlease\boradEx\src\main\webapp\resources\upload\"></beans:constructor-arg>
-	</beans:bean>
-	
-	<beans:bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
-		<beans:constructor-arg value="C:\Users\user\gitPlease\boradEx\src\main\webapp\resources\upload\temp\"></beans:constructor-arg>
-	</beans:bean>
-	
 	<beans:bean id="ModInterceptor" class="kr.co.ex.interceptor.ModInterceptor"></beans:bean>
 	<beans:bean id="AnonyModInterceptor" class="kr.co.ex.interceptor.AnonyModInterceptor"></beans:bean>
 	

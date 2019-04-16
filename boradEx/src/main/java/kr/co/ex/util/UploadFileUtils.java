@@ -18,7 +18,6 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class UploadFileUtils {
-	private static Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 	
 	// 운영체제별 다른 file separator
 	public static String calcFolder(){

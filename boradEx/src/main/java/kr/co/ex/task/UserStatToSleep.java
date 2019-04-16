@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import kr.co.ex.dto.MailDto;
@@ -21,21 +22,26 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class UserStatToSleep {
 	
-	@NonNull
-	private MailService mailServ;
-	@NonNull
-	private MemberService memServ;
-	@NonNull
-	private SqlSession sess;
-	// view로 만들어서 유지 -> 메일 보낸 후 없애는 건 어떨까?
-	private final String updateUserToSleep = "update tbl_member, slee_member"
+	@NonNull private MailService mailServ;
+	@NonNull private MemberService memServ;
+	@NonNull private SqlSession sess;
+	
+	private final String updateUserToSleep = "update tbl_member, sleep_member"
 			+ "set state = 'S' where tbl_member.username = sleep_member.username";
 	private final String listSleepMember = "select username, access_date from sleep_member where state='S'";
 	private final String createSleepMemView = "create or replace view sleep_member as"
 			+ "select * "
-			+ "from (select username, access_date  from tbl_member where access_date >= _date) as temp_sleep";
+			+ "from (select username, access_date  from tbl_member where access_date >= #{date})";
+	
 	@Value("${mail.google.email}")
 	private String GOOGLE_EMAIL_SENDER;
+	
+	@Scheduled(cron="0 0 2 * * *")
+	public void changeUserSleepAndSendMail(){
+		updateLastAccessTime();
+		changeUserStatToSleep();
+		sendStatChangeMail();
+	}
 	
 	// 최근 접속일이 1년이 넘은 회원은 휴면회원으로 상태 변경
 	private void changeUserStatToSleep(){

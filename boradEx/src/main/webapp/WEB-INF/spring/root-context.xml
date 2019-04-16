@@ -70,6 +70,14 @@
 		<constructor-arg index="1" value="50" />
 	</bean>
 	
+	<bean id="uploadPath" class="java.lang.String">
+		<constructor-arg value="C:\Users\user\gitPlease\boradEx\src\main\webapp\resources\upload\" />
+	</bean>
+	
+	<bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg value="C:\Users\user\gitPlease\boradEx\src\main\webapp\resources\upload\temp\" />
+	</bean>
+	
 	<context:component-scan base-package="kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
 	
 	<mybatis:scan base-package="kr.co.ex.mapper" /> 
