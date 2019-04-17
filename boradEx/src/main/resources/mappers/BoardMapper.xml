@@ -22,8 +22,8 @@
 </insert>
 
 <insert id="createNotice">
-	insert into tbl_board (bno, title, content, writer, delete_type) 
-	values (#{bno}, #{title}, #{content}, #{writer}, null)
+	insert into tbl_board (bno, title, content, writer, category, delete_type) 
+	values (#{bno}, #{title}, #{content}, #{writer}, 1, null)
 </insert>
 
 <select id="read" resultType="kr.co.ex.domain.BoardVO">
@@ -63,6 +63,7 @@
 
 <select id="listAll" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board where isnull(delete_type)
+	<include refid="noticeBoundary" />
 	order regdate desc
 </select>
 
@@ -89,6 +90,7 @@
 	<trim prefix="and" prefixOverrides="and">
 		<include refid="category" />
 	</trim>
+	<include refid="noticeBoundary" />
 	order by 
 	<if test='type.typeInitial.equals("report")'>
 		report_cnt desc,
@@ -148,6 +150,7 @@
 		<include refid="category" />
 		<include refid="search" />
 		and isnull(delete_type)
+		<include refid="noticeBoundary" />
 	</trim>
  	order by bno desc
  	<if test='type.typeInitial.equals("report")'>
@@ -161,7 +164,7 @@
 	<![CDATA[
 	where bno >= #{noticeStartIdx} and bno < #{noticeEndIdx} and category=#{type.typeNumber} and isNull(delete_type)
 	]]>
-	limit #{pageStart}, #{perPageNum}
+
 </select>
 
 <select id="searchCount" resultType="int">
