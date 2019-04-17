@@ -20,11 +20,11 @@
 		<div class="collapse navbar-collapse justify-content-end" id="navbar">
 			<ul class="navbar-nav">
 				<sec:authorize access="isAuthenticated()">
-					<sec:authorize access="hasRole('ADMIN')">
-						<c:set var="identity" value="admin" scope="request" />
-					</sec:authorize>
 					<sec:authorize access="hasRole('USER')">
 						<c:set var="identity" value="user" scope="request" />
+					</sec:authorize>
+					<sec:authorize access="hasRole('ADMIN')">
+						<c:set var="identity" value="admin" scope="request" />
 					</sec:authorize>
 					<li class="nav-item">
 						<form method="post" action="/board/logout">

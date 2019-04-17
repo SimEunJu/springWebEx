@@ -20,10 +20,29 @@ $("document").ready(function(){
 		msgModal.msg.attr("readonly", false);
 		msgModal.modal.find(".modal-footer .modal-send").show();
 		msgModal.modal.find(".modal-header .modal-title").html("메시지 보내기");
-		msgModal.sender.html(username);
 	});
 
+	msgModal.userDefinedReceiver.on("keydown", function(e){
+		if(e.originalEvent.key !== "Enter") return;
+		msgModal.receiver.find("ul .user-defined-list").prepend(`<li>${this.value}<span class="pl-5">x</span></li>`);
+		const receiverNumEle = $(this).parents("ul").find("li .receiver-num");
+		if(receiverNumEle){
+			const receiverNum = parseInt(receiverNumEle.text());
+			receiverNumEle.text(receiverNum+1);
+		}
+	});
+	
+	msgModal.receiver.on("click", ".user-defined-list span", function(){
+		$(this).parent().remove();
+		const receiverNumEle = $(this).parents("ul").find("li .receiver-num");
+		if(receiverNumEle){
+			const receiverNum = parseInt(receiverNumEle.text());
+			receiverNumEle.text(receiverNum-1);
+		}
+	});
+	
 	$(".modal-send").on("click", function(){
+		msgModal.receiver.find(".user-defined-list li").each((idx, r) => check.list.push(r.innerText.replace(/x$/,"")));
 		msgModal.sendMsg(check.list, "/board/user/msg");
 	});
 	

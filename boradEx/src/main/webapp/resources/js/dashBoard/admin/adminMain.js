@@ -81,12 +81,14 @@ $("document").ready(function(){
 	
 	function ajax(url, config, target){
 		$.getJSON(url, function(res){
-			if(url.includes("inout")){
+			if(url.includes("inout?")){
 				config.data.datasets[0].data = res.join;
 				config.data.datasets[1].data = res.leave;
 				
-			}else if(url.includes("board")){
-				config.data.datasets.data = res.board;
+			}else if(url.includes("board?")){
+				config.data.datasets[0].data = res.board;
+			}else if(url.includes("visit?")){
+				config.data.datasets[0].data = res.visit;
 			}
 			const regexArr = /[dwm]$/.exec(url);
 			const type = regexArr[0];

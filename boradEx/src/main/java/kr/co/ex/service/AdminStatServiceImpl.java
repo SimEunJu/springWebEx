@@ -21,8 +21,7 @@ import lombok.extern.log4j.Log4j;
 @RequiredArgsConstructor
 public class AdminStatServiceImpl implements AdminStatService {
 	
-	@NonNull
-	private AdminStatMapper statMapper;
+	@NonNull private AdminStatMapper statMapper;
 	
 	@Transactional
 	public List<Integer> getUserJoinCount(String type){

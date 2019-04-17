@@ -37,7 +37,7 @@ public class MsgController {
 	
 	@PostMapping("")
 	public ResponseEntity<Map<String,String>> registerMsg(@RequestBody Map<String, Object> param) {
-		
+	
 		List<String> receivers = (List<String>) param.get("receivers");
 	
 		MsgVO vo = new MsgVO();

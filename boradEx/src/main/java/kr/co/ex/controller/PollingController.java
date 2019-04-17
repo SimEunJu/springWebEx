@@ -31,12 +31,12 @@ public class PollingController {
 	
 	private final int LIMIT = 999;
 	private final int DAY = 60*60*24;
-	// 기본 polling 간격 10분
-	private final int DEAFULT_TERM = 10;
-	// 최대 polling 간격 2시간
-	private final int MAX_TERM = 120;
-	// 최소 polling 간격 2분
-	private final int MIN_TERM = 2;
+	// 기본 polling 간격 30초
+	private final int DEAFULT_TERM_SEC = 30;
+	// 최대 polling 간격 10분
+	private final int MAX_TERM_SEC = 10*60;
+	// 최소 polling 간격 10초
+	private final int MIN_TERM_SEC = 10;
 	
 	@GetMapping("/msg")
 	public ResponseEntity<Void> pollingMsgCnt(@CookieValue(value="msgPoll", required=false) Cookie msgCk, 
@@ -45,7 +45,7 @@ public class PollingController {
 		PollingMsgDto msg = null;
 		int curCnt = 0;
 		int msgNo = 0;
-		int term = DEAFULT_TERM;
+		int term = DEAFULT_TERM_SEC;
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
@@ -82,7 +82,7 @@ public class PollingController {
 		PollingNotiDto noti = null;
 		int curCnt = 0;
 		int notiNo = 0;
-		int term = DEAFULT_TERM;
+		int term = DEAFULT_TERM_SEC;
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
@@ -100,9 +100,8 @@ public class PollingController {
 		int newTerm = calcTerm(curCnt, noti.getCnt(), term);
 		int newCnt = curCnt+noti.getCnt();
 		int	newNNo = noti.getNno() == 0 ? notiNo : noti.getNno();
-		
+	
 		String ckVal = newNNo+"z"+newCnt+"z"+newTerm;
-		
 		Cookie notiCookie = new Cookie("notiPoll", ckVal);
 		notiCookie.setPath("/");
 		notiCookie.setMaxAge(DAY);
@@ -116,9 +115,11 @@ public class PollingController {
 	private int calcTerm(int prev, int cur, int term){
 		// 0 <= diff <= 999
 		int diff = cur - prev;
-		int newTerm = (int)(1 - (diff/1000 - 0.5)) * term;
-		if(newTerm > MAX_TERM) return MAX_TERM;
-		else if(newTerm < MIN_TERM) return MIN_TERM;
+		int newTerm = (int)((1 - (diff/1000 - 0.5)) * term);
+
+		if(newTerm > MAX_TERM_SEC) return MAX_TERM_SEC;
+		else if(newTerm < MIN_TERM_SEC) return MIN_TERM_SEC;
+		
 		return newTerm;
 	}
 }

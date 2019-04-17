@@ -109,6 +109,7 @@ function toggleModal(){
 
 function MsgModal(){
 	Modal.call(this);
+	this.userDefinedReceiver = this.modal.find(".user-defined-receiver");
 }
 
 MsgModal.prototype = Object.create(Modal.prototype);
@@ -121,12 +122,6 @@ function openMsgModal(check, page, template){
 	// 선택된 회원 리스트 생성   
 	check.appendCheckVal(page);
 	const list = check.flatToList(check.repo);
-	
-	// 회원이 한 명도 선택되지 않았다면
-	if(check.isListEmpty()){
-		alert("회원을 1명 이상 선택해 주세요.");
-		return;
-	}
 	
 	// 메시지를 작성할 모달을 활성화
 	this.toggleModal();
@@ -159,6 +154,12 @@ function sendMsg(receivers, url){
 		title: this.title.val(),
 		content: this.msg.val()
 	};
+	
+	if(receivers === ""){
+		alert("회원을 1명 이상 입력/선택해주세요.");
+		return;
+	}
+	
 	const self = this;
 	$.post({
 		url: url,

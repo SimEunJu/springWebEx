@@ -57,7 +57,9 @@ public class AdminController {
 			model.addAttribute("userJoinCnt", statServ.getUserJoinCount(type));
 			model.addAttribute("visitCnt", statServ.getVisitCount(type));
 			LocalDateTime defaultDate = DateUtils.getAFewWeeksAgo(1);
-			model.addAttribute("hotPost", boardServ.listByRegdate(defaultDate));
+			Criteria cri = new Criteria();
+			cri.setType("hot");
+			model.addAttribute("hotPost", boardServ.listCriteria(cri));
 			
 		}catch(Exception e){
 			e.printStackTrace();

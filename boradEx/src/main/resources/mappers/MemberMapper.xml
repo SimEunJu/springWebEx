@@ -13,15 +13,19 @@
 		<result property="regdate" column="regdate" />
 		<result property="updatedate" column="updatedate" />
 		<collection property="authList" ofType="kr.co.ex.domain.AuthVO">
-			<id property="username" column="username" />
-			<result property="auth" column="auth" />
+			<id property="auth" column="auth" />
+			<result property="username" column="username" />
 		</collection>
 	</resultMap>
 	
 	<select id="read" resultMap="member">
-		select tbl_member.username, userpw, regdate, updatedate, state, report_cnt, auth 
-		from tbl_member, tbl_member_auth
-		where #{username} = tbl_member.username and #{username} = tbl_member_auth.username
+		select tbl_member.username, userpw, regdate, updatedate, state, report_cnt, auth
+		from tbl_member left outer join tbl_member_auth on tbl_member.username = tbl_member_auth.username
+		where #{username} = tbl_member.username
+	</select>
+	
+	<select id="readAuth" resultType="kr.co.ex.domain.AuthVO">
+		select username, auth from tbl_member_auth where username=#{username}
 	</select>
 	
 	<insert id="createUser">

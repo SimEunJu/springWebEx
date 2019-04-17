@@ -1,15 +1,14 @@
 
 function longPoll(url, callback) {  
-	// 기본 간격 10분
-	let term = 1000*60*10;
+	// 기본 간격 30초
+	let term = 3*1000;
 	$.ajax({
         url: url,
         type: 'GET',
         success: function() {
-            term = callback()*60*10;
+            term = callback()*1000;
+            setTimeout(function() { longPoll(url, callback); }, term)
         },
-        //timeout: 3000,
-        complete: setTimeout(function() { callback(url, callback); }, term)
     });
 }
 

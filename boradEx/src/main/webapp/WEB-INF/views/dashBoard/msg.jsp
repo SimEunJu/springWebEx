@@ -73,7 +73,10 @@
         	<p>보내는 이 : <span class="sender">
         		<sec:authentication property="principal.username"/></span>
         	</p>
-        	<p>받는 이 : <div class="receiver"></div></p>
+        	<p>받는 이 : 
+        		<input type="text" class="user-defined-receiver">   		
+        		<div class="receiver"></div>
+        	</p>
         </div>
         <input type="text" class="title col-12 mb-2" placeholder="제목을 입력해주세요"/>
         <textarea class="msg col-12"></textarea>
@@ -98,11 +101,13 @@
 </script>
 <script id="receiver-list-hb" type="text/x-handlebars-template">
 <ul>
+	<div class="user-defined-list">
+	</div>
 	{{#forArr start end receiver}}
 		<li>{{this}}</li>
 	{{/forArr}}	
 	{{#if showMsg}}
-		<li>포함 {{receiverNum}}명</li>
+		<li>포함 <span class="receiver-num">{{receiverNum}}</span>명</li>
 	{{/if}}
 </ul>
 </script>
