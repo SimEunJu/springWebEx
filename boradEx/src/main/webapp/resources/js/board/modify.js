@@ -16,6 +16,8 @@ $("document").ready(function(){
 		var role = $(this).attr("role");
 		
 		 if(role === "modify"){
+			const str = fileService.getFilesInfo(fileinfoTemplate);
+			formObj.append(str);
 			formObj.attr("method", 'post');
 			formObj.attr("action", "/board/daily/"+bno);
 			

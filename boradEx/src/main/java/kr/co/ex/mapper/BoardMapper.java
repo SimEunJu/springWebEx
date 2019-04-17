@@ -45,7 +45,7 @@ public interface BoardMapper {
 	public List<AttachVO> getAttach(Integer bno) throws Exception;
 	public void deleteAttach(String uuid) throws Exception;
 	public void deleteAllAttach(Integer bno) throws Exception;
-	public void replaceAttach(AttachVO file) throws Exception;
+	public void replaceAttach(@Param("bno") int bno, @Param("file") AttachVO file) throws Exception;
 	
 	public int readReplyCnt(int bno) throws Exception;
 	public void updateViewCnt(int bno) throws Exception;

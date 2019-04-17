@@ -83,7 +83,7 @@ public class BoardServiceImpl implements BoardService {
 		List<AttachVO> files = board.getFiles();
 		if(files != null){
 			for(AttachVO file: files){
-				boardMapper.replaceAttach(file);
+				boardMapper.replaceAttach(bno, file);
 			}
 		}
 		

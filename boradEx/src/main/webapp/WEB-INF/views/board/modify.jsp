@@ -76,3 +76,5 @@
         	error => {console.error( error );}
         );
 </script>
+
+<script src="/resources/js/include/upload.js"></script>

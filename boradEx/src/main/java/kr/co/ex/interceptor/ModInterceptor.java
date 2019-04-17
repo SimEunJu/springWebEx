@@ -23,7 +23,10 @@ public class ModInterceptor extends HandlerInterceptorAdapter {
 			.stream().filter(a -> "ROLE_ADMIN".equals(a.getAuthority())).collect(Collectors.toList());
 		if(auth.size() != 0) return true;
 		HttpSession sess = request.getSession();
-		if(!(boolean)sess.getAttribute("anonyMod")) return false;
+		Boolean isAnonyMod = (Boolean) sess.getAttribute("anonyMod");
+		if(isAnonyMod == null) return true;
+		
+		if(isAnonyMod == false) return false;
 		sess.removeAttribute("anonyMod");		
 		return true;
 	}

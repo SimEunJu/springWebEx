@@ -192,7 +192,7 @@
 
 <update id="replaceAttach">
 	insert into tbl_attach(bno, file_name, upload_path, uuid, file_type) 
-	values(LAST_INSERT_ID(), #{fileName}, #{uploadPath}, #{uuid}, #{fileType})
+	values(#{bno}, #{file.fileName}, #{file.uploadPath}, #{file.uuid}, #{file.fileType})
 </update>
 
 <select id="readReplyCnt" resultType="int">
