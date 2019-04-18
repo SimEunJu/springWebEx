@@ -42,8 +42,12 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
+	public void deleteNotifications(List<Integer> notiNo) throws Exception {
+		notiMapper.deleteNoties(notiNo);
+	}
+
+	@Override
 	public int getNotiCntByUsername(String username) throws Exception {
 		return notiMapper.readMemberNotiCnt(username);
 	}
-
 }

@@ -5,11 +5,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.ex.controller.utils.CookieMaker;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.MsgVO;
 import kr.co.ex.service.MsgService;
@@ -68,10 +73,13 @@ public class MsgController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	
+	
 	@GetMapping(value="/{msgNo}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<MsgVO> getMsg(@PathVariable int msgNo, @RequestParam boolean isRead){
+	public ResponseEntity<MsgVO> getMsg(@PathVariable int msgNo, @RequestParam boolean isRead ){
 		try {
 			if(isRead == false) msgServ.setReceiverReadFlag(msgNo);
+			
 			return new ResponseEntity<>(msgServ.getMsg(msgNo), HttpStatus.OK);
 			
 		} catch (Exception e) {
@@ -84,6 +92,7 @@ public class MsgController {
 	public ResponseEntity<List<MsgVO>> deleteMsges(@RequestBody ArrayList<Integer> msgNo){
 		try {
 			msgServ.setReceiverDeleteFlag(msgNo);
+			
 			String curUser = SecurityContextHolder.getContext().getAuthentication().getName();
 			List<MsgVO> msgList = msgServ.getMsgList(curUser, new Criteria());
 			return new ResponseEntity<>(msgList, HttpStatus.OK);

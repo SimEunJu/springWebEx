@@ -1,3 +1,20 @@
+const longPollObj = {
+	timeoutId: null,
+	updateEle: {
+		msg: document.querySelector("nav .navbar-nav .msgbadge"),
+		noti: document.querySelector("nav .navbar-nav .notibadge")
+	},
+	updateUrl: {
+		msg: "/board/polling/msg",
+		noti: "/board/polling/noti"
+	},
+	msgCallback: msgLongPollCallback,
+	notiCallback: notiLongPollCallback,
+	initialize: initialize
+}
+
+longPoll(longPollObj.updateUrl.msg, msgLongPollCallback);
+longPoll(longPollObj.updateUrl.noti, notiLongPollCallback);
 
 function longPoll(url, callback) {  
 	// 기본 간격 30초
@@ -7,17 +24,12 @@ function longPoll(url, callback) {
         type: 'GET',
         success: function() {
             term = callback()*1000;
-            setTimeout(function() { longPoll(url, callback); }, term)
+            longPollObj.timeoutId = setTimeout(function() { longPoll(url, callback); }, term)
         },
     });
 }
 
-const poll = {
-		msg: document.querySelector("nav .navbar-nav .msgbadge"),
-		noti: document.querySelector("nav .navbar-nav .notibadge")
-};
-
-longPoll("/board/polling/msg", function(){
+function msgLongPollCallback(){
 	console.log(document.cookie);
 	const cookie = document.cookie.match(/msgPoll=(\d+)z(\d+)z(\d+)/);
 	const no = cookie[1];
@@ -25,14 +37,14 @@ longPoll("/board/polling/msg", function(){
 	const term = cookie[3];
 	
 	if(parseInt(cnt) > 999){
-		poll.msg.innerHTML = "999+";
+		longPollObj.updateEle.msg.innerHTML = "999+";
 		return false;
 	}
-	poll.msg.innerHTML = cnt;
+	longPollObj.updateEle.msg.innerHTML = cnt;
 	return term;
-});
+}
 
-longPoll("/board/polling/noti", function(){
+function notiLongPollCallback(){
 	console.log(document.cookie);
 	const cookie = document.cookie.match(/notiPoll=(\d+)z(\d+)z(\d+)/);
 	const no = cookie[1];
@@ -40,9 +52,28 @@ longPoll("/board/polling/noti", function(){
 	const term = cookie[3];
 	
 	if(parseInt(cnt) > 999){
-		poll.noti.innerHTML = "999+";
+		longPollObj.updateEle.noti.innerHTML = "999+";
 		return false;
 	}
-	poll.noti.innerHTML = cnt;
+	longPollObj.updateEle.noti.innerHTML = cnt;
 	return term;
-});
+};
+
+function initialize(type){
+	
+	if(longPollObj.timeoutID != null) window.clearTimeout(longPollObj.timeoutID);
+	switch (type){
+	case 'msg':
+		document.cookie = document.cookie.replace(/msgPoll=(\d+)z/,0);
+		console.log(document.cookie);
+		longPoll(longPollObj.updateUrl.msg, msgLongPollCallback);
+		break;
+	case 'noti':
+		document.cookie = document.cookie.replace(/notiPoll=(\d+)z/,0);
+		console.log(document.cookie);
+		longPoll(longPollObj.updateUrl.noti, notiLongPollCallback);
+		break;
+	default:
+		log.error("정의되지 않은 long poll 타입입니다.");
+	}
+}

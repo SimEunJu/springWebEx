@@ -14,6 +14,7 @@ public interface ReplyService {
 	public List<ReplyDto> listCriteriaReply(int bno, Criteria cri) throws Exception;
 	public List<ReplyDto> listCriteriaAddedReply(int bno, int parRno, Criteria cri) throws Exception;
 	public List<ReplyVO> listReplyByWriter(Criteria cri) throws Exception;
+	public List<ReplyVO> listReplyByReportCnt(Criteria cri) throws Exception;
 	
 	public int getTotalCount(int bno, boolean notIncludeAdded) throws Exception;
 	public int getAddedTotalCount(int parRno) throws Exception;

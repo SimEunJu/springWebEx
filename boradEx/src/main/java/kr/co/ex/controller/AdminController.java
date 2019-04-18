@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
+import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.dto.NotificationDto;
 import kr.co.ex.exception.UndefinedBoardTypeException;
@@ -156,14 +157,26 @@ public class AdminController {
 	}
 
 	@GetMapping("/reply")
-	public String manageReply(Criteria cri, Model model){
+	public String manageReply(SearchCriteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
 			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
+			List<ReplyVO> replies = null;
+			switch (cri.getType()) {
+			case REPORT:
+				replies = replyServ.listReplyByWriter(cri);
+				break;
+			case SELF:
+				replies = replyServ.listReplyByReportCnt(cri);
+				break;
+			default:
+				throw new UndefinedBoardTypeException(cri.getType().toString());
+			}
+			
 			model.addAttribute("pagination", pm);
-			model.addAttribute("replies", replyServ.listReplyByWriter(cri));
+			model.addAttribute("replies", replies);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

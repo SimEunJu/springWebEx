@@ -27,13 +27,5 @@
 				</div>
 			</div>
 		</form>
-		
-		<div class="col-md align-self-center text-center">
-			<div style="background-color: #ea4335; color: white; font-weight: bold; width: 300px; height: 50px;">
-				<a href="/board/oauth2/authorization/google">
-					구글 로그인
-				</a>
-			</div>
-		</div>
 	</div>
 

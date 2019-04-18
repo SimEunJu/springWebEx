@@ -60,7 +60,7 @@ public class PollingController {
 			msg = pollServ.getMsgCnt(new PollingMsgDto(0, username, LIMIT));
 		}
 		
-		int newTerm = calcTerm(curCnt, msg.getCnt(), term);
+		int newTerm = calcTerm(msg.getCnt(), term);
 		int newCnt = curCnt+msg.getCnt();
 		int	newMsgNo = msg.getMsgNo() == 0 ? msgNo : msg.getMsgNo();
 		
@@ -97,7 +97,7 @@ public class PollingController {
 			noti = pollServ.getNotiCnt(new PollingNotiDto(0, username, LIMIT));
 		}
 		
-		int newTerm = calcTerm(curCnt, noti.getCnt(), term);
+		int newTerm = calcTerm(noti.getCnt(), term);
 		int newCnt = curCnt+noti.getCnt();
 		int	newNNo = noti.getNno() == 0 ? notiNo : noti.getNno();
 	
@@ -112,10 +112,9 @@ public class PollingController {
 	}
 	// 1. ÀÏÁ¤ °¹¼ö 
 	
-	private int calcTerm(int prev, int cur, int term){
+	private int calcTerm(int cur, int term){
 		// 0 <= diff <= 999
-		int diff = cur - prev;
-		int newTerm = (int)((1 - (diff/1000 - 0.5)) * term);
+		int newTerm = (int)((1 - (cur/1000 - 0.5)) * term);
 
 		if(newTerm > MAX_TERM_SEC) return MAX_TERM_SEC;
 		else if(newTerm < MIN_TERM_SEC) return MIN_TERM_SEC;

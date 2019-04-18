@@ -29,13 +29,13 @@
     				<th scope="row" class="row-1"><input type="checkbox" name="noti" value="${noti.nno}" /></th>
 
 					<td class="noti row-8" style="font-weight: ${noti.readFlag ? '' : 'bold'}">
-						<a href="/board/daily/${noti.bno}?from=noti&nno=${noti.nno}">
+						<a href="/board/daily/${noti.bno}?from=noti&nno=${noti.nno}" data-read="${noti.readFlag ? 'true' : 'false'}">
 							<c:choose>
-								<c:when test="${not empty noti.title}">
-      								[ ${noti.title} ]에 댓글이 달렸습니다.
+								<c:when test="${not empty noti.rno}">
+      								[ ${noti.reply} ]에 대댓글이 달렸습니다.
       							</c:when>
 								<c:otherwise>
-									[ ${noti.reply} ]에 대댓글이 달렸습니다.
+									[ ${noti.title} ]에 댓글이 달렸습니다.
       							</c:otherwise>
 							</c:choose>
 						</a>

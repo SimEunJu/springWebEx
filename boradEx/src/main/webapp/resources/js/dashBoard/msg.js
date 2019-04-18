@@ -116,6 +116,8 @@ $("document").ready(function(){
 			
 			target.css("font-weight","inherit");
 			target.attr("data-read", true);		
+			
+			longPollObj.initialize("msg");
 		})
 	});
 	
@@ -131,6 +133,8 @@ $("document").ready(function(){
 		}, function(res){
 			console.log(res);
 			check.tbody.html(tableRowTemplate(res));
+			
+			longPollObj.initialize("msg");
 		});
 	});
 	

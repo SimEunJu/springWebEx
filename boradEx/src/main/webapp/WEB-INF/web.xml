@@ -87,8 +87,13 @@
 	</filter-mapping>
 	
 	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error_500.jsp</location>
+	</error-page>
+
+	<error-page>
 		<error-code>404</error-code>
-		<location>/custom_404.jsp</location>
+		<location>/WEB-ING/vies/error_404.jsp</location>
 	</error-page>
 	
 	<!-- Processes application requests -->

@@ -33,4 +33,10 @@
 	update tbl_notification set delete_flag='1' where nno=#{nno}
 </update>
 
+<update id="deleteNoties">
+	<foreach item="nno" collection="notiNo">
+		update tbl_notification set delete_flag='1' where nno=#{nno}
+	</foreach>
+</update>
+
 </mapper>

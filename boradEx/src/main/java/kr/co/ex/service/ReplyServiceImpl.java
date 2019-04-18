@@ -106,7 +106,12 @@ public class ReplyServiceImpl implements ReplyService {
 		String replyer = SecurityContextHolder.getContext().getAuthentication().getName();
 		return replyMapper.listReplyByReplyer(replyer, cri);
 	}
-
+	
+	@Override
+	public List<ReplyVO> listReplyByReportCnt(Criteria cri) throws Exception {
+		return replyMapper.listReplyByReportCnt(cri);
+	}
+	
 	private String getWriterName(int bno){
 		return boardMapper.readWriterName(bno);
 	}
@@ -210,4 +215,5 @@ public class ReplyServiceImpl implements ReplyService {
 	public void reportReply(int rno) throws Exception {
 		replyMapper.updateReport(rno);
 	}
+
 }

@@ -3,6 +3,7 @@ package kr.co.ex.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.ex.common.NoticeBoardControl;
+import kr.co.ex.controller.utils.CookieMaker;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.PageMaker;
@@ -168,9 +171,9 @@ public class BoardContoller {
 	
 	// 검색결과 유지
 	@GetMapping("/{boardNo}")
-	public String showEachPost(@PathVariable int boardNo, 
-			@RequestParam(required=false) String from, @RequestParam(required=false) Integer nno,
-			@ModelAttribute("cri") SearchCriteria cri, Model model){
+	public String showEachPost(@CookieValue(value="notiPoll", required=false) Cookie notiCk, 
+			@PathVariable int boardNo, @RequestParam(required=false) String from, 
+			@RequestParam(required=false) Integer nno, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			boardServ.updateViewCnt(boardNo);
 			if(from != null && from.equals("noti")) notiServ.markReadFlagNotification(nno);

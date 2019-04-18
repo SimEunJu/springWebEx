@@ -31,7 +31,7 @@
     			<tr>
       				<th scope="row-1"><input type="checkbox" name="msg" value="${msg.msgNo}" /></th>
       				<td class="row-2" class="sender">${msg.sender}</td>
-      				<td class="row-6 title" style="font-weight: ${msg.receiverReadFlag ? '' : 'bold'}">${msg.title}</td>
+      				<td class="row-6 title" data-read="${msg.receiverReadFlag ? 'true' : 'false'}" style="font-weight: ${msg.receiverReadFlag ? '' : 'bold'}">${msg.title}</td>
       				<td class="row-3">${cf:formatLocalDateTime(msg.regdate, 'yyyy-MM-dd HH:mm:ss')}</td>
     			</tr>
 			</c:forEach>

@@ -17,7 +17,8 @@ public interface ReplyMapper {
 	public List<ReplyDto> listCriteria(@Param("bno") Integer bno, @Param("cri")Criteria cri) throws Exception;
 	public List<ReplyDto> listCriteriaAdded(@Param("parRno") Integer parRno, @Param("cri") Criteria cri) throws Exception;
 	public List<ReplyVO> listReplyByReplyer(@Param("replyer") String replyer, @Param("cri") Criteria cri) throws Exception;
-
+	public List<ReplyVO> listReplyByReportCnt(Criteria cri) throws Exception;
+	
 	public int readTotalCnt(@Param("bno") int bno, @Param("notIncludeAdded") boolean notIncludeAdded) throws Exception;
 	public int readAddedTotalCnt(int parRno) throws Exception;
 	public int readTotalCntByReplyer(String username);

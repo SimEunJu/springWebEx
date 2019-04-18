@@ -14,4 +14,6 @@ public interface NotificationService {
 	
 	public void markReadFlagNotification(int nno) throws Exception;
 	public void deleteNotification(int nno) throws Exception;
+	public void deleteNotifications(List<Integer> notiNo) throws Exception;
+	
 }

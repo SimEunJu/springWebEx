@@ -5,14 +5,21 @@
 
 <div class="col-md-9"> 
 	<div class="row my-2 p-2 border">
+		<div class="col-12">
+			<input type="radio" id="board-self" name="boardType" value="self" ${pagination.cri.type.typeInitial eq 'self' ? 'checked' : ''}>
+			<label for="board-all">내가 쓴 댓글</label>
+		
+			<input type="radio" id="board-report" name="boardType" value="report" ${pagination.cri.type.typeInitial eq 'report' ? 'checked' : ''}>
+			<label for="board-report">신고 순</label>
+		</div>
+		
 		<div class="col">
 			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
 			<label for="all-mem">전체</label>
-		</div>
-		
-		<div class="float-right">
-			<button type="button" class="btn btn-outline-info" id="btn-all">모든 댓글</button>
+			
+			<div class="float-right">
 			<button type="button" class="btn btn-outline-warning" id="btn-del">삭제</button>
+		</div>
 		</div>
 	</div>
 

@@ -39,6 +39,12 @@
   	<include refid="limit" />
   </select>
   
+   <select id="listReplyByReportCnt" resultType="kr.co.ex.domain.ReplyVO">
+  	select * from tbl_reply where delete_type=null
+  	order by report_cnt desc
+  	<include refid="limit" />
+  </select>
+  
   <select id="readPassword" resultType="String">
   	select password from tbl_reply where rno = #{rno}
   </select>
