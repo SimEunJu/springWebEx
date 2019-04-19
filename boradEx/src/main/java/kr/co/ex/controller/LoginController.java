@@ -31,6 +31,11 @@ public class LoginController {
 	public String login(){
 		return "login/login.part";	
 	}	
+	
+	@GetMapping("/board/login/admin")
+	public String adminLogin(){
+		return "login/adminLogin.part";	
+	}	
 
 	@GetMapping("/board/signin")
 	public String signin(){
