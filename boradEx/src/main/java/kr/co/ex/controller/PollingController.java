@@ -49,7 +49,7 @@ public class PollingController {
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		if(msgCk != null & !msgCk.getValue().isEmpty()){
+		if(msgCk != null && !msgCk.getValue().isEmpty()){
 			String ckVals[] = msgCk.getValue().split("z");
 			msgNo = Integer.parseInt(ckVals[0]);
 			curCnt = Integer.parseInt(ckVals[1]);
@@ -86,7 +86,7 @@ public class PollingController {
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		if(notiCk != null & !notiCk.getValue().isEmpty()){
+		if(notiCk != null && !notiCk.getValue().isEmpty()){
 			String ckVals[] = notiCk.getValue().split("z");
 			notiNo = Integer.parseInt(ckVals[0]);
 			curCnt = Integer.parseInt(ckVals[1]);

@@ -12,7 +12,7 @@ $("document").ready(function(){
 		e.preventDefault();
 		// 페이지 이동이 발생하는데 정상적으로 작동할까?
 		longPollObj.initialize("noti");
-		//window.location.href = e.target.href;
+		window.location.href = e.target.href;
 	})
 	
 	$("#btn-del").on("click", function(e){

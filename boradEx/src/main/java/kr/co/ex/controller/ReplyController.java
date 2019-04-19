@@ -37,25 +37,18 @@ import lombok.extern.log4j.Log4j;
 @RequiredArgsConstructor
 public class ReplyController {
 
-	@NonNull private ReplyService replyServ;
 	@NonNull private BoardService boardServ;
+	@NonNull private ReplyService replyServ;
 	@NonNull private NotificationService notiServ;
 	
 	@PostMapping(value="", consumes="application/json")
 	public ResponseEntity<String> registerReply(@PathVariable int boardNo, @RequestBody ReplyVO vo){
 		try {
-			log.info(vo.toString());
 			replyServ.addReply(vo);
 			
 			String writer = boardServ.getWriterName(boardNo);
-			if(!writer.equals(vo.getReplyer())){
-				NotificationVO noti = NotificationVO.builder()
-						.rno(vo.getParRno())
-						.bno(boardNo)
-						.username(writer)
-						.build();
-				notiServ.registerNotification(noti);
-			}
+			// 댓글이 달리는 경우
+			notiServ.registerNotification(vo, boardNo);
 			return new ResponseEntity<>("success", HttpStatus.OK);
 		
 		} catch (Exception e) {
@@ -104,7 +97,7 @@ public class ReplyController {
 	}
 
 	@GetMapping(value="/report/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<String> reportReply(@PathVariable int rno, ReplyVO vo){
 		try {
 			replyServ.reportReply(rno);

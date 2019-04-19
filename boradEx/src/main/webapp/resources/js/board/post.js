@@ -118,35 +118,27 @@ $(document).ready(function(){
 		replyObj.listSec.on("click", ".reply-del", handleReplyDelEvt);
 		
 		function handleReplyDelEvt(e){
-			const target = $(e.target);
 			
-			if(isLogged == false){
-				alert("로그인 해주세요.");
-				e.stopImmediatePropagation();
-				return;
-			}
+			const target = $(e.target);
 			
 			const reply = target.parents(".reply");
 			const rno = reply.data("rno");
 			const replyer = reply.find(".header .replyer").text();
 			
-			if(replyer === "anonymousUser"){
-				replyObj.delPopover.popover("toggle");
-				return;
-			}
+			if(replyer === "익명") return;
 			
-			else if(confirm("정말 삭제하시겠습니까?")){
+			e.stopImmediatePropagation();
+			if(confirm("정말 삭제하시겠습니까?")){
 				replyService.remove({rno : rno, bno: board.bno}, 
 					function(){
 					// 댓글 목록 갱신
 					showReplyList(replyObj.page);
 				});
 			}
-			e.stopImmediatePropagation();
 		}
 		
 		replyObj.listSec.on("click", ".replyer", function(e){
-			if(this.innerHTML === "anonymousUser"){
+			if(this.innerHTML === "익명"){
 				e.stopImmediatePropagation();
 			}
 		});
@@ -165,7 +157,7 @@ $(document).ready(function(){
 				
 				const pw = targetBtn.siblings("input").val();
 				const rno = targetBtn.parents("li").data("rno");
-				replyServ.removeAnoymous({
+				replyService.removeAnoymous({
 					rno: rno, bno: board.bno, pw: pw
 				});
 			
@@ -174,8 +166,8 @@ $(document).ready(function(){
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);
 				
-				if(targetReplyer.dataset.report == "false") return;
-				targetReplyer.dataset.report = true;
+				if(targetReplyer.get(0).dataset.report) return;
+				targetReplyer.get(0).dataset.report = true;
 				
 				const rno = targetReplyer.parents("li").data("rno");
 				report("/board/user/report", {
@@ -187,6 +179,10 @@ $(document).ready(function(){
 		});
 		
 		function report(url, data){
+			if(isLogged == false){
+				alert("로그인 해주세요.");
+				return;
+			}
 			$.ajax(url,{
 				method: "post",
 				data: data,
@@ -199,7 +195,13 @@ $(document).ready(function(){
 		}
 		
 		replyObj.listSec.on("click", ".reply-report", function(e){
-			if(this.dataset.report == "true") return;
+			if(isLogged === false){
+				alert("로그인 해주세요.");
+				return;
+			}
+			
+			if(this.dataset.report === "true") return;
+			
 			this.dataset.report = true;
 			
 			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
@@ -391,7 +393,7 @@ $(document).ready(function(){
 		});
 		
 		$(".board-report").on("click", function(){
-			if(this.dataset.report == "true") return;
+			if(this.dataset.report === "true") return;
 			this.dataset.report = true;
 			report("/board/daily/"+board.bno+"/report", {
 				diff: 1
