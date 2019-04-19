@@ -41,7 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
 			// 댓글 작성자에게 알림 추가
 			if(vo.getParRno() != null){
 				String parentReplyer = replyMapper.readReplyer(vo.getParRno());
-				if(!vo.getReplyer().equals(parentReplyer)){
+				if(!writer.equals(writer) && !vo.getReplyer().equals(parentReplyer)){
 					NotificationVO addedReplyNoti = NotificationVO.builder()
 							.bno(bno)
 							.rno(vo.getParRno())
