@@ -78,7 +78,7 @@ public class BoardContoller {
 			switch (cri.getType()) {
 			case ALL:
 				totalCount = boardServ.getTotalCnt(cri);
-				boardList = boardServ.listCriteria(cri);
+				boardList = boardServ.listSearch(cri);
 				break;
 			case HOT:
 				totalCount = boardServ.getSearchCnt(cri);

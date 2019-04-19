@@ -20,5 +20,5 @@ public interface NotificationMapper {
 	public void updateReadNoti(int nno) throws Exception;
 	
 	public void deleteNoti(int nno) throws Exception;
-	public void deleteNoties(List<Integer> notiNo) throws Exception;
+	public void deleteNoties(@Param("notiNo") List<Integer> notiNo) throws Exception;
 }

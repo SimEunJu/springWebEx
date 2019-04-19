@@ -17,8 +17,8 @@ $("document").ready(function(){
 	
 	$("#btn-del").on("click", function(e){
 		check.appendCheckVal(pagination.page);
-		const notiNoList = flatObjToList(check.repo);
-		ajax({
+		const notiNoList = check.flatToList(check.repo);
+		$.ajax({
 			url: "/board/user/noti/del",
 			method: "post",
 			data: JSON.stringify(notiNoList),
@@ -30,4 +30,12 @@ $("document").ready(function(){
 			longPollObj.initialize("noti");
 		});
 	});
+	
+	$("nav .pagination").on("click", "li", function(e){
+		e.preventDefault();
+		const page = e.target.getAttribute("href");
+		console.log(page);
+		const user = window.location.pathname.match(/user|admin/)[0];
+		window.location.href = `/board/${user}/noti?`+pagination.makeQuery(page);
+	})
 });

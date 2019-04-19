@@ -125,7 +125,7 @@ $("document").ready(function(){
 	$("#btn-del").on("click", function(e){
 		check.appendCheckVal(pagination.page);
 		const msgNoList = flatObjToList(check.repo, 'msgNo');
-		ajax({
+		$.ajax({
 			url: "/board/user/msg/del",
 			method: "post",
 			data: JSON.stringify(msgNoList),

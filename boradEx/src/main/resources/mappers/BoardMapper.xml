@@ -75,7 +75,7 @@
 		</when>
 		 <when test='type.typeInitial.equals("hot")'>
 			<![CDATA[
-			viewcnt > 50
+			viewcnt > 20
 			]]>
 		</when>
 		<when test='type.typeInitial.equals("notice")'>

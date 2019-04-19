@@ -60,7 +60,7 @@
     		</c:if>
     		
     		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
-    		<li class="page-item"><a class="page-link" href="${idx.count}">${idx.count}</a></li>
+    		<li class="page-item ${idx.count==1 ? 'active' : '' }"><a class="page-link" href="${idx.count}">${idx.count}</a></li>
     		</c:forEach>
     		
     		<c:if test="${pagination.next}">

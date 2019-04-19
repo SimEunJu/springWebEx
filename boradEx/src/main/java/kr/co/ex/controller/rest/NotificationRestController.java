@@ -43,6 +43,7 @@ public class NotificationRestController {
 			return new ResponseEntity<>(notiList, HttpStatus.OK);
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
