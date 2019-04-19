@@ -34,7 +34,7 @@ public class PollingController {
 	// 기본 polling 간격 30초
 	private final int DEAFULT_TERM_SEC = 30;
 	// 최대 polling 간격 10분
-	private final int MAX_TERM_SEC = 10*60;
+	private final int MAX_TERM_SEC = 20*60;
 	// 최소 polling 간격 10초
 	private final int MIN_TERM_SEC = 10;
 	
@@ -49,7 +49,7 @@ public class PollingController {
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		if(msgCk != null){
+		if(msgCk != null & !msgCk.getValue().isEmpty()){
 			String ckVals[] = msgCk.getValue().split("z");
 			msgNo = Integer.parseInt(ckVals[0]);
 			curCnt = Integer.parseInt(ckVals[1]);
@@ -86,7 +86,7 @@ public class PollingController {
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		if(notiCk != null){
+		if(notiCk != null & !notiCk.getValue().isEmpty()){
 			String ckVals[] = notiCk.getValue().split("z");
 			notiNo = Integer.parseInt(ckVals[0]);
 			curCnt = Integer.parseInt(ckVals[1]);

@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @RestController
 @RequestMapping("/board/user/noti")
-@PreAuthorize("hasRole('USER'")
+@PreAuthorize("hasRole('USER')")
 @RequiredArgsConstructor
 public class NotificationRestController {
 	

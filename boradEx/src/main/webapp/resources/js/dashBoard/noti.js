@@ -12,14 +12,14 @@ $("document").ready(function(){
 		e.preventDefault();
 		// 페이지 이동이 발생하는데 정상적으로 작동할까?
 		longPollObj.initialize("noti");
-		return true;
+		//window.location.href = e.target.href;
 	})
 	
 	$("#btn-del").on("click", function(e){
 		check.appendCheckVal(pagination.page);
 		const notiNoList = flatObjToList(check.repo);
 		ajax({
-			url: "/board/user/msg/del",
+			url: "/board/user/noti/del",
 			method: "post",
 			data: JSON.stringify(notiNoList),
 			contentType: "application/json; charset=utf-8"

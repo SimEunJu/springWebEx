@@ -8,14 +8,14 @@
 <select id="readNotiCnt" resultType="kr.co.ex.dto.PollingNotiDto">
 	<![CDATA[
 	select count(nno) as cnt, max(nno) as nno from tbl_notification 
-	where nno>#{nno} and (read_flag='0' and delete_flag='0' and read_flag='0') and username=#{username} limit #{limit}
+	where nno>#{nno} and (read_flag=0 and delete_flag=0 and read_flag=0) and username=#{username} limit #{limit}
 	]]>
 </select>
 
 <select id="readMsgCnt" resultType="kr.co.ex.dto.PollingMsgDto">
 	<![CDATA[
 	select count(msg_no) as cnt, max(msg_no) as msg_no from tbl_msg
-	where msg_no>#{msgNo} and (receiver_read_flag='0' and receiver_delete_flag='0') and receiver=#{username} limit #{limit}
+	where msg_no>#{msgNo} and (receiver_read_flag=0 and receiver_delete_flag=0) and receiver=#{username} limit #{limit}
 	]]>
 </select>
 

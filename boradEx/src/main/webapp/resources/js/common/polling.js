@@ -10,7 +10,7 @@ const longPollObj = {
 	},
 	msgCallback: msgLongPollCallback,
 	notiCallback: notiLongPollCallback,
-	initialize: initialize
+	initialize: initialize,
 }
 
 longPoll(longPollObj.updateUrl.msg, msgLongPollCallback);
@@ -64,13 +64,11 @@ function initialize(type){
 	if(longPollObj.timeoutID != null) window.clearTimeout(longPollObj.timeoutID);
 	switch (type){
 	case 'msg':
-		document.cookie = document.cookie.replace(/msgPoll=(\d+)z/,0);
-		console.log(document.cookie);
+		document.cookie = "msgPoll=; expires=Wed 01 Jan 1970; path=/";
 		longPoll(longPollObj.updateUrl.msg, msgLongPollCallback);
 		break;
 	case 'noti':
-		document.cookie = document.cookie.replace(/notiPoll=(\d+)z/,0);
-		console.log(document.cookie);
+		document.cookie = "notiPoll=; expires=Wed 01 Jan 1970; path=/";
 		longPoll(longPollObj.updateUrl.noti, notiLongPollCallback);
 		break;
 	default:
