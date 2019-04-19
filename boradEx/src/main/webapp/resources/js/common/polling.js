@@ -30,7 +30,7 @@ function longPoll(url, callback) {
 }
 
 function msgLongPollCallback(){
-	console.log(document.cookie);
+	
 	const cookie = document.cookie.match(/msgPoll=(\d+)z(\d+)z(\d+)/);
 	const no = cookie[1];
 	const cnt = cookie[2];
@@ -45,7 +45,7 @@ function msgLongPollCallback(){
 }
 
 function notiLongPollCallback(){
-	console.log(document.cookie);
+	
 	const cookie = document.cookie.match(/notiPoll=(\d+)z(\d+)z(\d+)/);
 	const no = cookie[1];
 	const cnt = cookie[2];

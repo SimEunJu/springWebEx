@@ -3,7 +3,7 @@
 
 
 	<div class="row border m-2 p-2" style="height: 60vh;">
-		<form method="post" action="/login" class="col-md">
+		<form method="post" action="/login" class="col-6 m-auto">
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	
 			<div class="form-group">
