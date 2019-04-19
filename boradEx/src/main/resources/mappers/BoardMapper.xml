@@ -36,6 +36,7 @@
 
 <select id="listBoardByWriter" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board where writer=#{writer} and isnull(delete_type)
+	order by bno desc
 	limit #{cri.pageStart}, #{cri.perPageNum}
 </select>
 
@@ -64,7 +65,7 @@
 <select id="listAll" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board where isnull(delete_type)
 	<include refid="noticeBoundary" />
-	order regdate desc
+	order by regdate desc
 </select>
 
 <sql id="category">

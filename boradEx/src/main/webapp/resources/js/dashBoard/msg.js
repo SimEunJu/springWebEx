@@ -130,7 +130,7 @@ $("document").ready(function(){
 			method: "post",
 			data: JSON.stringify(msgNoList),
 			contentType: "application/json; charset=utf-8"
-		}, function(res){
+		}).then(function(res){
 			console.log(res);
 			check.tbody.html(tableRowTemplate(res));
 			

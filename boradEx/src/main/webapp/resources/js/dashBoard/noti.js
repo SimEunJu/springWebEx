@@ -23,7 +23,7 @@ $("document").ready(function(){
 			method: "post",
 			data: JSON.stringify(notiNoList),
 			contentType: "application/json; charset=utf-8"
-		}, function(res){
+		}).done(function(res){
 			console.log(res);
 			check.tbody.html(tableRowTemplate(res));
 			
