@@ -34,12 +34,6 @@
 	select writer from tbl_board where bno=#{bno}
 </select>
 
-<select id="listBoardByWriter" resultType="kr.co.ex.domain.BoardVO">
-	select * from tbl_board where writer=#{writer} and isnull(delete_type)
-	order by bno desc
-	limit #{cri.pageStart}, #{cri.perPageNum}
-</select>
-
 <select id="readPassword" resultType="String">
 	select password from tbl_board where bno=#{bno}
 </select>
@@ -115,11 +109,6 @@
 		<include refid="category" />
 		and isnull(delete_type)
 	</trim>
-	
-</select>
-
-<select id="readTotalCntByWriter" resultType="int">
-	select count(bno) from tbl_board where writer=#{username} and isnull(delete_type)
 </select>
 
 <sql id="search">
@@ -144,6 +133,18 @@
 	</trim>
 	</if>
 </sql>
+
+<select id="listBoardByWriter" resultType="kr.co.ex.domain.BoardVO">
+	select * from tbl_board where writer=#{writer} and isnull(delete_type)
+	<include refid="search" />
+	order by bno desc
+	limit #{cri.pageStart}, #{cri.perPageNum}
+</select>
+
+<select id="readTotalCntByWriter" resultType="int">
+	select count(bno) from tbl_board where writer=#{username} and isnull(delete_type)
+	<include refid="search" />
+</select>
 
 <select id="listSearch" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board 

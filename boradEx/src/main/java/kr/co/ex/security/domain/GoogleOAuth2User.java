@@ -23,10 +23,10 @@ public class GoogleOAuth2User implements OAuth2User, Serializable {
 	private String email;
 	private String username;
 	
-	public GoogleOAuth2User(String name, String email, String username){
-		this.name = name;
+	public GoogleOAuth2User(String email){
+		this.name = email;
 		this.email = email;
-		this.username = username;
+		this.username = email;
 	}
 
 	@Override

@@ -32,13 +32,13 @@ public interface BoardService {
 	public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 	public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
 	public List<BoardVO> listByRegdate(LocalDateTime regdate) throws Exception;
-	public List<BoardVO> listByWriter(String writer, Criteria cri) throws Exception;
+	public List<BoardVO> listByWriter(String writer, SearchCriteria cri) throws Exception;
 	public List<BoardVO> listNotice(NoticeBoardControl.NoticeBoardCriteria cri) throws Exception;
 	
 	public int getNoticeCnt(NoticeBoardControl.NoticeBoardCriteria cri) throws Exception;
 	public int getSearchCnt(SearchCriteria cri) throws Exception;
 	public int getTotalCnt(Criteria cri) throws Exception;
-	public int getTotalCntByWriter(String username) throws Exception;
+	public int getTotalCntByWriter(String username, SearchCriteria cri) throws Exception;
 	
 	public List<AttachVO> getAttach(int bno) throws Exception;
 	public void removeAttach(String fullName) throws Exception;

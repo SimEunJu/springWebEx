@@ -22,4 +22,12 @@ $("document").ready(function(){
 		});
 	});
 	
+	$("nav .pagination").on("click", "li", function(e){
+		e.preventDefault();
+		const page = e.target.getAttribute("href");
+		console.log(page);
+		const user = window.location.pathname.match(/user|admin/)[0];
+		window.location.href = `/board/${user}/reply?`+pagination.makeQuery(page);
+	});
+	
 });

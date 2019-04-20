@@ -18,7 +18,7 @@
         on noti.rno = tbl_reply.rno 
         left join tbl_board
 		on noti.bno = tbl_board.bno
-	order by nno desc;
+	order by nno desc
 	limit #{cri.pageStart}, #{cri.perPageNum}
 </select>
 

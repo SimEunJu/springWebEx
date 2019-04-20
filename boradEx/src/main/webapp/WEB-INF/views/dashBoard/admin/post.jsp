@@ -79,11 +79,26 @@
 	
 	<c:if test="${empty boardList}">
     	<div class="row-12 p-2 border text-center">작성한 게시글이 없습니다.</div>
-    </c:if>	
+    </c:if>
 	
+	<nav aria-label="Page navigation">
+  		<ul class="pagination justify-content-center">
+  			<c:if test="${pagination.prev}">
+    		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
+    		</c:if>
+    		
+    		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
+    		<li class="page-item ${idx.count==pagination.cri.page ? 'active' : '' }"><a class="page-link" href="${idx.count}">${idx.count}</a></li>
+    		</c:forEach>
+    		
+    		<c:if test="${pagination.next}">
+    		<li class="page-item"><a class="page-link next" href="">&raquo;</a></li>
+  			</c:if>
+  		</ul>
+	</nav>
 </div>
 
-<%@ include file="/WEB-INF/views/include/pagination.jsp"%>
+
 
 <script id="pagination-hb" type="text/x-handlebars-template">
 {{#if prev}}

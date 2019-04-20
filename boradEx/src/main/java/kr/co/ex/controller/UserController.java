@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
+import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.dto.NotificationDto;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.service.MemberService;
@@ -81,11 +82,11 @@ public class UserController {
 	}
 
 	@GetMapping("/post")
-	public String showBoard(Criteria cri, Model model){
+	public String showBoard(SearchCriteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			
-			PageMaker pm = PaginationUtils.pagination(cri, boardServ.getTotalCntByWriter(auth.getName()));
+			PageMaker pm = PaginationUtils.pagination(cri, boardServ.getTotalCntByWriter(auth.getName(), cri));
 			
 			model.addAttribute("pagination", pm);
 			model.addAttribute("posts", boardServ.listByWriter(auth.getName(), cri));

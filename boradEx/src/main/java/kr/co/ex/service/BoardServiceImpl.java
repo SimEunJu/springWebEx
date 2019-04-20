@@ -268,12 +268,12 @@ public class BoardServiceImpl implements BoardService {
 	}	
 	
 	@Override
-	public int getTotalCntByWriter(String username) throws Exception {
-		return boardMapper.readTotalCntByWriter(username);
+	public int getTotalCntByWriter(String username, SearchCriteria cri) throws Exception {
+		return boardMapper.readTotalCntByWriter(username, cri);
 	}
 
 	@Override
-	public List<BoardVO> listByWriter(String writer, Criteria cri) throws Exception {
+	public List<BoardVO> listByWriter(String writer, SearchCriteria cri) throws Exception {
 		return boardMapper.listBoardByWriter(writer, cri)
 				.stream()
 				.map(b -> {

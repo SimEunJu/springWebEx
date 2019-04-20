@@ -54,10 +54,18 @@ $("document").ready(function(){
 		}
 		
 		const vals = makeQuery.prototype.vals;
-		window.location.href = "/board/admin/post?"+"page="+vals.page+"&perPageNum="+vals.perPageNum
+		window.location.href = "/board/admin/post?"+"page=1"+"&perPageNum="+vals.perPageNum
 								+"&searchType=" + option
 								+"&keyword=" + encodeURIComponent(keyword)
 								+"&type="+vals.type;
+	});
+	
+	$("nav .pagination").on("click", "li", function(e){
+		e.preventDefault();
+		const page = e.target.getAttribute("href");
+		console.log(page);
+		const user = window.location.pathname.match(/user|admin/)[0];
+		window.location.href = `/board/${user}/post?`+pagination.makeQuery(page);
 	});
 	
 	function makeQuery(){

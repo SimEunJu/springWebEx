@@ -46,7 +46,7 @@ public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {
 			OAuth2User user = delegate.loadUser(userRequest);
 			Map<String, Object> userInfo = user.getAttributes();
 			String email = (String) userInfo.get("email");
-			user = new GoogleOAuth2User(email, (String) email, (String) userInfo.get("name"));
+			user = new GoogleOAuth2User(email);
 
 			return user;
 		};

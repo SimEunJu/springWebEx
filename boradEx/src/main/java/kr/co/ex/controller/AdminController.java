@@ -138,9 +138,9 @@ public class AdminController {
 				totalCount = boardServ.getSearchCnt(cri);
 				break;
 			case SELF:
-				String username = auth.getName();
-				totalCount = boardServ.getTotalCntByWriter(username);
-				boardList = boardServ.listByWriter(auth.getName()  , cri);
+				String adminName = "°ü¸®ÀÚ";
+				totalCount = boardServ.getTotalCntByWriter(adminName, cri);
+				boardList = boardServ.listByWriter(adminName, cri);
 				break;
 			default:
 				throw new UndefinedBoardTypeException(cri.getType().toString());

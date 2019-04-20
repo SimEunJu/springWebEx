@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
-import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
 import lombok.NonNull;
@@ -41,7 +40,7 @@ public class BoardRestController {
 	@Resource private String uploadPath;
 	
 	@GetMapping(value="", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<BoardVO>> getPosts(Criteria cri){
+	public ResponseEntity<List<BoardVO>> getPosts(SearchCriteria cri){
 		List<BoardVO> posts = null;
 		try {
 			posts = boardServ.listByWriter(SecurityContextHolder.getContext().getAuthentication().getName(), cri);

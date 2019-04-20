@@ -39,7 +39,7 @@
 	</table>
 	
 	<c:if test="${empty msges}">
-    	<div class="row-12 p-2 border text-center">등록된 알림이 없습니다.</div>
+    	<div class="row-12 p-2 border text-center">등록된 메시지가 없습니다.</div>
     </c:if>	
     
 	<nav aria-label="Page navigation">
