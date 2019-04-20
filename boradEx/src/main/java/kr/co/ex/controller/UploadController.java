@@ -66,7 +66,7 @@ public class UploadController {
 	
 	@ResponseBody
 	@PostMapping(value="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("isAuthenticated()")
+	//@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<List<AttachVO>> uploadFile(@RequestParam("uploadFile") MultipartFile[] file) throws IOException, Exception{
 		
 		List<AttachVO> attaches = new ArrayList<>();

@@ -31,9 +31,11 @@ public class ReplyServiceImpl implements ReplyService {
 	public void addReply(ReplyVO vo) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
-		if(authorities.contains("ROLE_ANONYMOUS")) vo.setReplyer("익명");
+		if(authorities.contains("ROLE_ANONYMOUS")){
+			vo.setReplyer("익명");
+			vo.setPassword(pwEncoder.encode(vo.getPassword()));
+		}
 		else vo.setReplyer(auth.getName());
-		
 		replyMapper.create(vo);
 	}
 	
@@ -149,15 +151,16 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	@Transactional
 	@Loggable
-	public void removeReply(int rno, int bno) throws Exception {
+	public String removeReply(int rno, int bno) throws Exception {
 		String deleteType = getDeleteType(rno, getWriterName(bno));
 		replyMapper.delete(deleteType, rno);
+		return deleteType;
 	}
 
 	@Override
 	@Transactional
 	@Loggable
-	public void removeAnonymousReply(int rno, int bno, String password) throws Exception{
+	public String removeAnonymousReply(int rno, int bno, String password) throws Exception{
 		String deleteType = null;
 		try{
 			deleteType = getDeleteType(rno, getWriterName(bno));
@@ -166,10 +169,11 @@ public class ReplyServiceImpl implements ReplyService {
 			else throw new AccessDeniedException("익명 댓글에 대한 비밀번호가 다릅니다.");
 		}
 		replyMapper.delete(deleteType, rno);
+		return deleteType;
 	}
 	
 	private String getPassword(int rno) throws Exception{
-		return replyMapper.readPasswrod(rno);
+		return replyMapper.readPassword(rno);
 	}
 	
 	@Override

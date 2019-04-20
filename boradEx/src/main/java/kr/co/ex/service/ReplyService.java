@@ -24,8 +24,8 @@ public interface ReplyService {
 	public ReplyVO getReply(int rno) throws Exception; 
 	public void modifyReply(ReplyVO vo) throws Exception;
 	
-	public void removeReply(int rno, int bno) throws Exception;
-	public void removeAnonymousReply(int rno, int bno, String password) throws Exception; 
+	public String removeReply(int rno, int bno) throws Exception;
+	public String removeAnonymousReply(int rno, int bno, String password) throws Exception; 
 	public void removeReplies(List<Integer> rno) throws Exception;
 	public void removeReplies(List<Integer> rno, int bno) throws Exception;
 	public void removeReplyByReplyer();

@@ -24,7 +24,7 @@ public interface ReplyMapper {
 	public int readTotalCntByReplyer(String username);
 	
 	public String readReplyer(int parRno) throws Exception;
-	public String readPasswrod(int rno) throws Exception;
+	public String readPassword(int rno) throws Exception;
 	public ReplyVO read(int rno) throws Exception;
 	
 	public void update(ReplyVO vo) throws Exception;

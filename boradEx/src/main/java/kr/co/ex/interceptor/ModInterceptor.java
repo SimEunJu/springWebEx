@@ -20,7 +20,7 @@ public class ModInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, 
 			Object handler) throws Exception {
 		List<GrantedAuthority> auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-			.stream().filter(a -> "ROLE_ADMIN".equals(a.getAuthority())).collect(Collectors.toList());
+			.stream().filter(a -> "ROLE_USER".equals(a.getAuthority())).collect(Collectors.toList());
 		if(auth.size() != 0) return true;
 		HttpSession sess = request.getSession();
 		Boolean isAnonyMod = (Boolean) sess.getAttribute("anonyMod");

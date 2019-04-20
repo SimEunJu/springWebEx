@@ -182,7 +182,7 @@ const board = {
 			<small class="pull-right text-muted">{{dateFormat regdate}}</small>
 		{{else}}
 			<div class="header">
-				<strong class="primary-font">{{replyer}}</strong>
+				<strong class="primary-font" class="replyer">{{replyer}}</strong>
 				<small class="float-right">{{dateFormat regdate}}</small>
 				<div class="row justify-content-end mr-1">
 					<small><a class="reply-del">삭제</a></small>

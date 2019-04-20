@@ -77,7 +77,7 @@ public class BoardContoller {
 			
 			switch (cri.getType()) {
 			case ALL:
-				totalCount = boardServ.getTotalCnt(cri);
+				totalCount = boardServ.getSearchCnt(cri);
 				boardList = boardServ.listSearch(cri);
 				break;
 			case HOT:
@@ -199,8 +199,8 @@ public class BoardContoller {
 	}
 	
 	// 검색어 유지
+	// interceptor에서 권한 체크
 	@GetMapping("/{boardNo}/mod")
-	@PreAuthorize("hasRole('USER')")
 	public String modifyPost(@PathVariable int boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model){
 		try {
 			BoardVO board = boardServ.read(boardNo);
@@ -214,7 +214,7 @@ public class BoardContoller {
 	
 	// 검색어 유지
 	@PostMapping("/{boardNo}")
-	@PreAuthorize("isAuthenticated()")
+	//@PreAuthorize("isAuthenticated()")
 	public String modifyPost(BoardVO board, SearchCriteria cri, RedirectAttributes attrs){
 		try {
 			boardServ.modify(board);

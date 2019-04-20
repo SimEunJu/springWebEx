@@ -36,7 +36,7 @@ $("document").ready(function(){
 			}
 			
 			const vals = makeQuery.prototype.vals;
-			window.location.href = "/board/daily?"+"page="+vals.page+"&perPageNum="+vals.perPageNum
+			window.location.href = "/board/daily?"+"page=1"+"&perPageNum="+vals.perPageNum
 									+"&searchType=" + option
 									+"&keyword=" + encodeURIComponent(keyword)
 									+"&type="+vals.type;
@@ -56,7 +56,7 @@ $("document").ready(function(){
 			return query;
 		}
 		makeQuery.prototype.vals = {
-				page : $("form input[name='page']").val() ? $("form input[name='page']").val() : 1,
+				page : 1,
 				perPageNum : $("form input[name='perPageNum']").val() ? $("form input[name='perPageNum']").val() : 10,
 				searchType : $("form input[name='searchType']").val(),
 				keyword : $("form input[name='keyword']").val(),

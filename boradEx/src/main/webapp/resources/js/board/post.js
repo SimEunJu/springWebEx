@@ -65,25 +65,7 @@ $(document).ready(function(){
 					replies[i].isNormal = false;
 					
 					// 삭제된 메시지라면
-					if(replies[i].deleteFlag){
-						let deleteMsg = "";
-						
-						switch(replies[i].deleteType){
-						case 'R':
-							deleteMsg = "댓글 작성자가 삭제한 댓글입니다.";
-							break;
-						case 'B':
-							deleteMsg = "게시글 작성자가 삭제한 댓글입니다.";
-							break;
-						case 'A':
-							deleteMsg = "관리자가 삭제한 댓글입니다.";
-							break;
-						default:
-							deleteMsg = "삭제된 댓글입니다.";
-							break;
-						}
-						replies[i].deleteMsg = deleteMsg;
-					}
+					if(replies[i].deleteFlag) replies[i].deleteMsg = getDeleteMsg(replies[i].deleteType);
 					else if(replies[i].secret === false){
 						replies[i].isNormal = true;
 					}
@@ -96,7 +78,18 @@ $(document).ready(function(){
 				showReplyPagination(pagination);
 			});
 		}
-		
+		function getDeleteMsg(deleteType){
+			switch(deleteType){
+			case 'R':
+				return "댓글 작성자가 삭제한 댓글입니다.";
+			case 'B':
+				return "게시글 작성자가 삭제한 댓글입니다.";
+			case 'A':
+				return "관리자가 삭제한 댓글입니다.";
+			default:
+				return "삭제된 댓글입니다.";
+			}
+		}
 		function showReplyPagination(pagination){
 			const str = paginationTemplate(pagination);
 			replyObj.pagination.html(str);
@@ -155,13 +148,18 @@ $(document).ready(function(){
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);
 				
-				const pw = targetBtn.siblings("input").val();
-				const rno = targetBtn.parents("li").data("rno");
+				const pw = target.previousElementSibling.value;
+				const parEle = targetBtn.parents("li");
+				const rno = parEle.data("rno");
 				replyService.removeAnoymous({
 					rno: rno, bno: board.bno, pw: pw
+				}, () => {
+					const popover = $(e.currentTarget);
+					popover.remove();
+					showReplyList(replyObj.page);
 				});
 			
-			}else{
+			}else if(target.tagName === "SPAN"){
 				const targetReplyer = replyObj.listSec.find(".replyer").filter((idx,r) => 
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);

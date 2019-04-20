@@ -123,9 +123,10 @@ public class ReplyController {
 	@DeleteMapping(value="/{rno}", produces={MediaType.TEXT_PLAIN_VALUE})
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<String> remove(@PathVariable int boardNo, @PathVariable int rno){
+		String deleteType = null;
 		try {
-			replyServ.removeReply(rno, boardNo);
-			return new ResponseEntity<>("success", HttpStatus.OK);
+			deleteType = replyServ.removeReply(rno, boardNo);
+			return new ResponseEntity<>(deleteType, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -135,15 +136,17 @@ public class ReplyController {
 	@PostMapping(value="/{rno}/pw", produces={MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> matchPasswordAndDelete(@PathVariable int boardNo, @PathVariable int rno,
 			@RequestParam String pw){
+		String deleteType = null;
 		try {
-			replyServ.removeAnonymousReply(rno, boardNo, pw);
+			deleteType = replyServ.removeAnonymousReply(rno, boardNo, pw);
 			return new ResponseEntity<>("success", HttpStatus.OK);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			if(e instanceof AccessDeniedException){ 
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(deleteType, HttpStatus.BAD_REQUEST);
 		}
 	}
 }

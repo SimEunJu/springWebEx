@@ -39,9 +39,9 @@ const replyService = (function(){
 	}
 	
 	function removeAnoymous(param, callback, error){
-		$.post(`/board/daily/${param.bno}/reply/${param.rno}/pw`, param.pw)
+		$.post(`/board/daily/${param.bno}/reply/${param.rno}/pw`, {pw: param.pw})
 		.done(function(result, status, xhr){
-			if(callback) callbak(result);
+			if(callback) callback(result);
 		})
 		.fail(function(xhr, status, err){
 			if(status == 401) alert("비밀번호가 다릅니다.");
