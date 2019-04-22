@@ -44,7 +44,7 @@ const replyService = (function(){
 			if(callback) callback(result);
 		})
 		.fail(function(xhr, status, err){
-			if(status == 401) alert("비밀번호가 다릅니다.");
+			if(xhr.status === 401) alert("비밀번호가 다릅니다.");
 			if(error) error(err);
 		});
 	}

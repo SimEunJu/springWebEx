@@ -17,30 +17,34 @@
 </insert>
   
   <select id="list" resultType="kr.co.ex.domain.ReplyVO">
-  	select * from tbl_reply where bno=#{bno}
+  	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type 
+  	from tbl_reply where bno=#{bno}
   </select>
   
   <select id="listCriteria" resultType="kr.co.ex.dto.ReplyDto">
-  	select * from tbl_reply 
+  	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type 
+  	from tbl_reply 
   	where bno=#{bno} and isnull(par_rno)
   	order by rno desc
   	<include refid="limit" />
   </select>
   
   <select id="listCriteriaAdded" resultType="kr.co.ex.dto.ReplyDto">
-	select * from tbl_reply
-	where par_rno=#{parRno}
+	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type from tbl_reply
+	where par_rno=#{parRno} and delete_type=null
 	order by rno
 	<include refid="limit" />
   </select>
   
   <select id="listReplyByReplyer" resultType="kr.co.ex.domain.ReplyVO">
-  	select * from tbl_reply where replyer=#{replyer} and delete_type=null
+  	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type 
+  	from tbl_reply where replyer=#{replyer} and delete_type=null
   	<include refid="limit" />
   </select>
   
    <select id="listReplyByReportCnt" resultType="kr.co.ex.domain.ReplyVO">
-  	select * from tbl_reply where delete_type=null
+  	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type 
+  	from tbl_reply where delete_type=null
   	order by report_cnt desc
   	<include refid="limit" />
   </select>
@@ -51,7 +55,7 @@
   
   <select id="readTotalCnt" resultType="int">
   	select count(rno) from tbl_reply 
-  	where bno=#{bno} 
+  	where bno=#{bno} and delete_type=null
   	<if test="notIncludeAdded">
   		and par_rno is null
   	</if>
@@ -59,11 +63,15 @@
   </select>
   
   <select id="readAddedTotalCnt" resultType="int">
-  	select count(par_rno) from tbl_reply where par_rno=#{parRno}
+  	select count(par_rno) 
+  	from tbl_reply 
+  	where par_rno=#{parRno} and delete_type=null
   </select>
   
   <select id="readTotalCntByReplyer" resultType="int">
-  	select count(rno) from tbl_reply where replyer=#{username}
+  	select count(rno) 
+  	from tbl_reply 
+  	where replyer=#{username} and delete_type=null
   </select>
   
   <select id="get" resultType="kr.co.ex.domain.ReplyVO">
