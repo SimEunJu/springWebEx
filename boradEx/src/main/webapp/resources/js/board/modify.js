@@ -22,7 +22,7 @@ $("document").ready(function(){
 			formObj.attr("action", "/board/daily/"+bno);
 			
 		}else{
-			window.location.href = "/board/daily"+"${pageMaker.makeSearch(pagekMaker.cri.getPage)}";
+			window.location.href = "/board/daily";
 			return;
 		}
 		

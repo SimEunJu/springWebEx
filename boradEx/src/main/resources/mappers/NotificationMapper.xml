@@ -10,7 +10,7 @@
 </insert>
 
 <select id="listNoti" resultType="kr.co.ex.dto.NotificationDto">
-	select nno, read_flag, noti.rno, noti.regdate, type, reply, title from 
+	select nno, noti.bno, read_flag, noti.rno, noti.regdate, type, reply, title from 
 	(select nno, read_flag, rno, bno, regdate, type 
 		from tbl_notification 
         where tbl_notification.username=#{username} and tbl_notification.delete_flag='0') as noti

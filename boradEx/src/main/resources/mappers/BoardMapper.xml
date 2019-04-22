@@ -111,24 +111,38 @@
 	</trim>
 </select>
 
+<sql id="searchCondition">
+<trim prefix="or">
+	<bind name="searchWord" value="'%' + keyword + '%'" />
+		<choose>
+			<when test="searchType == 't'.toString()">
+				title like #{searchWord}
+			</when>
+			<when test="searchType == 'c'.toString()">
+				content like #{searchWord}
+			</when>
+			<when test="searchType == 'w'.toString()">
+				writer like #{searchWord}
+			</when>
+		</choose>
+	</trim>
+</sql>
+
 <sql id="search">
 	<if test="typeArr != null">
 	<trim prefix="and (" suffix=") " prefixOverrides="or">
 		<foreach item="type" collection="typeArr">
-			<trim prefix="or">
-				<bind name="searchWord" value="'%' + keyword + '%'" />
-				<choose>
-					<when test="searchType == 't'.toString()">
-						title like #{searchWord}
-					</when>
-					<when test="searchType == 'c'.toString()">
-						content like #{searchWord}
-					</when>
-					<when test="searchType == 'w'.toString()">
-						writer like #{searchWord}
-					</when>
-				</choose>
-			</trim>
+			<include refid="searchCondition" />
+		</foreach>
+	</trim>
+	</if>
+</sql>
+
+<sql id="searchWithGivenName">
+	<if test="cri.typeArr != null">
+	<trim prefix="and (" suffix=") " prefixOverrides="or">
+		<foreach item="type" collection="cri.typeArr">
+			<include refid="searchCondition" />
 		</foreach>
 	</trim>
 	</if>
@@ -136,14 +150,14 @@
 
 <select id="listBoardByWriter" resultType="kr.co.ex.domain.BoardVO">
 	select * from tbl_board where writer=#{writer} and isnull(delete_type)
-	<include refid="search" />
+	<include refid="searchWithGivenName" />
 	order by bno desc
 	limit #{cri.pageStart}, #{cri.perPageNum}
 </select>
 
 <select id="readTotalCntByWriter" resultType="int">
 	select count(bno) from tbl_board where writer=#{username} and isnull(delete_type)
-	<include refid="search" />
+	<include refid="searchWithGivenName" />
 </select>
 
 <select id="listSearch" resultType="kr.co.ex.domain.BoardVO">

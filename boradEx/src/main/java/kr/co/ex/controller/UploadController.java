@@ -123,7 +123,7 @@ public class UploadController {
 	}
 	
 	@DeleteMapping(value="")
-	@PreAuthorize("isAuthorize()")
+	//@PreAuthorize("isAuthorize()")
 	public ResponseEntity<Void> deleteOneFile(@RequestParam String fileName, @RequestParam String type) throws Exception{
 		File file;
 		log.info(fileName);

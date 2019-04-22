@@ -274,6 +274,10 @@ $(document).ready(function(){
 				if(reqPage*10 >= addedReplyNum) replyHbData.displayMore = "none";
 				else replyBbData.displayMore = "";
 				
+				const replyArr = replyHbData.replies;
+				for(let i=0; i<replyArr.length; i++){
+					if(replyArr[i].deleteFlag) replyArr[i].reply = getDeleteMsg(replyArr[i].deleteType);
+				}
 				// handlebar 적용
 				const str = addedReplyTemplate(replyHbData);
 				addedSec.append(str);
@@ -293,7 +297,7 @@ $(document).ready(function(){
 				return;
 			}
 			else if(!isLogged){
-				required.password = form.find("input[name='password']").val();
+				required.password = form.find("input[name='password']").get(0).value;
 				if(!checkInputVal(required)){
 					alert("빈 칸을 채워주세요.");
 					return;

@@ -184,10 +184,13 @@ const board = {
 			<div class="header">
 				<strong class="primary-font" class="replyer">{{replyer}}</strong>
 				<small class="float-right">{{dateFormat regdate}}</small>
+				
+				{{#unless deleteFlag}}
 				<div class="row justify-content-end mr-1">
 					<small><a class="reply-del">삭제</a></small>
 					<small><a class="reply-report">|신고</a></small>
 				</div>
+				{{/unless}}
 			</div>
 			<p>{{reply}}</p>
 		{{/if}}
