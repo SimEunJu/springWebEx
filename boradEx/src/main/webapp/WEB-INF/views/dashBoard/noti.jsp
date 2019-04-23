@@ -59,7 +59,7 @@
     		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
     		</c:if>
     		
-    		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
+    		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage-1}" varStatus="idx">
     		<li class="page-item ${idx.count==1 ? 'active' : '' }"><a class="page-link" href="${idx.count}">${idx.count}</a></li>
     		</c:forEach>
     		
@@ -82,13 +82,13 @@
 {{/if}}
 </script>
 <script id="table-row" type="text/x-handlebars-template">
-{{#each users}}	
+{{#each this}}	
 	<tr>
 		<th scope="row"><input type="checkbox" name="noti" value="{{nno}}" /></th> 
     		{{#if title}}<a href="/board/daily/{{bno}}?from=noti&rno={{rno}}"><td class="noti" style="weight: {{#if readFlag}}'bold'{{else}}''{{/if}}">[ {{title}} ]에 댓글이 달렸습니다.</td></a>
       		{{else}}<a href="/board/daily/{{bno}}?from=noti&rno={{rno}}"><td class="noti" style="weight: {{#if readFlag}}'bold'{{else}}''{{/if}}">[ {{reply}} ]에 대댓글이 달렸습니다.</td></a>
       		{{/if}}
-			<td>{{#dateFormat regdate}}</td>
+			<td>{{dateFormat regdate}}</td>
      </tr>
 {{/each}}
 </script>

@@ -24,10 +24,9 @@ $("document").ready(function(){
 			data: JSON.stringify(notiNoList),
 			contentType: "application/json; charset=utf-8"
 		}).done(function(res){
-			console.log(res);
-			check.tbody.html(tableRowTemplate(res));
-			
 			longPollObj.initialize("noti");
+			const user = window.location.pathname.match(/user|admin/)[0];
+			window.location.href = `/board/${user}/noti?`+pagination.makeQuery(1);
 		});
 	});
 	
