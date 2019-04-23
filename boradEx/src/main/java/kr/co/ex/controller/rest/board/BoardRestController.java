@@ -1,4 +1,4 @@
-package kr.co.ex.controller.rest;
+package kr.co.ex.controller.rest.board;
 
 import java.io.IOException;
 import java.nio.file.Files;

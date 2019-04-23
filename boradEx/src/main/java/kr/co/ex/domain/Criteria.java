@@ -6,13 +6,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import kr.co.ex.util.BoardType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
-@Getter @Setter @Log4j
+@Log4j
+@Getter @Setter @ToString
 public class Criteria {
 	protected int page;
 	// number of article in a page;
 	protected int perPageNum;
+	// prev or next
 	protected String move;
 	
 	protected BoardType type;
@@ -22,6 +25,7 @@ public class Criteria {
 		this.perPageNum = 10;
 		this.type = BoardType.ALL;
 	}
+	
 	public void setType(String mode){
 		BoardType type = null;
 		switch (mode) {
@@ -42,7 +46,7 @@ public class Criteria {
 			break;
 		default:
 			type = BoardType.ALL;
-		break;
+			break;
 		}
 		this.type = type;
 	}
@@ -65,10 +69,5 @@ public class Criteria {
 				.queryParam("perPageNum", perPageNum)
 				.build();
 		return uri.toString();
-	}
-	
-	@Override
-	public String toString() {
-		return "Criteria [page=" + page + ", perPageNum=" + perPageNum + "]";
 	}
 }
