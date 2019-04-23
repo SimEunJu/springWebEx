@@ -369,7 +369,7 @@ $(document).ready(function(){
 					let diff = 1;
 					let color = "white";
 					let backgroundColor = "#dc3545";
-					if(like.css("background-color") !== "white"){
+					if(like.get(0).style.color !== "red"){
 						diff = -1;
 						color = "#dc3545";
 						backgroundColor = "white";
