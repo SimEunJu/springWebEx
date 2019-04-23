@@ -23,7 +23,7 @@
 </select>
 
 <select id="readMemberNotiCnt" resultType="int">
-	select count(nno) from tbl_notification where username=#{username}
+	select count(nno) from tbl_notification where username=#{username} and delete_flag='0'
 </select>
 
 <update id="updateReadNoti">

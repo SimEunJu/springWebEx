@@ -1,5 +1,8 @@
 const longPollObj = {
-	timeoutId: null,
+	timeoutId: {
+		msg: msgLongPollCallback,
+		noti: notiLongPollCallback
+	},
 	updateEle: {
 		msg: document.querySelector("nav .navbar-nav .msgbadge"),
 		noti: document.querySelector("nav .navbar-nav .notibadge")
@@ -25,7 +28,7 @@ function longPoll(url, callback, afterCallback) {
         type: 'GET',
         success: function() {
             term = callback(afterCallback)*1000;
-            longPollObj.timeoutId = setTimeout(function() { longPoll(url, callback); }, term)
+            longPollObj.timeoutId[callback.name] = setTimeout(function() { longPoll(url, callback); }, term)
         },
     });
 }
@@ -45,7 +48,9 @@ function msgLongPollCallback(callback){
 	
 	if(callback) callback();
 	return term;
+
 }
+console.dir(msgLongPollCallback.name)
 
 function notiLongPollCallback(callback){
 	
@@ -66,15 +71,26 @@ function notiLongPollCallback(callback){
 
 function initialize(type, afterCallback){
 	
-	if(longPollObj.timeoutId !== null) window.clearTimeout(longPollObj.timeoutID);
 	switch (type){
 	case 'msg':
-		document.cookie = "msgPoll=0z0z30; expires=Wed 01 Jan 1970; path=/";
-		longPoll(longPollObj.updateUrl.msg, msgLongPollCallback, afterCallback);
+		{
+			document.cookie = "msgPoll=0z0z30; expires=Wed 01 Jan 1970; path=/";
+			const timeoutId = longPollObj.timeoutId[msgLongPollCallback.name];
+			if(!timeoutId){
+				window.clearTimeout(timeoutId);
+			}
+			longPoll(longPollObj.updateUrl.msg, msgLongPollCallback, afterCallback);
+		}
 		break;
 	case 'noti':
-		document.cookie = "notiPoll=0z0z30; expires=Wed 01 Jan 1970; path=/";
-		longPoll(longPollObj.updateUrl.noti, notiLongPollCallback, afterCallback);
+		{
+			document.cookie = "notiPoll=0z0z30; expires=Wed 01 Jan 1970; path=/";
+			const timeoutId = longPollObj.timeoutId[notiLongPollCallback.name];
+			if(!timeoutId){
+				window.clearTimeout(timeoutId);
+			}
+			longPoll(longPollObj.updateUrl.noti, notiLongPollCallback, afterCallback);
+		}
 		break;
 	default:
 		log.error("정의되지 않은 long poll 타입입니다.");

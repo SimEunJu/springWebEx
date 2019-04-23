@@ -131,10 +131,9 @@ $("document").ready(function(){
 			data: JSON.stringify(msgNoList),
 			contentType: "application/json; charset=utf-8"
 		}).then(function(res){
-			console.log(res);
-			check.tbody.html(tableRowTemplate(res));
-			
 			longPollObj.initialize("msg");
+			const user = window.location.pathname.match(/user|admin/)[0];
+			window.location.href = `/board/${user}/msg?`+pagination.makeQuery(1);
 		});
 	});
 	

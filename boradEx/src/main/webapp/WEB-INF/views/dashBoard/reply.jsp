@@ -18,7 +18,7 @@
 	<table class="table table-hover">
   		<thead class="thead-dark">
     		<tr>
-      			<th scope="col"><input type="checkbox" name="noti" value="all" /></th>
+      			<th scope="col"><input type="checkbox" name="reply" value="all" /></th>
       			<th scope="col">댓글</th>
       			<th scope="col">날짜</th>
     		</tr>
@@ -38,6 +38,22 @@
 	<c:if test="${empty replies}">
     	<div class="row-12 p-2 border text-center">작성한 댓글이 없습니다.</div>
     </c:if>	
+    
+    <nav aria-label="Page navigation">
+  		<ul class="pagination justify-content-center">
+  			<c:if test="${pagination.prev}">
+    		<li class="page-item"><a class="page-link prev" href="">&laquo;</a></li>
+    		</c:if>
+    		
+    		<c:forEach begin="1" end="${pagination.endPage>10 ? 10 : pagination.endPage}" varStatus="idx">
+    		<li class="page-item ${idx.count==1 ? 'active' : '' }"><a class="page-link" href="${idx.count}">${idx.count}</a></li>
+    		</c:forEach>
+    		
+    		<c:if test="${pagination.next}">
+    		<li class="page-item"><a class="page-link next" href="">&raquo;</a></li>
+  			</c:if>
+  		</ul>
+	</nav>
 </div>
 
 <script id="pagination-hb" type="text/x-handlebars-template">

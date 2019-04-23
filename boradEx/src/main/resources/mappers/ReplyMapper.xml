@@ -83,7 +83,7 @@
   </select>
   
   <select id="readReplyer" resultType="String">
-  	select replyer from tbl_reply where par_rno=#{parRno}
+  	select replyer from tbl_reply where rno=#{parRno}
   </select>
   
   <update id="update">

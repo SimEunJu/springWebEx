@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.ex.common.NoticeBoardControl;
-import kr.co.ex.controller.utils.CookieMaker;
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.PageMaker;

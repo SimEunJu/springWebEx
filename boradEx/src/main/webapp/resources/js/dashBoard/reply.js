@@ -11,13 +11,13 @@ $("document").ready(function(){
 	
 	$("#btn-del").on("click", function(e){
 		check.appendCheckVal(pagination.page);
-		const msgNoList = flatObjToList(check.repo, 'msgNo');
-		ajax({
-			url: "/board/user/msg/del",
-			method: "post",
+		const msgNoList = flatToList(check.repo, 'reply');
+		$.ajax({
+			url: "/board/user/reply/",
+			method: "delete",
 			data: JSON.stringify(msgNoList),
 			contentType: "application/json; charset=utf-8"
-		}, function(res){
+		}).then(function(res){
 			console.log(res);
 			check.tbody.html(tableRowTemplate(res));
 		});
