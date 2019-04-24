@@ -91,6 +91,7 @@ public class UploadController {
 				UploadFileUtils.makeThumbnail(savePath, saveFileName);
 				attach.setFileType(f.getContentType());
 			}
+			else attach.setFileType(f.getContentType());
 			attaches.add(attach);
 			log.info(attaches.toString());
 		}
@@ -98,8 +99,11 @@ public class UploadController {
 	}
 	
 	@ResponseBody
-	@GetMapping(value="/donwload", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<FileSystemResource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) throws IOException{
+	@GetMapping(value="/download", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<FileSystemResource> downloadFile(@RequestHeader("User-Agent") String userAgent, @RequestParam String fileName){
+		log.info("userAgent: "+userAgent);
+		log.info("fileName: "+fileName);
+	
 		FileSystemResource resource = new FileSystemResource(uploadPath+fileName);
 		if(resource.exists() == false) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		String resourceName = resource.getFilename();
@@ -114,8 +118,8 @@ public class UploadController {
 			}else{
 				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
 			}
-			header.add("Content-Disposition", "attachment; filename="+downloadName);
-		}catch(UnsupportedEncodingException e){
+			header.add("Content-Disposition", "attachment; filename=\""+downloadName+"\"");
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(resource, header, HttpStatus.OK);
