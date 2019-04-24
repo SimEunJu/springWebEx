@@ -20,7 +20,7 @@ $(document).ready(function(){
 		
 		// 첨부파일(이미지 등) 불러오기
 		(function(){
-			$.getJSON("/board/daily/"+board.bno+"/attach", function(res){
+			$.getJSON("/api/board/"+board.bno+"/attach", function(res){
 				$(res).each(function(i, attach){
 					let filePath = "";
 					let isImg = false;
@@ -359,7 +359,7 @@ $(document).ready(function(){
 			}
 			$.ajax({
 				method: "get",
-				url: "/board/daily/"+board.bno+"/like",
+				url: "/api/board/"+board.bno+"/like",
 				data: {
 					bno: board.bno,
 					likeCnt: likeCnt,
@@ -397,25 +397,26 @@ $(document).ready(function(){
 		$(".board-report").on("click", function(){
 			if(this.dataset.report === "true") return;
 			this.dataset.report = true;
-			report("/board/daily/"+board.bno+"/report", {
+			report("/api/board/"+board.bno+"/report", {
 				diff: 1
 			})
 		})
 		
 		$(".upload-result").on("click", "li", function(){
 			var file = $(this);
-			var path = encodeURIComponent(file.data("path")+"//"+file.data("uuid")+"_"+file.data("filename"));
+			var path = encodeURIComponent(file.data("path")+"\\"+file.data("uuid")+"_"+file.data("filename"));
 			
-			if(file.data("type")){
+			if(file.data("type").includes("image")){
 				showImage(path);
 			}else {
-				self.location = "/board/daily/file/download?fileName="+path;
+				window.location.href = `/board/daily/file/download?fileName=${path}`
 			}
 		});
 		
 		
 		function showImage(path){
-			$(".modal-body p").html("<img src='/board/daily/file?fileName="+path+"'>");
+			window.location.href = `/board/daily/file?fileName=${path}`;
+			//$(".modal-body p").html("<img src=''>");
 		}
 	
 		var formObj = $("form[role='form']");
@@ -423,7 +424,7 @@ $(document).ready(function(){
 		$("#boardModBtn").on("click",function(e){
 			e.preventDefault();
 			if(isLogged === false){
-				boardModAndDel("/board/api/mod", "/board/daily/"+board.bno+"/mod"+window.location.search);
+				boardModAndDel("/api/board/mod", "/board/daily/"+board.bno+"/mod"+window.location.search);
 				return;
 			}
 			window.location.href="/board/daily/"+board.bno+"/mod";
@@ -438,7 +439,7 @@ $(document).ready(function(){
 				return;
 			}
 			
-			boardModAndDel("/board/api/rem", "/board/daily"+window.location.search);
+			boardModAndDel("/api/board/rem", "/board/daily"+window.location.search);
 
 		});
 		

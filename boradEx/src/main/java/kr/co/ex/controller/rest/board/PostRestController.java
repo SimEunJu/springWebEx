@@ -2,9 +2,6 @@ package kr.co.ex.controller.rest.board;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +24,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/board/api/{boardNo}")
+@RequestMapping("/api/board/{boardNo}")
 public class PostRestController {
 	
 	@NonNull private BoardService boardServ;

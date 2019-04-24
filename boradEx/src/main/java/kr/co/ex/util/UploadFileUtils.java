@@ -34,7 +34,6 @@ public class UploadFileUtils {
 	
 	public static boolean isImage(File file) throws IOException{
 		String type = Files.probeContentType(file.toPath());
-		log.info(type);
 		if(type != null) return type.startsWith("image");
 		return false;
 	}

@@ -33,7 +33,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/board/api")
+@RequestMapping("/api/board")
 public class BoardRestController {
 	
 	@NonNull private BoardService boardServ;

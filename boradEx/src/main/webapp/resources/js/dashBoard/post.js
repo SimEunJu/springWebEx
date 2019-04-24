@@ -19,7 +19,7 @@ $("document").ready(function(){
 		
 		const showType = $("input[type='radio']:checked").val();
 		$.post({
-			url: "/board/api/rem",
+			url: "/api/board/rem",
 			data: JSON.stringify({bnoList: check.list, reason: $("select[name='delete'] option:selected").val()}),
 			contentType: "application/json; charset=utf-8"
 		})

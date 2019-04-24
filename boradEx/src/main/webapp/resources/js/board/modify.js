@@ -2,7 +2,7 @@ $("document").ready(function(){
 
 	const bno = $("input[name='bno']").val();
 		
-	$.getJSON("/board/daily/"+bno+"/attach", function(res){
+	$.getJSON("/api/board/"+bno+"/attach", function(res){
 		const files = fileService.showFiles(res);
 		$(".upload-result ul").html(files);
 	});
