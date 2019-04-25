@@ -50,7 +50,7 @@ public class BoardContoller {
 
 	// 검색결과 유지
 	@GetMapping("")
-	public String showPostList(@ModelAttribute("cri") SearchCriteria cri, Model model){
+	public String showPostList(SearchCriteria cri, Model model){
 		try {
 			log.info(cri.toString());
 			
@@ -67,9 +67,8 @@ public class BoardContoller {
 				boardList = boardServ.listSearch(cri);
 				break;
 			case NOTICE:
-				// 공지글만 검색하고 싶을 때 xml에서 search 가능하도록 변경 또는 추가해야
-				// 공지글 페이징 하고 싶을 때 totalCnt 추가해야
-				boardList = getNoticeBoard(cri);
+				// 공지글만 검색하고 싶을 때 mapper xml에서 search 가능하도록 변경 또는 추가해야
+				// 추후 기능 추가 고려
 				break;
 			default:
 				throw new UndefinedBoardTypeException(cri.getType().toString());
@@ -88,7 +87,7 @@ public class BoardContoller {
 	}
 	
 	@GetMapping("/new")
-	public String register(){
+	public String showRegisteration(){
 		return "board/new.part";
 	}
 	
@@ -97,7 +96,6 @@ public class BoardContoller {
 		try {
 			boardServ.register(board);
 			attrs.addFlashAttribute("msg", "success");
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");
@@ -107,17 +105,16 @@ public class BoardContoller {
 	
 	@GetMapping("/notice/new")
 	@PreAuthorize("hasRole('ADMIN')")
-	public String registerNotice(){
+	public String showNoticeRegistration(){
 		return "dashBoard/admin/new.part";
 	}
 	
 	@PostMapping("/notice/new")
 	@PreAuthorize("hasRole('ADMIN')")
-	public String registerNoticePost(@Valid BoardVO board, RedirectAttributes attrs){
+	public String registerNotice(@Valid BoardVO board, RedirectAttributes attrs){
 		try {
 			boardServ.registerNotice(board);
 			attrs.addFlashAttribute("msg", "success");
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 			attrs.addFlashAttribute("msg", "fail");

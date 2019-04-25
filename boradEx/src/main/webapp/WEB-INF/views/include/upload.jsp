@@ -40,7 +40,7 @@
 		{{#if isImg}}
 			<img src='/board/daily/file?fileName={{filePath}}'>
 		{{else}}
-			<img src='/resources/img/attach.png'>
+			<img src='/resources/img/attach.png' style='height: 100px;'>
 		{{/if}}
 	</div>
 </li>
