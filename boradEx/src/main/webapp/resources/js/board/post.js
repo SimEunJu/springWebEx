@@ -424,7 +424,7 @@ $(document).ready(function(){
 		$("#boardModBtn").on("click",function(e){
 			e.preventDefault();
 			if(isLogged === false){
-				boardModAndDel("/api/board/mod", "/board/daily/"+board.bno+"/mod"+window.location.search);
+				boardModAndDel(`/api/board/${board.bno}/mod`, "/board/daily/"+board.bno+"/mod"+window.location.search);
 				return;
 			}
 			window.location.href="/board/daily/"+board.bno+"/mod";
@@ -439,7 +439,7 @@ $(document).ready(function(){
 				return;
 			}
 			
-			boardModAndDel("/api/board/rem", "/board/daily"+window.location.search);
+			boardModAndDel(`/api/board/${board.bno}/rem`, "/board/daily"+window.location.search);
 
 		});
 		
