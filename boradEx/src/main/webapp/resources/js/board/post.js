@@ -20,7 +20,7 @@ $(document).ready(function(){
 		
 		// 첨부파일(이미지 등) 불러오기
 		(function(){
-			$.getJSON("/board/daily/"+board.bno+"/attach", function(res){
+			$.getJSON("/api/board/"+board.bno+"/attach", function(res){
 				$(res).each(function(i, attach){
 					let filePath = "";
 					let isImg = false;
@@ -359,7 +359,7 @@ $(document).ready(function(){
 			}
 			$.ajax({
 				method: "get",
-				url: "/board/daily/"+board.bno+"/like",
+				url: "/api/board/"+board.bno+"/like",
 				data: {
 					bno: board.bno,
 					likeCnt: likeCnt,
@@ -397,7 +397,7 @@ $(document).ready(function(){
 		$(".board-report").on("click", function(){
 			if(this.dataset.report === "true") return;
 			this.dataset.report = true;
-			report("/board/daily/"+board.bno+"/report", {
+			report("/api/board/"+board.bno+"/report", {
 				diff: 1
 			})
 		})

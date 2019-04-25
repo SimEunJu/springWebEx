@@ -24,8 +24,9 @@
 		<beans:property name="order" value="2" />
 	</beans:bean>
 	
-	<beans:bean id="ModInterceptor" class="kr.co.ex.interceptor.ModInterceptor"></beans:bean>
-	<beans:bean id="AnonyModInterceptor" class="kr.co.ex.interceptor.AnonyModInterceptor"></beans:bean>
+	<beans:bean id="ModInterceptor" class="kr.co.ex.interceptor.ModInterceptor" />
+	<beans:bean id="AnonyModInterceptor" class="kr.co.ex.interceptor.AnonyModInterceptor" />
+	<beans:bean id="AjaxModInterceptor" class="kr.co.ex.interceptor.AjaxModInterceptor" />
 	
 	<aop:config proxy-target-class="true" />
 	
@@ -35,8 +36,13 @@
 			<beans:ref bean="ModInterceptor"/>
 		</interceptor>
  		
+ 		<interceptor>
+ 			<mapping path="/board/daily/file" />
+			<beans:ref bean="AjaxModInterceptor"/>
+ 		</interceptor>
+ 		
 		<interceptor>
-			<mapping path="/board/api/mod"/>
+			<mapping path="/api/board/{boardNo}/mod" />
 			<beans:ref bean="AnonyModInterceptor"/>	
 		</interceptor>
 		

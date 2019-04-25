@@ -17,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.ex.domain.AttachVO;
 import kr.co.ex.service.BoardService;
-import kr.co.ex.util.UploadFileUtils;
+import kr.co.ex.util.file.UploadFileUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -49,61 +48,73 @@ public class UploadController {
 	
 	@ResponseBody
 	@GetMapping("")
-	public ResponseEntity<byte[]> displayFile(String fileName){
-			File file = new File(uploadPath+fileName);
-			ResponseEntity<byte[]> result = null;
-			HttpHeaders header = new HttpHeaders();
-			
-			try {
-				header.add("Content-Type", Files.probeContentType(file.toPath()));
-				result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
-			
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return result;
+	public ResponseEntity<byte[]> displayFile(@RequestParam String fileName){
+
+		File file = new File(uploadPath + fileName);
+		ResponseEntity<byte[]> result = null;
+		HttpHeaders header = new HttpHeaders();
+		
+		if(!file.exists()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+		try {
+			header.add("Content-Type", Files.probeContentType(file.toPath()));
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return result;
 	}
 	
 	@ResponseBody
 	@PostMapping(value="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	//@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<List<AttachVO>> uploadFile(@RequestParam("uploadFile") MultipartFile[] file) throws IOException, Exception{
+	public ResponseEntity<List<AttachVO>> uploadFile(@RequestParam("uploadFile") MultipartFile[] file){
 		
 		List<AttachVO> attaches = new ArrayList<>();
 		String savePath = UploadFileUtils.makePath(uploadPath);
 		
-		for(MultipartFile f : file){
-		
-			AttachVO attach = new AttachVO();
-			
-			String fileName = f.getOriginalFilename();
-			String saveFileName = fileName.substring(fileName.lastIndexOf("\\")+1);
-			attach.setFileName(fileName);
-			attach.setUploadPath(UploadFileUtils.calcFolder());
-			
-			UUID uuid = UUID.randomUUID();
-			attach.setUuid(uuid.toString());
-			saveFileName = uuid.toString() + "_" + saveFileName;
-			File saveFile = new File(savePath, saveFileName);
-			f.transferTo(saveFile);
-			
-			if(UploadFileUtils.isImage(saveFile)){
-				UploadFileUtils.makeThumbnail(savePath, saveFileName);
-				attach.setFileType(f.getContentType());
+		try {
+			for (MultipartFile f : file) {
+
+				AttachVO attach = new AttachVO();
+
+				String fileName = f.getOriginalFilename();
+				String saveFileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+				attach.setFileName(fileName);
+				attach.setUploadPath(UploadFileUtils.calcFolder());
+
+				UUID uuid = UUID.randomUUID();
+				attach.setUuid(uuid.toString());
+				saveFileName = uuid.toString() + "_" + saveFileName;
+				File saveFile = new File(savePath, saveFileName);
+				f.transferTo(saveFile);
+
+				if (UploadFileUtils.isImage(saveFile)) {
+					UploadFileUtils.makeThumbnail(savePath, saveFileName);
+					attach.setFileType(f.getContentType());
+				}
+				attaches.add(attach);
+				log.info(attaches.toString());
 			}
-			attaches.add(attach);
-			log.info(attaches.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			
 		}
 		return new ResponseEntity<>(attaches, HttpStatus.CREATED);
 	}
 	
 	@ResponseBody
 	@GetMapping(value="/donwload", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<FileSystemResource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) throws IOException{
+	public ResponseEntity<FileSystemResource> downloadFile(@RequestHeader("User-Agent") String userAgent, @RequestParam String fileName){
+		
 		FileSystemResource resource = new FileSystemResource(uploadPath+fileName);
 		if(resource.exists() == false) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		
 		String resourceName = resource.getFilename();
 		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_")+1);
+		
 		HttpHeaders header = new HttpHeaders();
 		try{
 			String downloadName = null;
@@ -115,29 +126,39 @@ public class UploadController {
 				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
 			}
 			header.add("Content-Disposition", "attachment; filename="+downloadName);
+			
 		}catch(UnsupportedEncodingException e){
 			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			
 		}
 		return new ResponseEntity<>(resource, header, HttpStatus.OK);
 		
 	}
 	
+	// interceptor에서 인증 처리
 	@DeleteMapping(value="")
-	//@PreAuthorize("isAuthorize()")
-	public ResponseEntity<Void> deleteOneFile(@RequestParam String fileName, @RequestParam String type) throws Exception{
+	public ResponseEntity<Void> deleteOneFile(@RequestParam String fileName, @RequestParam String type){
 		File file;
 		log.info(fileName);
 		try{
 			file = new File(uploadPath, URLDecoder.decode(fileName, "UTF-8"));
+			if(!file.exists()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			
 			file.delete();
+			
 			if(type.contains("image")){
 				String originalFile = file.getAbsolutePath().replace("s_", "");
 				file = new File(originalFile);
 				file.delete();
 			}
-		}catch(UnsupportedEncodingException e){
+		}catch(Exception e){
 			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
