@@ -37,7 +37,7 @@ public class PostController {
 	// 검색결과 유지
 	@GetMapping("")
 	public String showPost(@PathVariable int boardNo, @RequestParam(required = false) String from,
-			@RequestParam(required = false) int nno, @ModelAttribute("cri") SearchCriteria cri, Model model) {
+			@RequestParam(required = false) Integer nno, @ModelAttribute("cri") SearchCriteria cri, Model model) {
 		try {
 			boardServ.updateViewCnt(boardNo);
 			if (from != null && from.equals("noti"))

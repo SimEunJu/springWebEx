@@ -2,6 +2,8 @@ package kr.co.ex.controller.rest.board;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,7 @@ public class PostRestController {
 				throw new AccessDeniedException("비밀번호가 일치하지 않습니다.");
 
 		} catch (AccessDeniedException e) {
+			log.error(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 		} catch (Exception e) {
@@ -67,15 +70,22 @@ public class PostRestController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/attach", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<AttachVO> addAttachToPost(@PathVariable int boardNo) throws Exception{
-		List<AttachVO> attaches = boardServ.getAttach(boardNo);
+	public List<AttachVO> addAttachToPost(@PathVariable int boardNo, HttpServletResponse res) throws Exception{
+		List<AttachVO> attaches = null;
+		try{
+			attaches = boardServ.getAttach(boardNo);
+			res.setStatus(HttpStatus.CREATED.value());
+		}catch(Exception e){
+			e.printStackTrace();
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		}
 		return attaches;
 	}
 	
@@ -87,7 +97,7 @@ public class PostRestController {
 			boardServ.updateLike(boardNo, likeCnt, auth.getName());
 			
 		} catch (Exception e) {
-			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -96,10 +106,9 @@ public class PostRestController {
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<String> updateReportCnt(@PathVariable int boardNo, @RequestParam int diff){
 		try{
-			log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 			boardServ.updateReportCnt(boardNo, diff);
 		}catch(Exception e){
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}

@@ -19,7 +19,7 @@ $("document").ready(function(){
 			const str = fileService.getFilesInfo(fileinfoTemplate);
 			formObj.append(str);
 			formObj.attr("method", 'post');
-			formObj.attr("action", "/board/daily/"+bno);
+			formObj.attr("action", "/board/daily/"+bno+"/mod");
 			
 		}else{
 			window.location.href = "/board/daily";
