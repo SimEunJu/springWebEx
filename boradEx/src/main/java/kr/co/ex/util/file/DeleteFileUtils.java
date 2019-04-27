@@ -22,10 +22,10 @@ public class DeleteFileUtils {
 			attaches.forEach(attach -> {
 				log.info(attach.toString());
 				try{
-					Path file = Paths.get(uploadPath+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
+					Path file = Paths.get(uploadPath+attach.getUploadPath()+"/"+attach.getUuid()+"_"+attach.getFileName());
 					Files.deleteIfExists(file);
 					if(attach.getFileType().startsWith("image")){
-						Path thumbnail = Paths.get(uploadPath+attach.getUploadPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+						Path thumbnail = Paths.get(uploadPath+attach.getUploadPath()+"/s_"+attach.getUuid()+"_"+attach.getFileName());
 						Files.deleteIfExists(thumbnail);
 					}
 				}catch(IOException e){

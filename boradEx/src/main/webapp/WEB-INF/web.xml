@@ -32,12 +32,12 @@
 	
 	<servlet>
 		<multipart-config>
-			<location>C:/Users/user/gitPlease/boradEx/src/main/webapp/resources/upload/temp/</location>
-			<max-file-size>20971520</max-file-size>
-			<max-request-size>41943040</max-request-size>
-			<file-size-threshold>20971520</file-size-threshold>
+    		<location>/resources/upload</location>
+    		<max-file-size>20848820</max-file-size>
+    		<max-request-size>418018841</max-request-size>
+   			<file-size-threshold>1048576</file-size-threshold>
 		</multipart-config>
-	
+		
 		<servlet-name>dispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
