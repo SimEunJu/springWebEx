@@ -31,14 +31,14 @@ import lombok.extern.log4j.Log4j;
 @RestController
 @RequiredArgsConstructor
 @Log4j
-@RequestMapping("/api/board/reply/{rno}")
+@RequestMapping("/api/reply/{boardNo}/{rno}")
 public class OneReplyRestController {
 	
 	@NonNull private ReplyService replyServ;
 	@NonNull private BoardService boardServ;
 	@NonNull private NotificationService notiServ;
 	
-	@GetMapping(value="/added")
+	@GetMapping("/added")
 	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable("rno") int parRno, Criteria cri){
 		try{
 			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(boardNo, parRno, cri);
@@ -50,7 +50,7 @@ public class OneReplyRestController {
 		}
 	}
 
-	@GetMapping(value="/report")
+	@GetMapping("/report")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<String> reportReply(@PathVariable int rno, ReplyVO vo){
 		try {
@@ -63,8 +63,8 @@ public class OneReplyRestController {
 	}
 	
 	// interceptor에서 인증
-	@DeleteMapping(value="")
-	public ResponseEntity<String> remove(@PathVariable int boardNo, @PathVariable int rno){
+	@DeleteMapping("")
+	public ResponseEntity<String> removeReply(@PathVariable int boardNo, @PathVariable int rno){
 		String deleteType = null;
 		try {
 			deleteType = replyServ.removeReply(rno, boardNo);
@@ -75,7 +75,7 @@ public class OneReplyRestController {
 		}
 	}
 	
-	@PostMapping(value="/pw")
+	@PostMapping("/pw")
 	public ResponseEntity<String> matchPasswordAndDelete(@PathVariable int boardNo, @PathVariable int rno,
 			@RequestParam String pw){
 		String deleteType = null;

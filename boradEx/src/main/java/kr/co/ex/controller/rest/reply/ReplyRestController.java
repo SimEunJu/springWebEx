@@ -40,7 +40,7 @@ public class ReplyRestController {
 	@NonNull private NotificationService notiServ;
 	
 	// rno ¾øÀ» ½Ã bad request
-	@GetMapping(value = "/{boardNo}")
+	@GetMapping("/{boardNo}")
 	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, Criteria cri){
 		try {
 			boolean notincludeAddedReplyToCnt = true;
@@ -57,7 +57,19 @@ public class ReplyRestController {
 		}
 	}
 	
-	@GetMapping(value="/user")
+	@PostMapping("/{boardNo}")
+	public ResponseEntity<Void> registerReply(@PathVariable int boardNo, ReplyVO vo){
+		try{
+			replyServ.addReply(vo);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@GetMapping("/user")
 	public ResponseEntity<List<ReplyVO>> getReplyListByWriter(Criteria cri){
 		List<ReplyVO> replies = null;
 		try {
@@ -69,7 +81,7 @@ public class ReplyRestController {
 		return new ResponseEntity<>(replies, HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value="/del")
+	@DeleteMapping("/del")
 	public ResponseEntity<List<ReplyVO>> deleteReplyList(@RequestBody List<Integer> rno){
 		List<ReplyVO> replies = null;
 		try {

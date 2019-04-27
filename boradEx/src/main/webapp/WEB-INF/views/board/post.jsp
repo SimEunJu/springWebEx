@@ -31,7 +31,7 @@
 	</form>
 
 	<div class="row justify-content-center">
-		<button class="btn btn-${isUserLiked? '' : 'outline-'}danger mb-4 like"
+		<button class="btn btn-${isUserLiked? '' : 'outline-'}danger mb-4 board-like"
 			data-like="${isUserLiked ? 'true' : 'false'}"
 			style="color: ${isUserLiked ? 'white' : 'red'}">
 			<span style="font-size: 20px; font-weight: bold;">♥</span> 좋아요 
@@ -174,7 +174,7 @@ const board = {
 {{/each}}
 </script>
 <script id="added-reply-hb" type="text/x-handlebars-template">
-{{#each replies}}
+{{#each this}}
 <li class="added-reply list-group-item" data-rno="{{rno}}">
 	<div>
 		{{#if secret}}
