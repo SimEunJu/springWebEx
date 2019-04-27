@@ -19,7 +19,7 @@ public class UploadFileUtils {
 	// 운영체제별 다른 file separator
 	public static String calcFolder(){
 		String date = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		return date.replaceAll("-", "\\\\");
+		return date.replaceAll("-", "/");
 	}
 	
 	public static String makePath(String path){
