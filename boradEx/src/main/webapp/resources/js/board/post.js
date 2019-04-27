@@ -2,10 +2,8 @@ $(document).ready(function(){
 				
 		const name = nameTestAuth;
 		const isLogged = isLoggedTestAuth;
-	
-		// handlebar 정리
-		const handlebarTemplate = {};
 		
+		// handlebars template
 		const replySkeleton = document.getElementById("reply-hb").innerHTML;
 		const replyTemplate = Handlebars.compile(replySkeleton);
 		
@@ -32,6 +30,7 @@ $(document).ready(function(){
 					attach.isImg = isImg;
 					attach.filePath = filePath;
 				});
+				
 				const str = uploadItemTemplate(res)
 				$(".upload-result ul").html(str);
 			});
@@ -47,16 +46,21 @@ $(document).ready(function(){
 				addedBtn: $(".reply-added"),
 				reportBtn: $(".reply-report"),
 				
-				form: $(".reply-form"),
 				page: 1,
+				form: $(".reply-form"),
 				addedForm: $(".reply-form").clone()
 		};
-		replyObj.addedForm.find("button").removeClass("reply-reg").addClass("added-reply-reg");
 		
-		showReplyList();
+		// reply 관련 초기화, 불러오기 
+		(function(){
+			// 대댓글 입력용 form
+			replyObj.addedForm.find("button").removeClass("reply-reg").addClass("added-reply-reg");
+			// 댓글 불러오기
+			showReplyList();
+		})();
 		
-		function showReplyList(){
-			replyService.getList({bno: board.bno, page: replyObj.page}, function(res){
+		function showReplyList(page){
+			replyService.getList({bno: board.bno, page: page||1}, function(res){
 				
 				const {replies, pagination} = res;
 				// handlebar 적용 위해 선처리
@@ -90,6 +94,7 @@ $(document).ready(function(){
 				return "삭제된 댓글입니다.";
 			}
 		}
+		
 		function showReplyPagination(pagination){
 			const str = paginationTemplate(pagination);
 			replyObj.pagination.html(str);
@@ -98,10 +103,12 @@ $(document).ready(function(){
 		replyObj.pagination.on("click", "li a", function(e){
 			e.preventDefault();
 			const targetPage = $(this).attr("href");
+			showReplyList(targetPage);
+			
 			replyObj.page = targetPage;
-			showReplyList(replyObj.page);
 		});
 		
+		// 댓글 삭제 popover
 		replyObj.delPopover.popover({
 			selector: ".reply-del",
 			html: true,
@@ -118,8 +125,10 @@ $(document).ready(function(){
 			const rno = reply.data("rno");
 			const replyer = reply.find(".header .replyer").text();
 			
+			// 비밀번호 입력 popover trigger
 			if(replyer === "익명") return;
 			
+			// 비밀번호 입력 popover trigger x
 			e.stopImmediatePropagation();
 			if(confirm("정말 삭제하시겠습니까?")){
 				replyService.remove({rno : rno, bno: board.bno}, 
@@ -132,18 +141,23 @@ $(document).ready(function(){
 		
 		replyObj.listSec.on("click", ".replyer", function(e){
 			if(this.innerHTML === "익명"){
+				// 익명인 경우 신고 할 수 없기 때문에 신고 popover trigger x
 				e.stopImmediatePropagation();
 			}
 		});
 		
-		// 리팩토링 필요??
+		// 댓글 작성자에 대한 신고 popover
 		replyObj.listSec.popover({selector: ".replyer"});
+		
+		// popover evt handler
 		$("body").on("click", ".popover", function(e){
 			
 			const target = e.target;
 			let targetClassName = "";
 			
+			// 익명 댓글 삭제 비밀번호 popover
 			if(target.tagName === "BUTTON"){
+				// 해당 popover과 연결된 버튼 element를 찾아낸다
 				const targetBtn = replyObj.listSec.find(".reply-del").filter((idx,r) => 
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);
@@ -151,6 +165,7 @@ $(document).ready(function(){
 				const pw = target.previousElementSibling.value;
 				const parEle = targetBtn.parents("li");
 				const rno = parEle.data("rno");
+				
 				replyService.removeAnoymous({
 					rno: rno, bno: board.bno, pw: pw
 				}, () => {
@@ -159,11 +174,13 @@ $(document).ready(function(){
 					showReplyList(replyObj.page);
 				});
 			
+			// 댓글 작성자 신고 popover의 경우
 			}else if(target.tagName === "SPAN"){
 				const targetReplyer = replyObj.listSec.find(".replyer").filter((idx,r) => 
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);
 				
+				// 이전에 신고했다면 다시 신고 못하게
 				if(targetReplyer.get(0).dataset.report) return;
 				targetReplyer.get(0).dataset.report = true;
 				
@@ -184,14 +201,15 @@ $(document).ready(function(){
 			$.ajax(url,{
 				method: "post",
 				data: data,
-				dataType: "text"
 			}).done(function(){
 				alert("신고가 완료되었습니다.")
 			}).fail(function(jqXHR, textStatus, errorThrown){
+				alert("신고에 실패하였습니다.")
 				console.error(jqXHR, textStatus, errorThrown);
 			});
 		}
 		
+		// 댓글 신고
 		replyObj.listSec.on("click", ".reply-report", function(e){
 			if(isLogged === false){
 				alert("로그인 해주세요.");
@@ -205,7 +223,9 @@ $(document).ready(function(){
 			if(confirm("정말 신고하시겠습니까? 허위 신고는 올바른 행위가 아닙니다.")){
 				const rno = $(this).parents(".reply").data("rno");
 				replyService.report({bno: board.bno, rno: rno}, function(){
-					alert("신고가 접수되었습니다.")
+					alert("신고가 접수되었습니다.");
+				}, function(){
+					alert("신고에 실패하였습니다.");
 				});
 			}
 		});
@@ -226,12 +246,11 @@ $(document).ready(function(){
 			// 대댓글 영역에 입력란이 없다면
 			if(addedFormSec.find(".reply-form").length === 0){
 				// 입력란 추가
-				console.log(replyObj);
 				addedFormSec.append(replyObj.addedForm);
 				// 대댓글 목록이 이미 열려 있는 상태라면
 				if(reply.get(0).dataset.open === "true") return;
 			}
-			// 대댓글 영역에 입력란이 있다면
+			
 			// 대댓글 목록이 닫혀 있다면  
 			toggleAddedReplySec(reply);
 		}
@@ -254,19 +273,17 @@ $(document).ready(function(){
 			const parRno = reply.data("rno");
 			// 숫자만 추출
 			const regex = new RegExp(/\d+/);
-			const addedReplyNum = parseInt(/\d+/.exec(reply.find("a").text())[0]);
-		
+			const addedReplyNum = parseInt(/\d+/.exec(reply.find(".added-cnt").text())[0]);
+			// 대댓글이 없다면 종료
 			if(addedReplyNum === 0) return;
 			
 			const addedSec = reply.find(".added-replies");
 			const reqPage = parseInt(addedSec.get(0).dataset.page);
 			
 			// 대댓글 가져오기
-			$.getJSON('/board/daily/'+board.bno+'/reply/added/'+parRno+"/"+reqPage, function(replies){
+			$.getJSON(`/api/reply/${board.bno}/${parRno}/added?page=${reqPage}`, function(replies){
 				
-				let replyHbData = {replies: replies};
-				
-				// 첫 페이지라면 버튼을 보여줘야 하기 때문
+				// 첫 페이지라면 더보기/접기 버튼을 보여줘야 하기 때문
 				if(reqPage === 1) replyHbData.isFirstPage = true;
 				else replyHbData.isFirstPage = false;
 				
@@ -274,24 +291,25 @@ $(document).ready(function(){
 				if(reqPage*10 >= addedReplyNum) replyHbData.displayMore = "none";
 				else replyBbData.displayMore = "";
 				
-				const replyArr = replyHbData.replies;
-				for(let i=0; i<replyArr.length; i++){
+				for(let i=0; i<replies.length; i++){
 					if(replyArr[i].deleteFlag) replyArr[i].reply = getDeleteMsg(replyArr[i].deleteType);
 				}
-				// handlebar 적용
-				const str = addedReplyTemplate(replyHbData);
+				// handlebars 적용
+				const str = addedReplyTemplate(replies);
 				addedSec.append(str);
 			});
 		}
 
 		function addReply(form){
-			// 필요 사항 객체 생성
+			// 필수 사항 값 체크 위한 객체 생성
 			let required = {
-					reply: form.find("textarea[name='reply']").val(),
-					replyer: form.find("input[name='replyer']").val(),
+					reply: form.find("textarea[name='reply']").get(0).value,
+					replyer: form.find("input[name='replyer']").get(0).value,
 					writer: board.writer,
 					bno: board.bno,
 			}
+			
+			// 입력값 체크 
 			if(isLogged && !checkInputVal(required)){
 				alert("빈 칸을 채워주세요.");
 				return;
@@ -304,6 +322,7 @@ $(document).ready(function(){
 				}
 			}
 		
+			// 부가 정보 추가
 			required.parRno = form.data("parrno");
 			required.secret = form.is(":checked");
 			
@@ -312,6 +331,7 @@ $(document).ready(function(){
 				form.find("textarea").val("");
 				form.find("input").val("");
 				form.data("parrno","");
+				// 대댓글 추가 후 추가된 화면 유지 해야
 				showReplyList(1);
 			});
 		}
@@ -323,133 +343,136 @@ $(document).ready(function(){
 			return true;
 		}
 		
+		// 댓글 추가
 		replyObj.replySec.on("click", ".reply-reg",function(){		
 			addReply(replyObj.form);		
 		});
 		
+		// 대댓글 추가
 		replyObj.listSec.on("click", ".added-reply-reg", function(e){
-			e.stopPropagation();
-			const reply = $(this).parents(".reply");
+			//e.stopPropagation();
+			const reply = $(e.target).parents(".reply");
 			const addedForm = reply.find(".reply-form");
 			addedForm.attr("data-parrno", reply.data("rno"));
 			addReply(addedForm);
 		});
 		
+		// 대댓글 보기 버튼 클릭 시 
 		replyObj.listSec.on("click", ".added-reply-btns", function(e){
 			const btn = $(e.target);
 			const addedSec = btn.parents(".added-replies");
 			const reply = addedSec.parents("li");
 			
+			// 대댓글 닫기
 			if(btn.hasClass("fold")){
+				// 대댓글 영역 닫기
 				addedSec.children().remove();
-			
 				reply.attr("data-open", "false");
+			
 				return;
 			}
+			// 대댓글 열기
 			else if(btn.hasClass("more")){
 				getAddedList(reply);
 			}			
 		});
 	
 		
-		function updateLike(like, likeCnt){
+		function updateLike(like, likeDiff){
 			if(!isLogged){ 
 				alert("로그인이 필요합니다.");
 				return;
 			}
+			
+			likeDiff = likeDiff > 0 ? 1 : -1;
+			
 			$.ajax({
 				method: "get",
-				url: "/api/board/"+board.bno+"/like",
-				data: {
-					bno: board.bno,
-					likeCnt: likeCnt,
-					username: encodeURIComponent(name)
-					},
-				success: function(){
-					let diff = 1;
-					let color = "white";
-					let backgroundColor = "#dc3545";
-					if(like.get(0).style.color !== "red"){
-						diff = -1;
-						color = "#dc3545";
-						backgroundColor = "white";
-					}
-					like.css("color", color).css("background-color", backgroundColor);
-					var likeNum = like.find(".like-num");
-					likeNum.text(parseInt(likeNum.text())+diff);
+				url: `/api/board/${board.bno}/like?diff=${likeDiff}`,
+			}).done(function(){
+				const WHITE = "white";
+				const RED = "#dc3545";
+				
+				let color = RED;
+				let backgroundColor = WHITE;
+				if(likeDiff == 1){
+					// 색상 반전
+					color = WHITE;
+					backgroundColor = RED;
 				}
-			});
+				
+				like.style.color = WHITE;
+				like.style.backgroundColor = RED;
+				
+				const likeNum = like.querySelector(".like-num");
+				likeNum.innterText = parseInt(likeNum.text())+likeDiff;
+			}).fail(function(){
+				log.error("좋아요 수 업데이트에 실패했습니다.");
+			})
 		}
 		
-		$(".like").on("click", function(){
+		$(".board-like").on("click", function(){
+			// 좋아요 중복 방지
+			let setLike = null;
+			let diff = null;
 			if(this.dataset.like === "true"){
-				this.dataset.like = false;
-				updateLike($(this), -1);
-				return;
+				setLike = false;
+				diff = -1;
 			}
 			else{
-				updateLike($(this), 1);
-				this.dataset.like = true;
-				return;
+				setLike = true;
+				diff = 1;
 			}
+			this.dataset.like = setLike;
+			updateLike(this, diff);
 		});
 		
 		$(".board-report").on("click", function(){
+			// 중복 신고 방지 
+			// 서버에서 한 번 더 검증할 필요가 있을까?
 			if(this.dataset.report === "true") return;
 			this.dataset.report = true;
-			report("/api/board/"+board.bno+"/report", {
-				diff: 1
-			})
+			report("/api/board/"+board.bno+"/report", {diff: 1});
 		})
 		
 		$(".upload-result").on("click", "li", function(){
-			var file = $(this);
-			var path = encodeURIComponent(file.data("path")+"\\"+file.data("uuid")+"_"+file.data("filename"));
+			const file = $(this);
+			const path = encodeURIComponent(file.data("path")+"/"+file.data("uuid")+"_"+file.data("filename"));
 			
 			if(file.data("type").includes("image")){
-				showImage(path);
+				window.location.href = `/board/daily/file?fileName=${path}`;
+				// showImage(path);
 			}else {
 				window.location.href = `/board/daily/file/download?fileName=${path}`
 			}
 		});
 		
-		
+
+		// 모달을 통해 이미지 보여줄 때
 		function showImage(path){
-			window.location.href = `/board/daily/file?fileName=${path}`;
-			//$(".modal-body p").html("<img src=''>");
+
 		}
 	
-		var formObj = $("form[role='form']");
+		const formObj = $("form[role='form']");
 		
+		// search parameter 유지
 		$("#boardModBtn").on("click",function(e){
 			e.preventDefault();
-			if(isLogged === false){
-				boardModAndDel(`/api/board/${board.bno}/mod`, "/board/daily/"+board.bno+"/mod"+window.location.search);
-				return;
-			}
-			window.location.href="/board/daily/"+board.bno+"/mod";
+			boardModAndDel(`/api/board/${board.bno}/mod`, "/board/daily/"+board.bno+"/mod"+window.location.search);
 		});
-		// search parameter 유지
 		$("#boardRemBtn").on("click",function(e){
 			e.preventDefault();
-			const replyCnt = $(".chat li").length;
-			console.log(replyCnt);
-			if(replyCnt > 0){
-				alert("댓글이 있는 게시물은 삭제할 수 없습니다.");
-				return;
-			}
-			
 			boardModAndDel(`/api/board/${board.bno}/rem`, "/board/daily"+window.location.search);
-
 		});
 		
 		function boardModAndDel(url, successUrl){
 			let pw = null;
 			if(isLogged === false){
+				// 비밀번호를 입력하니까 안 보이게 해야 하지 않을까?
 				pw = prompt("비밀번호를 입력해주세요");
 				if(pw === null) return;
 			}
-			$.post(url, {bno: board.bno, password: pw})
+			$.post(url, {password: pw})
 			.fail(function(jqXHR, textStatus, errorThrown){
 				if(jqXHR.status === 401) alert("잘못된 비밀번호입니다.");
 			})
