@@ -12,9 +12,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import kr.co.ex.service.MemberService;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Component
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 	

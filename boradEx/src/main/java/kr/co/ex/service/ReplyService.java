@@ -2,7 +2,6 @@ package kr.co.ex.service;
 
 import java.util.List;
 
-import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.dto.ReplyDto;

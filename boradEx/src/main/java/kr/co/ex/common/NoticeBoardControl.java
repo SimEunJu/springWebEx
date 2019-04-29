@@ -9,12 +9,12 @@ import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.exception.CorruptReleseOnNoticeIdx;
 import kr.co.ex.exception.NoAvailableNoticeBoardIdx;
 import kr.co.ex.util.BoardType;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 // 공지글 생성할 때 사용
 // 삽입 가능한 게시글 번호 목록 관리
 @Component
-@Log4j
+@Log4j2
 public class NoticeBoardControl {
 	
 	private final int START_IDX;

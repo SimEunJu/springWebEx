@@ -1,7 +1,6 @@
 package kr.co.ex.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ex.domain.AuthVO;
-import kr.co.ex.domain.UserVO;
 import kr.co.ex.dto.LoginDto;
 import kr.co.ex.mapper.MemberMapper;
-import kr.co.ex.persistence.LoginDao;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Service
-@Log4j
+@Log4j2
 public class LoginServiceImpl implements LoginService {
 
 	@Autowired

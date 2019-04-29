@@ -13,7 +13,7 @@
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
 	<bean id="customUserDetailsService" class="kr.co.ex.security.CustomUserDetailsService"></bean>
 	
-	<import resource="./root-context.xml" />
+	<!-- <import resource="./root-context.xml" /> -->
 	
 	<context:component-scan base-package="kr.co.ex.security" />
 

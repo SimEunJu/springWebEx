@@ -6,30 +6,26 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.PageMaker;
 import kr.co.ex.domain.ReplyVO;
-import kr.co.ex.dto.ReplyDto;
 import kr.co.ex.service.BoardService;
 import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.ReplyService;
 import kr.co.ex.util.PaginationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @RestController
 @RequestMapping("/api/reply")
 @RequiredArgsConstructor
@@ -41,7 +37,7 @@ public class ReplyRestController {
 	
 	// rno ¾øÀ» ½Ã bad request
 	@GetMapping("/{boardNo}")
-	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, Criteria cri){
+	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, @RequestBody Criteria cri){
 		try {
 			boolean notincludeAddedReplyToCnt = true;
 			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCount(boardNo, notincludeAddedReplyToCnt));
@@ -58,8 +54,9 @@ public class ReplyRestController {
 	}
 	
 	@PostMapping("/{boardNo}")
-	public ResponseEntity<Void> registerReply(@PathVariable int boardNo, ReplyVO vo){
+	public ResponseEntity<Void> registerReply(@PathVariable int boardNo, @RequestBody ReplyVO vo){
 		try{
+			log.info(vo.toString());
 			replyServ.addReply(vo);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch(Exception e){
@@ -70,7 +67,7 @@ public class ReplyRestController {
 	
 	
 	@GetMapping("/user")
-	public ResponseEntity<List<ReplyVO>> getReplyListByWriter(Criteria cri){
+	public ResponseEntity<List<ReplyVO>> getReplyListByWriter(@RequestBody Criteria cri){
 		List<ReplyVO> replies = null;
 		try {
 			replies = replyServ.listReplyByWriter(cri);

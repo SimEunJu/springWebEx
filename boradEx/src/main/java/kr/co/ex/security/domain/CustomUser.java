@@ -9,10 +9,10 @@ import org.springframework.security.core.userdetails.User;
 
 import kr.co.ex.domain.MemberVO;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Getter
-@Log4j
+@Log4j2
 public class CustomUser extends User {
 
 	private MemberVO member;

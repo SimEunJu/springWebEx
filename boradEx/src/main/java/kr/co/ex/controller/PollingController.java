@@ -16,9 +16,9 @@ import kr.co.ex.dto.PollingNotiDto;
 import kr.co.ex.service.PollingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/board/polling")

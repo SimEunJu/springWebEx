@@ -14,10 +14,10 @@ import kr.co.ex.mapper.MemberMapper;
 import kr.co.ex.util.UserType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Service
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
