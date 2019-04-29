@@ -76,7 +76,7 @@ public class UploadController {
 			AttachVO attach = new AttachVO();
 			
 			String fileName = f.getOriginalFilename();
-			String saveFileName = fileName.substring(fileName.lastIndexOf("\\")+1);
+			String saveFileName = fileName.substring(fileName.lastIndexOf("/")+1);
 			attach.setFileName(fileName);
 			attach.setUploadPath(UploadFileUtils.calcFolder());
 			
@@ -111,7 +111,7 @@ public class UploadController {
 		try{
 			String downloadName = null;
 			if(userAgent.contains("Trident")){
-				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
+				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("/+", " ");
 			}else if(userAgent.contains("Edge")){
 				downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8");
 			}else{
