@@ -9,7 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -25,9 +24,9 @@ import kr.co.ex.service.UserLikeService;
 import kr.co.ex.util.PaginationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board/daily")

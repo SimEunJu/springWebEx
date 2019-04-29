@@ -3,12 +3,9 @@ package kr.co.ex.controller.rest.reply;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +23,11 @@ import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.ReplyService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @RequiredArgsConstructor
-@Log4j
+@Log4j2
 @RequestMapping("/api/reply/{boardNo}/{rno}")
 public class OneReplyRestController {
 	
@@ -39,7 +36,7 @@ public class OneReplyRestController {
 	@NonNull private NotificationService notiServ;
 	
 	@GetMapping("/added")
-	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable("rno") int parRno, Criteria cri){
+	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable("rno") int parRno, @RequestBody Criteria cri){
 		try{
 			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(boardNo, parRno, cri);
 			return new ResponseEntity<>(replies, HttpStatus.OK);
@@ -52,7 +49,7 @@ public class OneReplyRestController {
 
 	@GetMapping("/report")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<String> reportReply(@PathVariable int rno, ReplyVO vo){
+	public ResponseEntity<String> reportReply(@PathVariable int rno, @RequestBody ReplyVO vo){
 		try {
 			replyServ.reportReply(rno);
 			return new ResponseEntity<>(HttpStatus.OK);

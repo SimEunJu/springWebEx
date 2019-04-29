@@ -4,16 +4,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import kr.co.ex.domain.UserStatVO;
 import kr.co.ex.mapper.AdminStatTaskMapper;
 import kr.co.ex.util.DateUtils;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 //@Component
-@Log4j
+@Log4j2
 @AllArgsConstructor
 public class AdminStatTask {
 	

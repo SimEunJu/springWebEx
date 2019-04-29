@@ -3,7 +3,6 @@ package kr.co.ex.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;

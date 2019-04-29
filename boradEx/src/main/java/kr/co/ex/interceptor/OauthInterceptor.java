@@ -8,9 +8,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import kr.co.ex.service.MemberService;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class OauthInterceptor extends HandlerInterceptorAdapter {
 	
 	@Autowired MemberService memServ;

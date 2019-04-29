@@ -11,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nimbusds.jose.proc.SecurityContext;
-
 import kr.co.ex.annoation.Loggable;
 import kr.co.ex.common.NoticeBoardControl;
 import kr.co.ex.domain.AttachVO;
@@ -27,10 +25,10 @@ import kr.co.ex.mapper.ReplyMapper;
 import kr.co.ex.mapper.UserLikeMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Service
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 

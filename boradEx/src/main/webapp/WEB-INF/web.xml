@@ -5,13 +5,20 @@
 
 	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
 	<context-param>
+    	<param-name>spring.profiles.active</param-name>
+    	<param-value>dev</param-value>		
+	</context-param>
+	
+	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			/WEB-INF/spring/appServlet/session.xml
-			/WEB-INF/spring/root-context.xml
+			/WEB-INF/spring/root-context-dev.xml
+			/WEB-INF/spring/root-context-prod.xml
 			/WEB-INF/spring/task.xml
+			/WEB-INF/spring/appServlet/session.xml
 			/WEB-INF/spring/security-context.xml
 		</param-value>
+		
 	</context-param>
 	
 	<filter>

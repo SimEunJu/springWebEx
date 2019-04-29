@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd"
+	profile="dev">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<context:property-placeholder 
+		location="classpath:application.propertise,
+				classpath:application-dev.propertise,
+				classpath:oauth.propertise, 
+				classpath:mail.propertise" /> 	
+	
+	<util:properties id="title" location="classpath:title.properties"/>
+
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="${hikariConfig.driverClassName}"></property>
+		<property name="jdbcUrl" value="${hikariConfig.jdbcUrl}"></property>
+		<property name="username" value="${hikariConfig.username}"></property>
+		<property name="password" value="${hikariConfig.password}"></property>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		destroy-method="close">
+		<constructor-arg ref="hikariConfig"></constructor-arg>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+		<property name="mapperLocations" value="classpath:/mappers/**/*Mapper.xml"></property>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+  		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    	<property name="host" value="smtp.gmail.com" />
+    	<property name="port" value="587" />	
+    	<property name="username" value="${mail.google.email}" />
+    	<property name="password" value="${mail.google.password}" />
+    	<property name="defaultEncoding" value="UTF-8" />
+    	<property name="javaMailProperties">
+    		<props>
+    			<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+    			<prop key="mail.smtp.starttls.enable">true</prop>
+    			<prop key="mail.smtp.auth">true</prop>
+    		</props>
+    	</property>
+    </bean>
+	
+	<bean id="notiBoardControl" class="kr.co.ex.common.NoticeBoardControl">
+		<!-- 공지글 시작 번호 -->
+		<constructor-arg index="0" value="0" />
+		<!-- 공지글 마지막 번호 -->
+		<constructor-arg index="1" value="50" />
+	</bean>
+	
+	<bean id="uploadPath" class="java.lang.String">
+		<constructor-arg value="${file.uploadPath}" />
+	</bean>
+	
+	<!-- <bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg value="${file.uploadTempPath}" />
+	</bean> -->
+	
+	<context:component-scan base-package="kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
+	
+	<mybatis:scan base-package="kr.co.ex.mapper" /> 
+	
+</beans>

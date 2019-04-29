@@ -25,9 +25,9 @@ import kr.co.ex.service.BoardService;
 import kr.co.ex.util.file.DeleteFileUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/board/{boardNo}")

@@ -35,7 +35,7 @@ public interface BoardMapper {
 	
 	public List<BoardVO> listNotice(NoticeBoardControl.NoticeBoardCriteria cri) throws Exception;
 	
-	public int searchCount(SearchCriteria cri) throws Exception;
+	public Integer searchCount(SearchCriteria cri) throws Exception;
 	public int totalCount(Criteria cri) throws Exception;
 	public int readTotalCntByWriter(@Param("username") String username, @Param("cri") SearchCriteria cri) throws Exception;
 	

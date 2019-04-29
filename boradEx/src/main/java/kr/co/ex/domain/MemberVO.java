@@ -6,9 +6,6 @@ import java.util.List;
 
 import kr.co.ex.util.UserType;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Data
 public class MemberVO implements Serializable{

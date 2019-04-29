@@ -185,7 +185,7 @@
 
 </select>
 
-<select id="searchCount" resultType="int">
+<select id="searchCount" resultType="java.lang.Integer">
 	select count(bno) from tbl_board
 	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />

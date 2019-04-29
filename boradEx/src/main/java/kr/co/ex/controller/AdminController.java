@@ -30,9 +30,9 @@ import kr.co.ex.util.PaginationUtils;
 import kr.co.ex.util.UserType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Controller
 @RequestMapping("/board/admin")
 @PreAuthorize("hasRole('ADMIN')")

@@ -9,9 +9,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import kr.co.ex.domain.AttachVO;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class DeleteFileUtils {
 
 	@Resource private static String uploadPath;

@@ -1,8 +1,5 @@
 package kr.co.ex.service;
 
-import java.util.Date;
-
-import kr.co.ex.domain.UserVO;
 import kr.co.ex.dto.LoginDto;
 
 public interface LoginService {

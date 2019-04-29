@@ -13,9 +13,9 @@ import kr.co.ex.dto.LoginDto;
 import kr.co.ex.service.LoginService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Controller
 @RequiredArgsConstructor
 public class LoginController {

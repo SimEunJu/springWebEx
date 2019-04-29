@@ -28,9 +28,9 @@ import kr.co.ex.service.ReplyService;
 import kr.co.ex.util.PaginationUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board/user")

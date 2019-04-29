@@ -11,9 +11,9 @@ import javax.imageio.ImageIO;
 
 import org.imgscalr.Scalr;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class UploadFileUtils {
 	
 	// 운영체제별 다른 file separator
