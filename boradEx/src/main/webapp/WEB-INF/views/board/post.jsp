@@ -174,7 +174,7 @@ const board = {
 {{/each}}
 </script>
 <script id="added-reply-hb" type="text/x-handlebars-template">
-{{#each this}}
+{{#each replies}}
 <li class="added-reply list-group-item" data-rno="{{rno}}">
 	<div>
 		{{#if secret}}

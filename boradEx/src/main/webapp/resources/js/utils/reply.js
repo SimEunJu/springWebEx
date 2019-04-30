@@ -37,7 +37,7 @@ const replyService = (function(){
 	}
 	
 	function removeAnoymous(reply, callback, error){
-		$.post(`/board/daily/${reply.bno}/${reply.rno}/pw`, {pw: reply.pw})
+		$.post(`/api/reply/${reply.bno}/${reply.rno}/pw`, {pw: reply.pw})
 		.done(function(result, status, xhr){
 			if(callback) callback(result);
 		})

@@ -37,8 +37,9 @@ public class ReplyRestController {
 	
 	// rno ¾øÀ» ½Ã bad request
 	@GetMapping("/{boardNo}")
-	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, @RequestBody Criteria cri){
+	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, Criteria cri){
 		try {
+			log.info(cri.toString());
 			boolean notincludeAddedReplyToCnt = true;
 			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCount(boardNo, notincludeAddedReplyToCnt));
 			
@@ -67,7 +68,7 @@ public class ReplyRestController {
 	
 	
 	@GetMapping("/user")
-	public ResponseEntity<List<ReplyVO>> getReplyListByWriter(@RequestBody Criteria cri){
+	public ResponseEntity<List<ReplyVO>> getReplyListByWriter(Criteria cri){
 		List<ReplyVO> replies = null;
 		try {
 			replies = replyServ.listReplyByWriter(cri);
