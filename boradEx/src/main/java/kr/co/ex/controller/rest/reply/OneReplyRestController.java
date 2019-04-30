@@ -36,7 +36,7 @@ public class OneReplyRestController {
 	@NonNull private NotificationService notiServ;
 	
 	@GetMapping("/added")
-	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable("rno") int parRno, @RequestBody Criteria cri){
+	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable("rno") int parRno, Criteria cri){
 		try{
 			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(boardNo, parRno, cri);
 			return new ResponseEntity<>(replies, HttpStatus.OK);

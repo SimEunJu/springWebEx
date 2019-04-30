@@ -108,6 +108,7 @@
 	<trim prefix="where" prefixOverrides="and">
 		<include refid="category" />
 		and isnull(delete_type)
+		<include refid="noticeBoundary" />
 	</trim>
 </select>
 
@@ -191,6 +192,7 @@
 		<include refid="category" />
 		<include refid="search" />
 		and isnull(delete_type)
+		<include refid="noticeBoundary" />
 	</trim>
 </select>
 

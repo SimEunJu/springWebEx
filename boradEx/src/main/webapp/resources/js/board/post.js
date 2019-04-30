@@ -282,6 +282,7 @@ $(document).ready(function(){
 			
 			// 대댓글 가져오기
 			$.getJSON(`/api/reply/${board.bno}/${parRno}/added?page=${reqPage}`, function(replies){
+				const replyHbData = {replies: replies};
 				
 				// 첫 페이지라면 더보기/접기 버튼을 보여줘야 하기 때문
 				if(reqPage === 1) replyHbData.isFirstPage = true;
@@ -292,10 +293,10 @@ $(document).ready(function(){
 				else replyBbData.displayMore = "";
 				
 				for(let i=0; i<replies.length; i++){
-					if(replyArr[i].deleteFlag) replyArr[i].reply = getDeleteMsg(replyArr[i].deleteType);
+					if(replies[i].deleteFlag) replies[i].reply = getDeleteMsg(replies[i].deleteType);
 				}
 				// handlebars 적용
-				const str = addedReplyTemplate(replies);
+				const str = addedReplyTemplate(replyHbData);
 				addedSec.append(str);
 			});
 		}
