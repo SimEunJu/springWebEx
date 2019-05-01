@@ -32,7 +32,9 @@
 <script>
 let editor;
     ClassicEditor
-        .create( document.querySelector( '#editor' ) )
+    .create(document.querySelector( '#editor' ),{
+    	toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ],
+    	})
         .then( newEditor => {
        		editor = newEditor;
     	})

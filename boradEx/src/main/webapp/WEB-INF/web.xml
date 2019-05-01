@@ -39,7 +39,7 @@
 	
 	<servlet>
 		<multipart-config>
-    		<location>/resources/upload</location>
+    		<location>/resources/upload/temp</location>
     		<max-file-size>20848820</max-file-size>
     		<max-request-size>418018841</max-request-size>
    			<file-size-threshold>1048576</file-size-threshold>
@@ -100,7 +100,7 @@
 
 	<error-page>
 		<error-code>404</error-code>
-		<location>/WEB-ING/vies/error_404.jsp</location>
+		<location>/WEB-INF/views/error_404.jsp</location>
 	</error-page>
 	
 	<!-- Processes application requests -->

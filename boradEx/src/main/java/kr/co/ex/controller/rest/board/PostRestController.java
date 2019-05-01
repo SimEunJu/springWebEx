@@ -57,9 +57,10 @@ public class PostRestController {
 
 	// 익명 회원이 비밀번호 확인 후 삭제
 	@PostMapping("/rem")
-	public ResponseEntity<Void> deleteAnonyPost(BoardVO vo, SearchCriteria cri) {
+	public ResponseEntity<Void> deleteAnonyPost(@PathVariable int boardNo, BoardVO vo, SearchCriteria cri) {
 		try {
 			// 게시글 삭제
+			vo.setBno(boardNo);
 			boardServ.remove(vo);
 			// 게시글에 달린 댓글 삭제
 			// replyServ.removeByBno(vo.getBno());
@@ -71,6 +72,7 @@ public class PostRestController {
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);

@@ -69,7 +69,7 @@ function notiLongPollCallback(callback){
 	return term;
 };
 
-function initialize(type, afterCallback){
+function initialize(type, callbackData){
 	
 	switch (type){
 	case 'msg':
@@ -89,7 +89,10 @@ function initialize(type, afterCallback){
 			if(!timeoutId){
 				window.clearTimeout(timeoutId);
 			}
-			longPoll(longPollObj.updateUrl.noti, notiLongPollCallback, afterCallback);
+			const notiNo = callbackData.href.match(/\?from=\w+&nno=(\d+)/)[1];
+			longPoll(longPollObj.updateUrl.noti+"?nno="+notiNo, 
+						notiLongPollCallback, 
+						() => window.location.href = callbackData.href);
 		}
 		break;
 	default:

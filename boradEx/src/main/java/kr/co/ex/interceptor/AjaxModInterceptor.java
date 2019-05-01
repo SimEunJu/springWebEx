@@ -10,6 +10,7 @@ public class AjaxModInterceptor extends ModInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		if("GET".equals(request.getMethod())) return true;
 		return super.preHandle(request, response, handler);
 	}
 

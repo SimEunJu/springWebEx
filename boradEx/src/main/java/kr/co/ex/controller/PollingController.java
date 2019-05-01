@@ -9,10 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.dto.PollingMsgDto;
 import kr.co.ex.dto.PollingNotiDto;
+import kr.co.ex.service.NotificationService;
 import kr.co.ex.service.PollingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class PollingController {
 	// 로직을 함수로 뽑아낼 수 없을까?
 	
 	@NonNull private PollingService pollServ;
+	@NonNull private NotificationService notiServ;
 	
 	private final int LIMIT = 999;
 	private final int DAY = 60*60*24;
@@ -77,14 +80,22 @@ public class PollingController {
 	
 	@GetMapping("/noti")
 	public ResponseEntity<Integer> pollingNotiCnt(@CookieValue(value="notiPoll", required=false) Cookie notiCk,
-			HttpServletResponse res){
-		
+			@RequestParam(required=false) Integer nno, HttpServletResponse res){
+
 		PollingNotiDto noti = null;
 		int curCnt = 0;
 		int notiNo = 0;
 		int term = DEAFULT_TERM_SEC;
 		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		if(nno != null){
+			try{
+				if(nno != null) notiServ.markReadFlagNotification(nno);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		
 		if(notiCk != null && !notiCk.getValue().isEmpty()){
 			String ckVals[] = notiCk.getValue().split("z");

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class ReplyRestController {
 	@NonNull private NotificationService notiServ;
 	
 	// rno ¾øÀ» ½Ã bad request
-	@GetMapping("/{boardNo}")
+	@GetMapping(value="/{boardNo}", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<Map<String, Object>> getReplyList(@PathVariable int boardNo, Criteria cri){
 		try {
 			log.info(cri.toString());
@@ -67,7 +68,7 @@ public class ReplyRestController {
 	}
 	
 	
-	@GetMapping("/user")
+	@GetMapping(value="/user", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<List<ReplyVO>> getReplyListByWriter(Criteria cri){
 		List<ReplyVO> replies = null;
 		try {
@@ -79,7 +80,7 @@ public class ReplyRestController {
 		return new ResponseEntity<>(replies, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/del")
+	@DeleteMapping(value="/del", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<ReplyVO>> deleteReplyList(@RequestBody List<Integer> rno){
 		List<ReplyVO> replies = null;
 		try {

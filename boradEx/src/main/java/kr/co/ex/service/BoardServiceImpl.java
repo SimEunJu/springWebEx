@@ -132,13 +132,13 @@ public class BoardServiceImpl implements BoardService {
 			BoardVO deleted = read(vo.getBno());
 			msg.setReceiver(deleted.getWriter());
 			// 관리자
-			msg.setSender(auth.getName());
+			msg.setSender("관리자");
 			String title = deleted.getTitle();
 			String abbTitle = title.length() > 20 ? title.substring(0, 20)+"..." : title;
 			msg.setTitle(abbTitle+" 해당 게시글은 삭제 처리되었습니다.");
 			// 삭제 이유 작성
 			// 삭제 게시글 확인 링크
-			msg.setContent(vo.getContent()+"\\n삭제된 게시글 확인하기("+"http://localhost:8090/board/daily/"+vo.getBno()+"/temp)");
+			msg.setContent("삭제된 게시글 확인하기("+"http://localhost:8090/board/daily/"+vo.getBno()+"/temp)");
 			msgMapper.createMsg(msg);
 		}
 		

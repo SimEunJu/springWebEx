@@ -57,7 +57,7 @@ public class BoardRestController {
 		}
 	}
 	
-	@PostMapping("/admin/rem")
+	@PostMapping(value="/admin/rem", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<BoardVO>> deletePostByAdmin(@RequestBody Map<String, Object> param, SearchCriteria cri){
 		List<BoardVO> list = null;
