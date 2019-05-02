@@ -23,8 +23,8 @@ public class ModInterceptor extends HandlerInterceptorAdapter {
 			Object handler) throws Exception {
 		// 로그인된 회원인 경우
 		List<GrantedAuthority> auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-			.stream().filter(a -> "ROLE_USER".equals(a.getAuthority())).collect(Collectors.toList());
-		if(auth.size() != 0) return true;
+			.stream().filter(a -> "ROLE_ANONYMOUS".equals(a.getAuthority())).collect(Collectors.toList());
+		if(auth.size() == 0) return true;
 		
 		// 익명 회원일 경우
 		// 익명 회원 비밀번호 인증이 안 된 경우

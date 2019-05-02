@@ -71,9 +71,9 @@
 	
 	<bean id="notiBoardControl" class="kr.co.ex.common.NoticeBoardControl">
 		<!-- 공지글 시작 번호 -->
-		<constructor-arg index="0" value="0" />
+		<constructor-arg index="0" value="1" />
 		<!-- 공지글 마지막 번호 -->
-		<constructor-arg index="1" value="50" />
+		<constructor-arg index="1" value="100" />
 	</bean>
 	
 	<bean id="uploadPath" class="java.lang.String">

@@ -310,10 +310,13 @@ $(document).ready(function(){
 					bno: board.bno,
 			}
 			
-			// 입력값 체크 
-			if(isLogged && !checkInputVal(required)){
-				alert("빈 칸을 채워주세요.");
-				return;
+			 
+			if(isLogged){
+				if(!checkInputVal(required)){
+					alert("빈 칸을 채워주세요.");
+					return;
+				}
+				required.secret = form.find("input[type='checkbox']").get(0).checked;
 			}
 			else if(!isLogged){
 				required.password = form.find("input[name='password']").get(0).value;
@@ -322,10 +325,9 @@ $(document).ready(function(){
 					return;
 				}
 			}
-		
+			
 			// 부가 정보 추가
 			required.parRno = form.data("parrno");
-			required.secret = form.find("input[type='checkbox']").get(0).checked;
 			
 			// 등록
 			replyService.add(required, function(res){
