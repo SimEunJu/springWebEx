@@ -37,11 +37,11 @@
 			<beans:ref bean="ModInterceptor"/>
 		</interceptor>
  		
- 		<interceptor>
+ 		<!-- <interceptor>
  			<mapping path="/board/daily/file" />
 			<beans:ref bean="AjaxModInterceptor"/>
  		</interceptor>
- 		
+ 		 -->
 		<interceptor>
 			<mapping path="/api/board/{boardNo}/mod" />
 			<beans:ref bean="AnonyModInterceptor"/>	
