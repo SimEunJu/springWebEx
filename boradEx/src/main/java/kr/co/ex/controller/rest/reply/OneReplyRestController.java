@@ -50,7 +50,7 @@ public class OneReplyRestController {
 
 	@GetMapping(value="/report", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<String> reportReply(@PathVariable int rno, @RequestBody ReplyVO vo){
+	public ResponseEntity<String> reportReply(@PathVariable int rno){
 		try {
 			replyServ.reportReply(rno);
 			return new ResponseEntity<>(HttpStatus.OK);

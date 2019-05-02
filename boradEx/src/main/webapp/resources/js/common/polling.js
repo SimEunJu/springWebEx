@@ -79,7 +79,7 @@ function initialize(type, callbackData){
 			if(!timeoutId){
 				window.clearTimeout(timeoutId);
 			}
-			longPoll(longPollObj.updateUrl.msg, msgLongPollCallback, afterCallback);
+			longPoll(longPollObj.updateUrl.msg, msgLongPollCallback);
 		}
 		break;
 	case 'noti':
@@ -89,8 +89,8 @@ function initialize(type, callbackData){
 			if(!timeoutId){
 				window.clearTimeout(timeoutId);
 			}
-			const url = longPollObj.updateUrl.noti;
-			const afterCallback = undefined;
+			let url = longPollObj.updateUrl.noti;
+			let afterCallback = undefined;
 			if(callbackData){
 				const notiNo = callbackData.href.match(/\?from=\w+&nno=(\d+)/)[1];
 				url = longPollObj.updateUrl.noti+"?nno="+notiNo;

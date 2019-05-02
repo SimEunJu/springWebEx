@@ -175,7 +175,7 @@ $(document).ready(function(){
 				});
 			
 			// 댓글 작성자 신고 popover의 경우
-			}else if(target.tagName === "SPAN"){
+			}else if(target.tagName === "DIV"){
 				const targetReplyer = replyObj.listSec.find(".replyer").filter((idx,r) => 
 					{ return r.getAttribute("aria-describedby") === this.getAttribute("id")}
 				);
@@ -325,7 +325,7 @@ $(document).ready(function(){
 		
 			// 부가 정보 추가
 			required.parRno = form.data("parrno");
-			required.secret = form.is(":checked");
+			required.secret = form.find("input[type='checkbox']").get(0).checked;
 			
 			// 등록
 			replyService.add(required, function(res){
