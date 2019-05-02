@@ -220,4 +220,9 @@ public class ReplyServiceImpl implements ReplyService {
 		replyMapper.updateReport(rno);
 	}
 
+	@Override
+	public void removeRepliesByPost(int bno) throws Exception {
+		replyMapper.deleteByPost(bno);
+	}
+
 }

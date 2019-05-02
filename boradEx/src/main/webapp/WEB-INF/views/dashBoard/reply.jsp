@@ -18,7 +18,7 @@
 	<table class="table table-hover">
   		<thead class="thead-dark">
     		<tr>
-      			<th scope="col"><input type="checkbox" name="reply" value="all" /></th>
+      			<th scope="col"><input type="checkbox" name="reply" value="all-showed" /></th>
       			<th scope="col">댓글</th>
       			<th scope="col">날짜</th>
     		</tr>

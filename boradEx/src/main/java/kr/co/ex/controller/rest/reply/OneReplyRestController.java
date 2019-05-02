@@ -79,7 +79,7 @@ public class OneReplyRestController {
 		String deleteType = null;
 		try {
 			deleteType = replyServ.removeAnonymousReply(rno, boardNo, pw);
-			return new ResponseEntity<>("success", HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		catch(AccessDeniedException e){
 			log.error(e.getMessage());

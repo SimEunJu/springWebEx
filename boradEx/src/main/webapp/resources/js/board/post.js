@@ -402,13 +402,13 @@ $(document).ready(function(){
 					backgroundColor = RED;
 				}
 				
-				like.style.color = WHITE;
-				like.style.backgroundColor = RED;
+				like.style.color = color;
+				like.style.backgroundColor = backgroundColor;
 				
 				const likeNum = like.querySelector(".like-num");
-				likeNum.innterText = parseInt(likeNum.text())+likeDiff;
+				likeNum.innerText = parseInt(likeNum.innerText)+likeDiff;
 			}).fail(function(){
-				log.error("좋아요 수 업데이트에 실패했습니다.");
+				console.error("좋아요 수 업데이트에 실패했습니다.");
 			})
 		}
 		

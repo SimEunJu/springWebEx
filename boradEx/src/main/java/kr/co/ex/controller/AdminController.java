@@ -157,19 +157,21 @@ public class AdminController {
 	}
 
 	@GetMapping("/reply")
-	public String manageReply(SearchCriteria cri, Model model){
+	public String manageReply(Criteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
+			//cri.setType("self");
 			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			List<ReplyVO> replies = null;
 			switch (cri.getType()) {
 			case REPORT:
-				replies = replyServ.listReplyByWriter(cri);
-				break;
-			case SELF:
 				replies = replyServ.listReplyByReportCnt(cri);
+				break;
+			case ALL:
+			case SELF:
+				cri.setType("self");
+				replies = replyServ.listReplyByWriter(cri);
 				break;
 			default:
 				throw new UndefinedBoardTypeException(cri.getType().toString());

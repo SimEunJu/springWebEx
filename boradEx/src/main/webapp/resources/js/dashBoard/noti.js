@@ -5,7 +5,7 @@ $("document").ready(function(){
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
 	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
 	
-	const check = new Check("msg");
+	const check = new Check("noti");
 	const pagination = new Pagination();
 
 	check.tbody.on("click", "tr a", function(e){

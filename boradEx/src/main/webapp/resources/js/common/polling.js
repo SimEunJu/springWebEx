@@ -89,11 +89,15 @@ function initialize(type, callbackData){
 			if(!timeoutId){
 				window.clearTimeout(timeoutId);
 			}
-			const notiNo = callbackData.href.match(/\?from=\w+&nno=(\d+)/)[1];
-			longPoll(longPollObj.updateUrl.noti+"?nno="+notiNo, 
-						notiLongPollCallback, 
-						() => window.location.href = callbackData.href);
-		}
+			const url = longPollObj.updateUrl.noti;
+			const afterCallback = undefined;
+			if(callbackData){
+				const notiNo = callbackData.href.match(/\?from=\w+&nno=(\d+)/)[1];
+				url = longPollObj.updateUrl.noti+"?nno="+notiNo;
+				afterCallback = () => window.location.href = callbackData.href;
+			}
+			longPoll(url, notiLongPollCallback, afterCallback); 	
+		}				
 		break;
 	default:
 		log.error("정의되지 않은 long poll 타입입니다.");
