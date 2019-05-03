@@ -225,6 +225,7 @@ public class BoardServiceImpl implements BoardService {
 			bno = notiControl.requestNotiBoardIdx();
 			vo.setBno(bno);
 			vo.setWriter("°ü¸®ÀÚ");
+			log.info(vo.toString());
 			boardMapper.createNotice(vo);
 		}catch(Exception e){
 			if(bno != 0) notiControl.rollbackRequestNotiBoardIdx(bno);

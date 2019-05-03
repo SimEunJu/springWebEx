@@ -47,10 +47,13 @@ public class PostRestController {
 			boolean isAnonymous = auth.getAuthorities()
 				.stream().anyMatch(p -> "ROLE_ANONYMOUS".equals(p.getAuthority()));
 			if(!isAnonymous){
-				if("관리자".equals(boardServ.getWriterName(boardNo))) return new ResponseEntity<>(HttpStatus.OK);
-				else if(auth.getName().equals(boardServ.getWriterName(boardNo))) return new ResponseEntity<>(HttpStatus.OK);
+				String writer = boardServ.getWriterName(boardNo);
+				log.info(writer);
+				log.info(auth.getName());
+				if("관리자".equals(writer)) return new ResponseEntity<>(HttpStatus.OK);
+				else if(auth.getName().equals(writer)) return new ResponseEntity<>(HttpStatus.OK);
 				//관리자 userinfo 정리 필요
-				else throw new AccessDeniedException("비밀번호가 일치하지 않습니다.");
+				else throw new AccessDeniedException("게시글 작성자와 변경 시도하려는 사용자가 다릅니다.");
 			}
 			if (boardServ.matchPassword(boardNo, password)) {
 				return new ResponseEntity<>(HttpStatus.OK);
@@ -75,7 +78,7 @@ public class PostRestController {
 					.stream().map(a -> a.getAuthority()).anyMatch(a -> "ROLE_ADMIN".equals(a));
 			// 게시글 삭제
 			// 공지글 삭제
-			
+			log.info(vo.toString());
 			if(isAdmin) boardServ.removeNoti(boardNo);
 			else {
 				vo.setBno(boardNo);
@@ -84,7 +87,9 @@ public class PostRestController {
 			// 게시글에 달린 댓글 삭제
 			replyServ.removeRepliesByPost(boardNo);
 			// 게시글에 첨부된 파일 삭제
-			DeleteFileUtils.deleteFiles(boardServ.getAttach(vo.getBno()));
+			
+			List<AttachVO> attaches = boardServ.getAttach(boardNo);
+			DeleteFileUtils.deleteFiles(attaches);
 
 		} catch (AccessDeniedException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

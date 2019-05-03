@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.ex.domain.Criteria;
@@ -60,6 +61,7 @@ public class ReplyRestController {
 		try{
 			log.info(vo.toString());
 			replyServ.addReply(vo);
+			notiServ.registerNotification(vo, boardNo);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -81,11 +83,24 @@ public class ReplyRestController {
 	}
 	
 	@DeleteMapping(value="/del", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<ReplyVO>> deleteReplyList(@RequestBody List<Integer> rno){
+	public ResponseEntity<List<ReplyVO>> deleteReplyList(@RequestBody List<Integer> rno,
+			@RequestParam(defaultValue="self") String type){
 		List<ReplyVO> replies = null;
 		try {
-			replyServ.removeReplies(rno);
-			replies = replyServ.listReplyByWriter(new Criteria());
+			Criteria cri = new Criteria();
+			switch(type){
+			case "self":
+				replyServ.removeReplies(rno);
+				replies = replyServ.listReplyByWriter(cri);
+				break;
+			case "report":
+				replyServ.removeReplies(rno);
+				replies = replyServ.listReplyByReportCnt(cri);
+				break;
+			default:
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

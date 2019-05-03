@@ -8,27 +8,27 @@ $("document").ready(function(){
 	const check = new Check("reply");
 	const pagination = new Pagination();
 	
+	const queryObj = {type: $("form input[name='type']").val()};
+	
 	$("#btn-del").on("click", function(e){
 		check.appendCheckVal(pagination.page);
 		const replyNoList = check.flatToList(check.repo);
 		
 		$.ajax({
-			url: "/api/reply/del",
+			url: `/api/reply/del?type=${queryObj.type}`,
 			method: "DELETE",
 			data: JSON.stringify(replyNoList),
 			contentType: "application/json; charset=utf-8"
 		}).done(function(res){
-			check.resetRepo();
+			
 			if(queryObj.type !== "self"){
-				res.foreach(r => r.showReplyer = true);
+				res.forEach(r => r.showReplyer = true);
 			}
 			check.tbody.html(tableRowTemplate(res));
+			check.resetRepo();
 			alert("정상적으로 삭제되었습니다.");
 		});
 	});
-	
-	
-	const queryObj = {type: $("form input[name='type']").val()};
 	
 	$("nav .pagination").on("click", "li", function(e){
 		e.preventDefault();

@@ -136,6 +136,7 @@ public class AdminController {
 			case REPORT:
 				boardList = boardServ.listSearch(cri);
 				totalCount = boardServ.getSearchCnt(cri);
+				log.info(cri.getType().getTypeInitial());
 				break;
 			case SELF:
 				String adminName = "°ü¸®ÀÚ";
