@@ -40,8 +40,8 @@ public class PostController {
 			@RequestParam(required = false) Integer nno, @ModelAttribute("cri") SearchCriteria cri, Model model) {
 		try {
 			boardServ.updateViewCnt(boardNo);
-			if (from != null && from.equals("noti"))
-				notiServ.markReadFlagNotification(nno);
+			/*if (from != null && from.equals("noti"))
+				notiServ.markReadFlagNotification(nno);*/
 			
 			// 사용자 알림에서 넘어 온 경우 해당 댓글 하이라이트
 			//model.addAttribute("hilightedRno", notiServ.getRno());

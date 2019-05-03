@@ -22,6 +22,7 @@ import kr.co.ex.domain.AttachVO;
 import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.SearchCriteria;
 import kr.co.ex.service.BoardService;
+import kr.co.ex.service.ReplyService;
 import kr.co.ex.util.file.DeleteFileUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
 public class PostRestController {
 	
 	@NonNull private BoardService boardServ;
+	@NonNull private ReplyService replyServ;
 	
 	// 익명 회원이 비밀번호 확인 후 게시글 수정
 	@PostMapping("/mod")
@@ -57,12 +59,13 @@ public class PostRestController {
 
 	// 익명 회원이 비밀번호 확인 후 삭제
 	@PostMapping("/rem")
-	public ResponseEntity<Void> deleteAnonyPost(BoardVO vo, SearchCriteria cri) {
+	public ResponseEntity<Void> deleteAnonyPost(@PathVariable int boardNo, BoardVO vo, SearchCriteria cri) {
 		try {
 			// 게시글 삭제
+			vo.setBno(boardNo);
 			boardServ.remove(vo);
 			// 게시글에 달린 댓글 삭제
-			// replyServ.removeByBno(vo.getBno());
+			replyServ.removeRepliesByPost(boardNo);
 			// 게시글에 첨부된 파일 삭제
 			DeleteFileUtils.deleteFiles(boardServ.getAttach(vo.getBno()));
 
@@ -71,6 +74,7 @@ public class PostRestController {
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -91,7 +95,7 @@ public class PostRestController {
 	
 	@GetMapping("/like")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Void> updatePostLike(@PathVariable int boardNo, @RequestParam int likeCnt){
+	public ResponseEntity<Void> updatePostLike(@PathVariable int boardNo, @RequestParam("diff") int likeCnt){
 		try {			
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			boardServ.updateLike(boardNo, likeCnt, auth.getName());
@@ -104,12 +108,12 @@ public class PostRestController {
 	
 	@PostMapping("/report")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<String> updateReportCnt(@PathVariable int boardNo, @RequestParam int diff){
+	public ResponseEntity<Void> updateReportCnt(@PathVariable int boardNo, @RequestParam int diff){
 		try{
 			boardServ.updateReportCnt(boardNo, diff);
 		}catch(Exception e){
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>("success", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

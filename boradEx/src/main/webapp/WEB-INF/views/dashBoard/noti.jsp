@@ -5,7 +5,7 @@
 <div class="col-md-9">
 	<div class="row my-2 p-2 border">
 		<div class="col">
-			<input type="checkbox" id="all-mem" name="msg" value="all" /> 
+			<input type="checkbox" id="all-mem" name="noti" value="all" /> 
 			<label for="all-mem">전체</label>
 		</div>
 		
@@ -17,7 +17,7 @@
 	<table class="table table-hover">
   		<thead class="thead-dark">
     		<tr>
-      			<th scope="col"><input type="checkbox" name="noti" value="all" /></th>
+      			<th scope="col"><input type="checkbox" name="noti" value="all-showed" /></th>
       			<th scope="col">알림</th>
       			<th scope="col">날짜</th>
     		</tr>

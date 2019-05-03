@@ -78,7 +78,11 @@ public class ReplyServiceImpl implements ReplyService {
 		}
 		
 		return list.stream().map(r -> {
-			if(r.isSecret()) setReplyNull(r);
+			if(r.isSecret()){
+				// 비밀 댓글 작성자는 볼 수 있도록
+				if(user.equals(r.getReplyer())) r.setSecret(false);
+				else setReplyNull(r);
+			}
 			if(r.getDeleteType() !=  null){
 				r.setDeleteFlag(true);
 				setReplyNull(r);
@@ -218,6 +222,11 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	public void reportReply(int rno) throws Exception {
 		replyMapper.updateReport(rno);
+	}
+
+	@Override
+	public void removeRepliesByPost(int bno) throws Exception {
+		replyMapper.deleteByPost(bno);
 	}
 
 }

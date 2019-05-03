@@ -73,16 +73,16 @@
 		<!-- 공지글 시작 번호 -->
 		<constructor-arg index="0" value="0" />
 		<!-- 공지글 마지막 번호 -->
-		<constructor-arg index="1" value="50" />
+		<constructor-arg index="1" value="100" />
 	</bean>
 	
 	<bean id="uploadPath" class="java.lang.String">
 		<constructor-arg value="${file.uploadPath}" />
 	</bean>
 	
-	<!-- <bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
+	<bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
 		<constructor-arg value="${file.uploadTempPath}" />
-	</bean> -->
+	</bean>
 	
 	<context:component-scan base-package="kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
 	

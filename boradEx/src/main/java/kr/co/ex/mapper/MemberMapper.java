@@ -20,7 +20,7 @@ public interface MemberMapper {
 	public void createAuth(AuthVO auth);
 	
 	public List<MemberVO> listMember(Criteria cri);
-	public List<MemberVO> listMemberByKeyword(String keyword);
+	public List<MemberVO> listMemberByKeyword(@Param("keyword") String keyword);
 	public List<MemberVO> listReportMember(Criteria cri);
 	public List<MemberVO> listStateMember(@Param("cri") Criteria cri, @Param("state") String state);
 

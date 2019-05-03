@@ -19,4 +19,5 @@ public class ReplyVO {
 	private String password;
 	private boolean secret;
 	private String deleteType;
+	private Integer reportCnt;
 }

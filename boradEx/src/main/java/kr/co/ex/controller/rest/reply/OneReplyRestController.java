@@ -3,6 +3,7 @@ package kr.co.ex.controller.rest.reply;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class OneReplyRestController {
 	@NonNull private BoardService boardServ;
 	@NonNull private NotificationService notiServ;
 	
-	@GetMapping("/added")
+	@GetMapping(value="/added", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<List<ReplyDto>> addedList(@PathVariable int boardNo, @PathVariable("rno") int parRno, Criteria cri){
 		try{
 			List<ReplyDto> replies = replyServ.listCriteriaAddedReply(boardNo, parRno, cri);
@@ -47,9 +48,9 @@ public class OneReplyRestController {
 		}
 	}
 
-	@GetMapping("/report")
+	@GetMapping(value="/report", produces={MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<String> reportReply(@PathVariable int rno, @RequestBody ReplyVO vo){
+	public ResponseEntity<String> reportReply(@PathVariable int rno){
 		try {
 			replyServ.reportReply(rno);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -60,7 +61,7 @@ public class OneReplyRestController {
 	}
 	
 	// interceptor에서 인증
-	@DeleteMapping("")
+	@DeleteMapping(value="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> removeReply(@PathVariable int boardNo, @PathVariable int rno){
 		String deleteType = null;
 		try {
@@ -72,13 +73,13 @@ public class OneReplyRestController {
 		}
 	}
 	
-	@PostMapping("/pw")
+	@PostMapping(value="/pw", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> matchPasswordAndDelete(@PathVariable int boardNo, @PathVariable int rno,
 			@RequestParam String pw){
 		String deleteType = null;
 		try {
 			deleteType = replyServ.removeAnonymousReply(rno, boardNo, pw);
-			return new ResponseEntity<>("success", HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		catch(AccessDeniedException e){
 			log.error(e.getMessage());

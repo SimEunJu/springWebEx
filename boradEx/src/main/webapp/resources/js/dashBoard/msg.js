@@ -96,12 +96,13 @@ $("document").ready(function(){
 		// 한번에 처리 req || 두 번에 걸쳐 처리 req
 		// 가장 비싼 처리는 무엇? 네트워크 -> 한번에 req -> 파라미터 추가
 		let isRead = false;
-		if(target.get(0).dataset.read === true) isRead = true; 
+		if(target.get(0).dataset.read === "true") isRead = true; 
 		ajax({
 			url: "/board/user/msg/"+target.siblings("th").children("input").val()+"?isRead="+isRead,
 			method: "get",
-			
 		}, function(res){
+			if(isRead === false) longPollObj.initialize("msg");
+			
 			msgModal.toggleModal();
 			
 			msgModal.title.val(res.title);
@@ -116,8 +117,6 @@ $("document").ready(function(){
 			
 			target.css("font-weight","inherit");
 			target.attr("data-read", true);		
-			
-			longPollObj.initialize("msg");
 		})
 	});
 	
