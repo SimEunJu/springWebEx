@@ -120,6 +120,4 @@ public class BoardContoller {
 		}
 		return "redirect:/board/daily";
 	}
-	
-	
 }

@@ -46,10 +46,10 @@
   </select>
   
    <select id="listReplyByReportCnt" resultType="kr.co.ex.domain.ReplyVO">
-  	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type, report_cnt
+  	select rno, bno, reply, replyer, regdate, par_rno, seq, secret, delete_type, report_cnt
   	from tbl_reply 
   	where isnull(delete_type)
-  	order by report_cnt desc
+  	order by report_cnt desc, rno desc
   	<include refid="limit" />
   </select>
   

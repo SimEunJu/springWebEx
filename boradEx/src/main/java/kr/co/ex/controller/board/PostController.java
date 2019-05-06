@@ -77,6 +77,7 @@ public class PostController {
 	@GetMapping("/mod")
 	public String showPostModification(@PathVariable int boardNo, @ModelAttribute("cri") SearchCriteria cri, Model model) {
 		try {
+			
 			BoardVO board = boardServ.read(boardNo);
 			model.addAttribute("board", board);
 			
@@ -87,7 +88,7 @@ public class PostController {
 		}
 		return "board/modify.part";
 	}
-
+	
 	@GetMapping("/temp")
 	@PreAuthorize("hasRole('USER')")
 	public String showDeletedPost(@PathVariable int boardNo, HttpServletResponse res, Model model) {

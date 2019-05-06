@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,18 @@ public class PostRestController {
 	public ResponseEntity<Void> modifyAnonyPost(@PathVariable int boardNo, @RequestParam String password,
 			SearchCriteria cri) {
 		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			boolean isAnonymous = auth.getAuthorities()
+				.stream().anyMatch(p -> "ROLE_ANONYMOUS".equals(p.getAuthority()));
+			if(!isAnonymous){
+				String writer = boardServ.getWriterName(boardNo);
+				log.info(writer);
+				log.info(auth.getName());
+				if("관리자".equals(writer)) return new ResponseEntity<>(HttpStatus.OK);
+				else if(auth.getName().equals(writer)) return new ResponseEntity<>(HttpStatus.OK);
+				//관리자 userinfo 정리 필요
+				else throw new AccessDeniedException("게시글 작성자와 변경 시도하려는 사용자가 다릅니다.");
+			}
 			if (boardServ.matchPassword(boardNo, password)) {
 				return new ResponseEntity<>(HttpStatus.OK);
 			} else
@@ -61,13 +74,22 @@ public class PostRestController {
 	@PostMapping("/rem")
 	public ResponseEntity<Void> deleteAnonyPost(@PathVariable int boardNo, BoardVO vo, SearchCriteria cri) {
 		try {
+			boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+					.stream().map(a -> a.getAuthority()).anyMatch(a -> "ROLE_ADMIN".equals(a));
 			// 게시글 삭제
-			vo.setBno(boardNo);
-			boardServ.remove(vo);
+			// 공지글 삭제
+			log.info(vo.toString());
+			if(isAdmin) boardServ.removeNoti(boardNo);
+			else {
+				vo.setBno(boardNo);
+				boardServ.remove(vo);
+			}
 			// 게시글에 달린 댓글 삭제
 			replyServ.removeRepliesByPost(boardNo);
 			// 게시글에 첨부된 파일 삭제
-			DeleteFileUtils.deleteFiles(boardServ.getAttach(vo.getBno()));
+			
+			List<AttachVO> attaches = boardServ.getAttach(boardNo);
+			DeleteFileUtils.deleteFiles(attaches);
 
 		} catch (AccessDeniedException e) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

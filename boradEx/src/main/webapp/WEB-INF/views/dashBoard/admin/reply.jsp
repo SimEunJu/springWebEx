@@ -93,10 +93,10 @@
 <script id="table-row" type="text/x-handlebars-template">
 {{#each this}}	
 	<tr>
-		<th scope="row"><input type="checkbox" name="reply" value="{{rno}}" /></th>
+		<th scope="row"><input type="checkbox" name="reply" value="{{rno}}" ></th>
       	<td><a href="/board/daily/{{bno}}">{{reply}}</a></td>
       	{{#if showReplyer}}
-			<td>{{replyer}}<td>
+			<td>{{replyer}}</td>
 		{{/if}}
 		<td>{{reportCnt}}</td>
 		<td>{{dateFormat regdate}}</td>

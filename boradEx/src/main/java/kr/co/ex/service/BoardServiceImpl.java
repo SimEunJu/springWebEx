@@ -120,6 +120,8 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Loggable
 	public void remove(BoardVO vo) throws Exception {
+		// 만약 authority type이 더 늘어난다면 어떻게 될까?
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
 		vo.setDeleteType("B");
@@ -223,6 +225,7 @@ public class BoardServiceImpl implements BoardService {
 			bno = notiControl.requestNotiBoardIdx();
 			vo.setBno(bno);
 			vo.setWriter("관리자");
+			log.info(vo.toString());
 			boardMapper.createNotice(vo);
 		}catch(Exception e){
 			if(bno != 0) notiControl.rollbackRequestNotiBoardIdx(bno);

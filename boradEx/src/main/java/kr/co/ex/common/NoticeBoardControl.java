@@ -72,7 +72,6 @@ public class NoticeBoardControl {
 	
 	private int getMinIdx(){
 		int len = idxUseList.size();
-		log.info(idxUseList.toString());
 		for(int i=0; i<len; i++){
 			if(idxUseList.get(i) == false) return i; 
 		}
@@ -91,6 +90,7 @@ public class NoticeBoardControl {
 	public synchronized int requestNotiBoardIdx(){
 		int idx = getMinIdx();
 		setUseIdx(idx);
+		log.info(idxUseList.toString());
 		return idx + START_IDX;
 	}
 	
@@ -105,8 +105,10 @@ public class NoticeBoardControl {
 	}
 	
 	public synchronized boolean releaseNotiBoardIdx(int idx){
+		log.info(idxUseList.toString());
 		if(idxUseList.get(idx) == false) throw new CorruptReleseOnNoticeIdx(idx);
 		unsetUseIdx(idx);
+		log.info(idxUseList.toString());
 		return true;
 	}
 	

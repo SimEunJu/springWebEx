@@ -22,8 +22,10 @@
 </insert>
 
 <insert id="createNotice">
-	insert into tbl_board (bno, title, content, writer, category, delete_type) 
-	values (#{bno}, #{title}, #{content}, #{writer}, 1, null)
+	insert into tbl_board (bno, title, content, writer, category, delete_type, viewcnt) 
+	values (#{bno}, #{title}, #{content}, #{writer}, 1, null, 0)
+	on duplicate key update
+	bno=#{bno}, title=values(title), content=values(content), writer=values(writer), category=1, delete_type=null, viewcnt=0
 </insert>
 
 <select id="read" resultType="kr.co.ex.domain.BoardVO">
@@ -171,10 +173,11 @@
 		and isnull(delete_type)
 		<include refid="noticeBoundary" />
 	</trim>
- 	order by bno desc
+ 	order by
  	<if test='type.typeInitial.equals("report")'>
-		, report_cnt desc
+		report_cnt desc,
 	</if>
+	 bno desc
  	limit #{pageStart}, #{perPageNum}
 </select>	
 
