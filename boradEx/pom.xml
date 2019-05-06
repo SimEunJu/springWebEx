@@ -34,6 +34,14 @@
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
 				 </exclusion>
+				 <exclusion>
+        			<groupId>log4j</groupId>
+       				<artifactId>log4j</artifactId>
+      			</exclusion>
+      			<exclusion>
+        			<groupId>org.slf4j</groupId>
+        		<artifactId>slf4j-log4j12</artifactId>
+      </exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -58,8 +66,8 @@
     		<groupId>org.bgee.log4jdbc-log4j2</groupId>
     		<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
     		<version>1.16</version>
-    		<scope>system</scope>
-			<systemPath>${project.basedir}/local-repo/log4jdbc-log4j2-jdbc4.1-1.16.1.jar</systemPath>
+    		<!-- <scope>system</scope>
+			<systemPath>${project.basedir}/local-repo/log4jdbc-log4j2-jdbc4.1-1.16.1.jar</systemPath> -->
 		</dependency>
 		
 		<dependency>
@@ -68,12 +76,30 @@
 			<version>${org.slf4j-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${org.slf4j-version}</version>
-			<scope>runtime</scope>
+    		<groupId>org.apache.logging.log4j</groupId>
+    		<artifactId>log4j-jcl</artifactId>
+    		<version>2.11.2</version>
 		</dependency>
-		<dependency>
+  		<dependency>
+    		<groupId>org.apache.logging.log4j</groupId>
+    		<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.11.2</version>
+			<!-- <scope>runtime</scope> -->
+  		</dependency>
+		
+  		<dependency>
+    		<groupId>org.apache.logging.log4j</groupId>
+    		<artifactId>log4j-api</artifactId>
+    		<version>2.11.2</version>
+  			</dependency>
+  		<dependency>
+    		<groupId>org.apache.logging.log4j</groupId>
+    		<artifactId>log4j-core</artifactId>
+    		<version>2.11.2</version>
+  		</dependency>
+
+		<!-- exclude -->
+		<!-- <dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${org.slf4j-version}</version>
@@ -102,7 +128,7 @@
 				</exclusion>
 			</exclusions>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency> -->
 
 		<!-- @Inject -->
 		<dependency>
@@ -290,6 +316,23 @@
     		<version>1.1.0.Final</version>
 		</dependency>
 
+		<dependency>
+    		<groupId>com.google.guava</groupId>
+    		<artifactId>guava</artifactId>
+    		<version>27.0.1-jre</version>
+		</dependency>
+	
+		<dependency>
+    		<groupId>io.springfox</groupId>
+    		<artifactId>springfox-swagger2</artifactId>
+    		<version>2.9.2</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>io.springfox</groupId>
+    		<artifactId>springfox-swagger-ui</artifactId>
+    		<version>2.9.2</version>
+		</dependency>
         
 	</dependencies>
     <build>

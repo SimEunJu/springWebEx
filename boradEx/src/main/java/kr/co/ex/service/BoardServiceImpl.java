@@ -11,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nimbusds.jose.proc.SecurityContext;
-
 import kr.co.ex.annoation.Loggable;
 import kr.co.ex.common.NoticeBoardControl;
 import kr.co.ex.domain.AttachVO;
@@ -27,10 +25,10 @@ import kr.co.ex.mapper.ReplyMapper;
 import kr.co.ex.mapper.UserLikeMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Service
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
@@ -122,6 +120,8 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Loggable
 	public void remove(BoardVO vo) throws Exception {
+		// 만약 authority type이 더 늘어난다면 어떻게 될까?
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		List<String> authorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
 		vo.setDeleteType("B");
@@ -134,13 +134,13 @@ public class BoardServiceImpl implements BoardService {
 			BoardVO deleted = read(vo.getBno());
 			msg.setReceiver(deleted.getWriter());
 			// 관리자
-			msg.setSender(auth.getName());
+			msg.setSender("관리자");
 			String title = deleted.getTitle();
 			String abbTitle = title.length() > 20 ? title.substring(0, 20)+"..." : title;
 			msg.setTitle(abbTitle+" 해당 게시글은 삭제 처리되었습니다.");
 			// 삭제 이유 작성
 			// 삭제 게시글 확인 링크
-			msg.setContent(vo.getContent()+"\\n삭제된 게시글 확인하기("+"http://localhost:8090/board/daily/"+vo.getBno()+"/temp)");
+			msg.setContent("삭제된 게시글 확인하기("+"http://localhost:8090/board/daily/"+vo.getBno()+"/temp)");
 			msgMapper.createMsg(msg);
 		}
 		
@@ -225,6 +225,7 @@ public class BoardServiceImpl implements BoardService {
 			bno = notiControl.requestNotiBoardIdx();
 			vo.setBno(bno);
 			vo.setWriter("관리자");
+			log.info(vo.toString());
 			boardMapper.createNotice(vo);
 		}catch(Exception e){
 			if(bno != 0) notiControl.rollbackRequestNotiBoardIdx(bno);

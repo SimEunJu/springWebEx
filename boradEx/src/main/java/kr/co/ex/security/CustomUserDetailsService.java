@@ -9,9 +9,9 @@ import kr.co.ex.domain.MemberVO;
 import kr.co.ex.mapper.MemberMapper;
 import kr.co.ex.security.domain.CustomUser;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @NoArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 

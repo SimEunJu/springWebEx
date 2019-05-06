@@ -57,7 +57,7 @@
 		{{#if isImg}}
 			<img src='/board/daily/file?fileName={{filePath}}'>
 		{{else}}
-			<img src='/resources/img/attach.png'>
+			<img src='/resources/img/attach.png' style='height: 100px;'>
 		{{/if}}
 	</div>
 </li>
@@ -69,7 +69,9 @@
 <script src="/resources/js/utils/file.js"></script>
 <script>
     ClassicEditor
-        .create(document.querySelector( '#editor' ))
+        .create(document.querySelector( '#editor' ),{
+        	toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ],
+        })
         .then(
         	editor => {editor.setData("${board.content}");}
         ).catch( 

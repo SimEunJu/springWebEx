@@ -4,12 +4,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class DateUtils {
 	public static LocalDateTime getToday(){
 		return LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);

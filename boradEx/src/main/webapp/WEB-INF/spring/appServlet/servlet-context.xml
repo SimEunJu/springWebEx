@@ -7,7 +7,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd" >
+		 
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
@@ -15,7 +16,7 @@
 	<annotation-driven />
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
-	<resources mapping="/resources/**" location="/resources/" />
+	<resources order="1" mapping="/resources/**" location="/resources/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -24,8 +25,9 @@
 		<beans:property name="order" value="2" />
 	</beans:bean>
 	
-	<beans:bean id="ModInterceptor" class="kr.co.ex.interceptor.ModInterceptor"></beans:bean>
-	<beans:bean id="AnonyModInterceptor" class="kr.co.ex.interceptor.AnonyModInterceptor"></beans:bean>
+	<beans:bean id="ModInterceptor" class="kr.co.ex.interceptor.ModInterceptor" />
+	<beans:bean id="AnonyModInterceptor" class="kr.co.ex.interceptor.AnonyModInterceptor" />
+	<beans:bean id="AjaxModInterceptor" class="kr.co.ex.interceptor.AjaxModInterceptor" />
 	
 	<aop:config proxy-target-class="true" />
 	
@@ -35,26 +37,26 @@
 			<beans:ref bean="ModInterceptor"/>
 		</interceptor>
  		
+ 		<!-- <interceptor>
+ 			<mapping path="/board/daily/file" />
+			<beans:ref bean="AjaxModInterceptor"/>
+ 		</interceptor>
+ 		 -->
 		<interceptor>
-			<mapping path="/board/api/mod"/>
+			<mapping path="/api/board/{boardNo}/mod" />
 			<beans:ref bean="AnonyModInterceptor"/>	
 		</interceptor>
-		
 	</interceptors>
-	<!-- 
-		<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<beans:property name="maxUploadSize" value="10485760"></beans:property>
-		<beans:property name="defaultEncoding" value="utf-8"></beans:property>
-		<beans:property name="maxUploadSizePerFile" value="2097152"></beans:property>
-		<beans:property name="uploadTempDir" ref="uploadTempPath"></beans:property>
-		<beans:property name="maxInMemorySize" value="10485756"></beans:property>
-		</beans:bean>
-	 -->
-	<!-- <beans:bean id="multipartResolver" 
-	class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean> -->
 		
 	<context:component-scan base-package="kr.co.ex.controller" />
 	
+	<beans:bean id="swagger2Config"
+		class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration">
+	</beans:bean>
+
+	<resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />
+	<resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
+
 	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
         <beans:property name="definitions">
             <beans:list>
@@ -66,5 +68,6 @@
         <beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
         <beans:property name="order" value="1" />
     </beans:bean> 
-    
+
+	<default-servlet-handler />    
 </beans:beans>

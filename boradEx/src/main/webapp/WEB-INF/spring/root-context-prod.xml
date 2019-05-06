@@ -14,16 +14,22 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd"
+	profile="prod">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<context:property-placeholder location="classpath:db.propertise, classpath:oauth.propertise, classpath:mail.propertise" /> 
-	<util:properties id="title" location="classpath:title.properties"/>
+	<context:property-placeholder 
+		location="classpath:application.propertise,
+				classpath:application-prod.propertise,
+				classpath:oauth.propertise, 
+				classpath:mail.propertise" /> 	
 	
+	<util:properties id="title" location="classpath:title.properties"/>
+
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="${hikariConfig.driverClassName}"></property>
 		<property name="jdbcUrl" value="${hikariConfig.jdbcUrl}"></property>
-		<property name="username" value="${hikariConfig.password}"></property>
+		<property name="username" value="${hikariConfig.username}"></property>
 		<property name="password" value="${hikariConfig.password}"></property>
 	</bean>
 	
@@ -65,18 +71,18 @@
 	
 	<bean id="notiBoardControl" class="kr.co.ex.common.NoticeBoardControl">
 		<!-- 공지글 시작 번호 -->
-		<constructor-arg index="0" value="20" />
+		<constructor-arg index="0" value="1" />
 		<!-- 공지글 마지막 번호 -->
-		<constructor-arg index="1" value="50" />
+		<constructor-arg index="1" value="100" />
 	</bean>
 	
 	<bean id="uploadPath" class="java.lang.String">
-		<constructor-arg value="C:\Users\user\gitPlease\boradEx\src\main\webapp\resources\upload\" />
+		<constructor-arg value="${file.uploadPath}" />
 	</bean>
 	
-	<bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
-		<constructor-arg value="C:\Users\user\gitPlease\boradEx\src\main\webapp\resources\upload\temp\" />
-	</bean>
+	<!-- <bean id="uploadTempPath" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg value="${file.uploadTempPath}" />
+	</bean> -->
 	
 	<context:component-scan base-package="kr.co.ex.service, kr.co.ex.aop, kr.co.ex.task" />
 	

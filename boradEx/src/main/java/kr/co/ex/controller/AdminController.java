@@ -30,9 +30,9 @@ import kr.co.ex.util.PaginationUtils;
 import kr.co.ex.util.UserType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Controller
 @RequestMapping("/board/admin")
 @PreAuthorize("hasRole('ADMIN')")
@@ -136,6 +136,7 @@ public class AdminController {
 			case REPORT:
 				boardList = boardServ.listSearch(cri);
 				totalCount = boardServ.getSearchCnt(cri);
+				log.info(cri.getType().getTypeInitial());
 				break;
 			case SELF:
 				String adminName = "°ü¸®ÀÚ";
@@ -157,19 +158,21 @@ public class AdminController {
 	}
 
 	@GetMapping("/reply")
-	public String manageReply(SearchCriteria cri, Model model){
+	public String manageReply(Criteria cri, Model model){
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			
+			//cri.setType("self");
 			PageMaker pm = PaginationUtils.pagination(cri, replyServ.getTotalCntByReplyer(auth.getName()));
 			
 			List<ReplyVO> replies = null;
 			switch (cri.getType()) {
 			case REPORT:
-				replies = replyServ.listReplyByWriter(cri);
-				break;
-			case SELF:
 				replies = replyServ.listReplyByReportCnt(cri);
+				break;
+			case ALL:
+			case SELF:
+				cri.setType("self");
+				replies = replyServ.listReplyByWriter(cri);
 				break;
 			default:
 				throw new UndefinedBoardTypeException(cri.getType().toString());

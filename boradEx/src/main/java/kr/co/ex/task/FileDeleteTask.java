@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 import kr.co.ex.util.DateUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Component
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class FileDeleteTask {
 

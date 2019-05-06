@@ -39,17 +39,17 @@
   </select>
   
   <select id="listReplyByReplyer" resultType="kr.co.ex.domain.ReplyVO">
-  	select bno, rno, reply, replyer, regdate, par_rno, seq, secret, delete_type 
+  	select bno, rno, reply, replyer, regdate, par_rno, seq, secret, delete_type, report_cnt 
   	from tbl_reply where replyer=#{replyer} and isnull(delete_type)
   	order by rno desc
   	<include refid="limit" />
   </select>
   
    <select id="listReplyByReportCnt" resultType="kr.co.ex.domain.ReplyVO">
-  	select rno, reply, replyer, regdate, par_rno, seq, secret, delete_type 
+  	select rno, bno, reply, replyer, regdate, par_rno, seq, secret, delete_type, report_cnt
   	from tbl_reply 
   	where isnull(delete_type)
-  	order by report_cnt desc
+  	order by report_cnt desc, rno desc
   	<include refid="limit" />
   </select>
   
@@ -103,6 +103,10 @@
   	<foreach collection="rno" item="r">
   		update tbl_reply set delete_type=#{deleteType} where rno=#{r};
   	</foreach>
+  </update>
+  
+  <update id="deleteByPost">
+  	update tbl_reply set delete_type="B" where bno=#{bno};
   </update>
   
   <update id="updateReport">

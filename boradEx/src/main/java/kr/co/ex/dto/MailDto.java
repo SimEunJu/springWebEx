@@ -2,7 +2,6 @@ package kr.co.ex.dto;
 
 import java.util.List;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

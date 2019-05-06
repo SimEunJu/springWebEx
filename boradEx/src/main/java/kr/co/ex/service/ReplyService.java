@@ -2,7 +2,6 @@ package kr.co.ex.service;
 
 import java.util.List;
 
-import kr.co.ex.domain.BoardVO;
 import kr.co.ex.domain.Criteria;
 import kr.co.ex.domain.ReplyVO;
 import kr.co.ex.dto.ReplyDto;
@@ -28,6 +27,7 @@ public interface ReplyService {
 	public String removeAnonymousReply(int rno, int bno, String password) throws Exception; 
 	public void removeReplies(List<Integer> rno) throws Exception;
 	public void removeReplies(List<Integer> rno, int bno) throws Exception;
+	public void removeRepliesByPost(int bno) throws Exception;
 	public void removeReplyByReplyer();
 	
 	public void reportReply(int rno) throws Exception;

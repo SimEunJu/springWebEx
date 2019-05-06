@@ -47,11 +47,15 @@
 <script>
 let editor;
     ClassicEditor
-        .create( document.querySelector( '#editor' ) )
+        .create( document.querySelector( '#editor' ), {
+        	toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ],
+        	/* removePlugins: [ 'Image', 'MediaEmbed' ], */
+        })
         .then( newEditor => {
        		editor = newEditor;
     	})
         .catch( error => {
             console.error( error );
         } );
+   
 </script>

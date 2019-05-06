@@ -7,50 +7,54 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class ModInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, 
 			Object handler) throws Exception {
+		// 로그인된 회원인 경우
 		List<GrantedAuthority> auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-			.stream().filter(a -> "ROLE_USER".equals(a.getAuthority())).collect(Collectors.toList());
-		if(auth.size() != 0) return true;
-		HttpSession sess = request.getSession();
-		Boolean isAnonyMod = (Boolean) sess.getAttribute("anonyMod");
-		if(isAnonyMod == null) return true;
+			.stream().filter(a -> "ROLE_ANONYMOUS".equals(a.getAuthority())).collect(Collectors.toList());
+		if(auth.size() == 0) return true;
 		
-		if(isAnonyMod == false) return false;
-		sess.removeAttribute("anonyMod");		
+		// 익명 회원일 경우
+		// 익명 회원 비밀번호 인증이 안 된 경우
+		HttpSession sess = request.getSession();
+		Boolean isAuthenticatedAnony = (Boolean) sess.getAttribute("isAuthenticatedAnony");
+		
+		if(isAuthenticatedAnony == null){
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			return false;
+		}
+		
+		// 인증 실패인 익명 회원의 경우
+		if(isAuthenticatedAnony == false){
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			return false;
+		}
+		
+		// 인증 성공인 익명 회원의 경우
 		return true;
 	}
 
-/*	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, 
-			Object handler, ModelAndView modelAndView) throws Exception {
-		HttpSession sess = request.getSession();
-		Map<String, Object> model = modelAndView.getModel();
-		Object user = model.get("userVO");
-		if(user !=  null){
-			sess.setAttribute(LOGIN, user);
-			
-			if(request.getParameter("useCookie") != null){
-				Cookie loginCookie = new Cookie("loginCookie", sess.getId());
-				loginCookie.setPath("/");
-				loginCookie.setMaxAge(WEEK);
-				response.addCookie(loginCookie);
-			}
-			
-			Object dest = sess.getAttribute("dset");
-			response.sendRedirect(dest==null? "/" : (String)dest);
-		}else{
-			response.sendRedirect("/login");
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+		if(!"GET".equals(request.getMethod())){
+			HttpSession sess = request.getSession();
+			Boolean isAuthenticatedAnony = (Boolean) sess.getAttribute("isAuthenticatedAnony");
+			if(isAuthenticatedAnony != null) sess.removeAttribute("isAuthenticatedAnony");
 		}
-	}*/	
+	}
+	
+	
 }

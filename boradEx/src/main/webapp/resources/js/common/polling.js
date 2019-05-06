@@ -69,7 +69,7 @@ function notiLongPollCallback(callback){
 	return term;
 };
 
-function initialize(type, afterCallback){
+function initialize(type, callbackData){
 	
 	switch (type){
 	case 'msg':
@@ -79,7 +79,7 @@ function initialize(type, afterCallback){
 			if(!timeoutId){
 				window.clearTimeout(timeoutId);
 			}
-			longPoll(longPollObj.updateUrl.msg, msgLongPollCallback, afterCallback);
+			longPoll(longPollObj.updateUrl.msg, msgLongPollCallback);
 		}
 		break;
 	case 'noti':
@@ -89,8 +89,15 @@ function initialize(type, afterCallback){
 			if(!timeoutId){
 				window.clearTimeout(timeoutId);
 			}
-			longPoll(longPollObj.updateUrl.noti, notiLongPollCallback, afterCallback);
-		}
+			let url = longPollObj.updateUrl.noti;
+			let afterCallback = undefined;
+			if(callbackData){
+				const notiNo = callbackData.href.match(/\?from=\w+&nno=(\d+)/)[1];
+				url = longPollObj.updateUrl.noti+"?nno="+notiNo;
+				afterCallback = () => window.location.href = callbackData.href;
+			}
+			longPoll(url, notiLongPollCallback, afterCallback); 	
+		}				
 		break;
 	default:
 		log.error("정의되지 않은 long poll 타입입니다.");

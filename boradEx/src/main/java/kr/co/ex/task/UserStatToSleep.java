@@ -16,10 +16,10 @@ import kr.co.ex.dto.MailDto;
 import kr.co.ex.service.MailService;
 import kr.co.ex.service.MemberService;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Component
-@Log4j
+@Log4j2
 public class UserStatToSleep {
 	
 	@NonNull private MailService mailServ;

@@ -7,9 +7,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class AnonyModInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
@@ -18,38 +18,7 @@ public class AnonyModInterceptor extends HandlerInterceptorAdapter {
 		log.info(response.getStatus());
 		if(response.getStatus() == 200){
 			HttpSession sess = request.getSession();
-			sess.setAttribute("anonyMod", true);
+			sess.setAttribute("isAuthenticatedAnony", true);
 		}
 	}
-	/*
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-		HttpSession sess = request.getSession();
-		if(sess.getAttribute(LOGIN) == null){
-			saveDest(request);
-			Cookie loginCookie = WebUtils.getCookie(request, "loginCookie");
-			if(loginCookie != null){
-				UserVO user = serv.checkUserWithSessionKey(loginCookie.getValue());
-				if(user != null){
-					sess.setAttribute("login", user);
-					return true;
-				}
-			}
-			
-			response.sendRedirect("/login");
-			return false;
-		}
-		return true;
-	}
-	
-	private void saveDest(HttpServletRequest req){
-		String uri = req.getRequestURI();
-		String query = req.getQueryString();
-		if(query==null || query.equals("null")) query = "";
-		else query = "?"+query;
-		
-		if(req.getMethod().equals("GET")) req.getSession().setAttribute("dest", uri+query);
-	}
-	*/
 }

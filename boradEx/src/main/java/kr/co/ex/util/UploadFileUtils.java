@@ -4,19 +4,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.imageio.ImageIO;
 
 import org.imgscalr.Scalr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class UploadFileUtils {
 	
 	// 운영체제별 다른 file separator
@@ -34,7 +31,6 @@ public class UploadFileUtils {
 	
 	public static boolean isImage(File file) throws IOException{
 		String type = Files.probeContentType(file.toPath());
-		log.info(type);
 		if(type != null) return type.startsWith("image");
 		return false;
 	}

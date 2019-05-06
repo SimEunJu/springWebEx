@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -24,14 +23,12 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
-import kr.co.ex.domain.MemberVO;
 import kr.co.ex.security.CustomLoginSuccessHandler;
 import kr.co.ex.security.domain.GoogleOAuth2User;
 import kr.co.ex.service.MemberService;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class OAuth2LoginConfig extends WebSecurityConfigurerAdapter {

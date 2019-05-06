@@ -6,11 +6,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import kr.co.ex.annoation.Loggable;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Aspect
 @Component
-@Log4j
+@Log4j2
 public class AdminLogging {
 
 	private final String argsPrefix = "[args] : ";

@@ -1,10 +1,8 @@
 package kr.co.ex.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +12,10 @@ import kr.co.ex.mapper.AdminStatMapper;
 import kr.co.ex.util.DateUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Service
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class AdminStatServiceImpl implements AdminStatService {
 	

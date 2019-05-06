@@ -5,14 +5,18 @@ $("document").ready(function(){
 	const tableRowSkeleton = document.getElementById("table-row").innerHTML;
 	const tableRowTemplate = Handlebars.compile(tableRowSkeleton);
 	
-	const check = new Check("msg");
+	const check = new Check("noti");
 	const pagination = new Pagination();
 
 	check.tbody.on("click", "tr a", function(e){
 		e.preventDefault();
 		// 페이지 이동이 발생하는데 정상적으로 작동할까?
-		longPollObj.initialize("noti", () => window.location.href = e.target.href);
-		// promise를 활용?
+		if(this.dataset.read === "false"){
+			longPollObj.initialize("noti", {href: e.target.href});
+		}
+		
+		// promise를 활용으로 변경할 것!
+		window.location.href = e.target.href;
 	})
 	
 	$("#btn-del").on("click", function(e){
